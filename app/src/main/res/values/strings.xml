@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App and Activities -->
+    <string name="app_name">ChatInmediato</string>
+    <string name="title_activity_view_image">Ver imágen</string>
+    <string name="title_activity_chat">Sala de chat</string>
+    <string name="title_activity_record_audio">Grabar audio</string>
+    <string name="title_activity_play_video">Reroducir video</string>
+    <string name="title_activity_file_picker">Escoger archivo</string>
+    <string name="title_activity_web_view">Abrir link....</string>
+    <string name="title_activity_drawing">Dibujar</string>
+
+    <!-- Menus -->
+    <string name="disconnect">Desconctar</string>
+    <string name="send_image">Enviar imágen</string>
+    <string name="download_image">Descargar imágen</string>
+    <string name="send_audio">Enviar audio</string>
+    <string name="send_video">Enviar video</string>
+    <string name="send_file">Enviar archivo</string>
+    <string name="send_drawing">Enviar dibujo</string>
+
+    <!-- Popup menus -->
+    <string name="pick_image">Escoger imágen</string>
+    <string name="take_photo">Tomar fotos</string>
+
+    <!-- Buttons -->
+    <string name="go_to_settings_button">Herramientas</string>
+    <string name="send_button">Enviar</string>
+    <string name="back_button">Regresar</string>
+    <string name="record_button">Empezar a grabar</string>
+    <string name="playback_button">Reproducir</string>
+    <string name="stop_recording_button">Dejar de grabar</string>
+    <string name="ok">OK</string>
+
+    <!-- TextView -->
+    <string name="go_to_settings_text">Tocar para configurar wifi-direct</string>
+
+    <!-- EditTexts -->
+    <string name="set_chat_name">Por favor escriba un nickname</string>
+    <string name="enter_text">Escriba aquí su mensaje</string>
+
+    <!-- Descriptions -->
+    <string name="full_screen_image">Ver imágen en pantalla completa</string>
+    <string name="file_icon">Icono de archivo</string>
+    <string name="paint">Escoger un color</string>
+    <string name="small">Pequeño</string>
+    <string name="medium">Mediano</string>
+    <string name="large">Grande</string>
+
+    <!-- Drawing buttons -->
+    <string name="new_drawing">Nuevo</string>
+    <string name="brush">Dibujar</string>
+    <string name="eraser">Borrar</string>
+    <string name="save_and_send">Guardar y enviar</string>
+    <string name="file_interno">Memoria interna</string>
+    <string name="file_externo">memoria externa</string>
+    <string name="noSD">No hay una tarjeta SD en el dispositivo</string>
+
+</resources>
