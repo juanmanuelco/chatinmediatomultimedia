@@ -2,17 +2,17 @@
 <resources>
 
     <color name="app_background">#FFFFFF</color>
-    <color name="app_text">#535391</color>
-    
+    <color name="app_text">#1e88e5</color>
+
     <color name="actionbar_background">#FFFFFF</color>
-    <color name="actionbar_text">#535391</color>
+    <color name="actionbar_text">#1e88e5</color>
     
     <color name="chat_text_background">#D6D9FF</color>
-    <color name="chat_text_background_mine">#7980DB</color>    
+    <color name="chat_text_background_mine">#0d47a1</color>
     <color name="chat_text">#535391</color>
     
     
-    <color name="button_background">#abc12375</color>
+    <color name="button_background">#2196f3</color>
     <color name="button_text">#FFFFFF</color>
     
     <!-- Generic colors -->

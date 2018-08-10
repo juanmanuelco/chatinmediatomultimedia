@@ -54,7 +54,7 @@
     <string name="eraser">Borrar</string>
     <string name="save_and_send">Guardar y enviar</string>
     <string name="file_interno">Memoria interna</string>
-    <string name="file_externo">memoria externa</string>
+    <string name="file_externo">Memoria externa</string>
     <string name="noSD">No hay una tarjeta SD en el dispositivo</string>
 
 </resources>
