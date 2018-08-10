@@ -1,5 +1,6 @@
 package com.android.wondercom;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +47,7 @@ public class MainActivity extends Activity{
 	private ImageView disconnect;
 	public static String chatName;
 	public static ServerInit server;
+	public static final int request_code = 1000;
 
 	//Getters and Setters
     public WifiP2pManager getmManager() { return mManager; }
@@ -62,30 +65,31 @@ public class MainActivity extends Activity{
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); 
-        
-        //Init the Channel, Intent filter and Broadcast receiver
-        init();
-        
-        //Button Go to Settings
-        goToSettings = (ImageView) findViewById(R.id.goToSettings);
-        goToSettings();
-        
-        //Go to Settings text
-        goToSettingsText = (TextView) findViewById(R.id.textGoToSettings);        
-        
-        //Button Go to Chat
-        goToChat = (Button) findViewById(R.id.goToChat);
-        goToChat();
-        
-        //Set the chat name
-        setChatName = (EditText) findViewById(R.id.setChatName);
-        setChatNameLabel = (TextView) findViewById(R.id.setChatNameLabel);
-        setChatName.setText(loadChatName(this));
-        
-        //Button Disconnect
-        disconnect = (ImageView) findViewById(R.id.disconnect);
-        disconnect();
+        setContentView(R.layout.activity_main);
+
+			//Init the Channel, Intent filter and Broadcast receiver
+			init();
+
+			//Button Go to Settings
+			goToSettings = (ImageView) findViewById(R.id.goToSettings);
+			goToSettings();
+
+			//Go to Settings text
+			goToSettingsText = (TextView) findViewById(R.id.textGoToSettings);
+
+			//Button Go to Chat
+			goToChat = (Button) findViewById(R.id.goToChat);
+			goToChat();
+
+			//Set the chat name
+			setChatName = (EditText) findViewById(R.id.setChatName);
+			setChatNameLabel = (TextView) findViewById(R.id.setChatNameLabel);
+			setChatName.setText(loadChatName(this));
+
+			//Button Disconnect
+			disconnect = (ImageView) findViewById(R.id.disconnect);
+			disconnect();
+
     }	
 
     @Override
@@ -133,6 +137,8 @@ public class MainActivity extends Activity{
     }	
     
     public void init(){
+
+    	requestPermissionFromDevice();
     	mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
         mReceiver = WifiDirectBroadcastReceiver.createInstance();
@@ -215,4 +221,32 @@ public class MainActivity extends Activity{
   		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
   		return prefs.getString("chatName", DEFAULT_CHAT_NAME);
   	}
+	/*public boolean checkPermissionFromDevice(){
+		int checkCameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+		int storage_permission= ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		int recorder_permssion=ContextCompat.checkSelfPermission(this,Manifest.permission.RECORD_AUDIO);
+		return checkCameraPermission == PackageManager.PERMISSION_GRANTED && storage_permission == PackageManager.PERMISSION_GRANTED && recorder_permssion == PackageManager.PERMISSION_GRANTED;
+	}*/
+	private void requestPermissionFromDevice() {
+		ActivityCompat.requestPermissions(this, new String[]{
+				Manifest.permission.CAMERA,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE,
+				Manifest.permission.RECORD_AUDIO
+		},request_code);
+	}
+	/*@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		switch (requestCode){
+			case request_code:
+			{
+				if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ){
+					Toast.makeText(getApplicationContext(),"Permisos aceptados...",Toast.LENGTH_SHORT).show();
+				}
+				else {
+					Toast.makeText(getApplicationContext(),"Permisos denegados...",Toast.LENGTH_SHORT).show();
+				}
+			}
+			break;
+		}
+	}*/
 }

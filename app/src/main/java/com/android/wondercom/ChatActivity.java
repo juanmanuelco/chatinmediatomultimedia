@@ -1,13 +1,10 @@
 package com.android.wondercom;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,6 +45,12 @@ import com.android.wondercom.Receivers.WifiDirectBroadcastReceiver;
 import com.android.wondercom.util.ActivityUtilities;
 import com.android.wondercom.util.FileUtilities;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChatActivity extends Activity {
 	private static final String TAG = "ChatActivity";	
 	private static final int PICK_IMAGE = 1;
@@ -61,6 +64,7 @@ public class ChatActivity extends Activity {
 	private static final int DOWNLOAD_FILE = 102;
 	private static final int COPY_TEXT = 103;
 	private static final int SHARE_TEXT = 104;
+	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE_CONTENT_RESOLVER = 101;
 	
 	private WifiP2pManager mManager;
 	private Channel mChannel;
@@ -79,49 +83,49 @@ public class ChatActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
-		
-		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel = mManager.initialize(this, getMainLooper(), null);
-        mReceiver = WifiDirectBroadcastReceiver.createInstance();
-        mReceiver.setmActivity(this);
-        
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        
-        //Start the service to receive message
-        startService(new Intent(this, MessageService.class));
-        
-        //Initialize the adapter for the chat
-        listView = (ListView) findViewById(R.id.messageList);
-        listMessage = new ArrayList<Message>();
-        chatAdapter = new ChatAdapter(this, listMessage);
-        listView.setAdapter(chatAdapter);
-        
-        //Initialize the list of temporary files URI
-        tmpFilesUri = new ArrayList<Uri>();
-        
-		//Send a message
-        Button button = (Button) findViewById(R.id.sendMessage);
-        edit = (EditText) findViewById(R.id.editMessage);
-        button.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				if(!edit.getText().toString().equals("")){
-					Log.v(TAG, "Send message");
-					sendMessage(Message.TEXT_MESSAGE);
-				}				
-				else{
-					Toast.makeText(ChatActivity.this, "Please enter a not empty message", Toast.LENGTH_SHORT).show();
+			mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+			mChannel = mManager.initialize(this, getMainLooper(), null);
+			mReceiver = WifiDirectBroadcastReceiver.createInstance();
+			mReceiver.setmActivity(this);
+
+			mIntentFilter = new IntentFilter();
+			mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+			mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+			mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+			mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+			//Start the service to receive message
+			startService(new Intent(this, MessageService.class));
+
+			//Initialize the adapter for the chat
+			listView = (ListView) findViewById(R.id.messageList);
+			listMessage = new ArrayList<Message>();
+			chatAdapter = new ChatAdapter(this, listMessage);
+			listView.setAdapter(chatAdapter);
+
+			//Initialize the list of temporary files URI
+			tmpFilesUri = new ArrayList<Uri>();
+
+			//Send a message
+			Button button = (Button) findViewById(R.id.sendMessage);
+			edit = (EditText) findViewById(R.id.editMessage);
+			button.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					if (!edit.getText().toString().equals("")) {
+						Log.v(TAG, "Send message");
+						sendMessage(Message.TEXT_MESSAGE);
+					} else {
+						Toast.makeText(ChatActivity.this, "Please enter a not empty message", Toast.LENGTH_SHORT).show();
+					}
+
 				}
-			}
-		});
-        
-        //Register the context menu to the list view (for pop up menu)
-        registerForContextMenu(listView);
+
+			});
+
+			//Register the context menu to the list view (for pop up menu)
+			registerForContextMenu(listView);
 	}
 	
 	@Override
@@ -254,7 +258,7 @@ public class ChatActivity extends Activity {
 			case Message.IMAGE_MESSAGE:
 				Image image = new Image(this, fileUri);
 				Log.v(TAG, "Bitmap from url ok");
-				mes.setByteArray(image.bitmapToByteArray(image.getBitmapFromUri()));				
+				mes.setByteArray(image.bitmapToByteArray(image.getBitmapFromUri()));
 				mes.setFileName(image.getFileName());
 				mes.setFileSize(image.getFileSize());				
 				Log.v(TAG, "Set byte array to image ok");
@@ -336,19 +340,21 @@ public class ChatActivity extends Activity {
 	        case R.id.send_image:
 	        	showPopup(edit);
 	        	return true;
-	        	
+
 	        case R.id.send_audio:
 	        	Log.v(TAG, "Start activity to record audio");
 	        	startActivityForResult(new Intent(this, RecordAudioActivity.class), RECORD_AUDIO);
 	        	return true;
-	        	
+
 	        case R.id.send_video:
-	        	Log.v(TAG, "Start activity to record video");
-	        	Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-	        	takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-	        	if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-	                startActivityForResult(takeVideoIntent, RECORD_VIDEO);
-	            }
+
+					Log.v(TAG, "Start activity to record video");
+					Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+					takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+					if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+						startActivityForResult(takeVideoIntent, RECORD_VIDEO);
+					}
+
 	        	return true;
 	        	
 	        case R.id.send_file:
@@ -366,8 +372,8 @@ public class ChatActivity extends Activity {
 	        default:
 	        	return super.onOptionsItemSelected(item);        	
         }  
-    }	
-    
+    }
+	private Uri mPhotoUri;
     //Show the popup menu
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
@@ -389,12 +395,14 @@ public class ChatActivity extends Activity {
 					break;
 				
 				case R.id.take_photo:
+					mPhotoUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+							new ContentValues());
 					Log.v(TAG, "Take a photo");
 					Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					
+					intent2.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
 					if (intent2.resolveActivity(getPackageManager()) != null) {
-						startActivityForResult(intent2, TAKE_PHOTO);
-				    }				    
+						startActivityForResult(intent2, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE_CONTENT_RESOLVER);
+				    }
 				    break;
 				}
 				return true;
@@ -541,4 +549,5 @@ public class ChatActivity extends Activity {
     	    	startActivity(sendIntent);
     	}    	
     }
+
 }

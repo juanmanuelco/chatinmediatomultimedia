@@ -20,11 +20,11 @@ public class PlayVideoActivity extends Activity {
 		Intent intent = getIntent();
 		String filePath = (String) intent.getStringExtra("filePath");
 		System.out.println("PlayVideoActivity   " + filePath);
-		
+
 		videoPlayer = (VideoView) findViewById(R.id.videoPlayer);
 		videoPlayer.setVideoPath(filePath);
 		videoPlayer.setMediaController(new MediaController(this));
-		
+
 		videoPlayer.start();
 	}
 }

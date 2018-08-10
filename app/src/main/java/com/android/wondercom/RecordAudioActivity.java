@@ -1,7 +1,5 @@
 package com.android.wondercom;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -15,6 +13,8 @@ import android.widget.ImageView;
 
 import com.android.wondercom.util.FileUtilities;
 
+import java.io.IOException;
+
 public class RecordAudioActivity extends Activity {
 	private static final String TAG = "RecordAudioActivity";
 	private ImageView buttonRecord;
@@ -24,6 +24,7 @@ public class RecordAudioActivity extends Activity {
 	private String mFileName;
 	private MediaPlayer mPlayer;
 	private boolean isRecording = false;
+	public static final int request_code = 1000;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,34 +37,39 @@ public class RecordAudioActivity extends Activity {
 		}
 
         mFileName += "/" + FileUtilities.fileName() + ".3gp";
-        
+
+		//boton grabar
         buttonRecord = (ImageView) findViewById(R.id.record_audio);
         buttonPlay = (ImageView) findViewById(R.id.play_audio);
         buttonOk = (ImageView) findViewById(R.id.ok);
         buttonPlay.setVisibility(View.GONE);
         buttonOk.setVisibility(View.GONE);
-        
-		buttonRecord.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				if(!isRecording){
-					isRecording = true;
-					buttonRecord.setImageDrawable(getResources().getDrawable(R.drawable.microphone_stop));
-					buttonPlay.setVisibility(View.GONE);
-			        buttonOk.setVisibility(View.GONE);
-					startRecording();					
+        //revisar los permisos
+		//if(checkPermissionFromDevice()) {
+			buttonRecord.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					if (!isRecording) {
+						isRecording = true;
+						buttonRecord.setImageDrawable(getResources().getDrawable(R.drawable.microphone_stop));
+						buttonPlay.setVisibility(View.GONE);
+						buttonOk.setVisibility(View.GONE);
+						startRecording();
+					} else {
+						isRecording = false;
+						buttonRecord.setImageDrawable(getResources().getDrawable(R.drawable.microphone_start));
+						stopRecording();
+						buttonPlay.setVisibility(View.VISIBLE);
+						buttonOk.setVisibility(View.VISIBLE);
+					}
 				}
-				else{
-					isRecording = false;
-					buttonRecord.setImageDrawable(getResources().getDrawable(R.drawable.microphone_start));
-					stopRecording();
-					buttonPlay.setVisibility(View.VISIBLE);
-			        buttonOk.setVisibility(View.VISIBLE);
-				}
-			}
-		});
-		
+				//
+			});
+		/*}else{
+			//pedirle que acxepte los permisos
+			requestPermissionFromDevice();
+		}*/
 		buttonPlay.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -112,6 +118,8 @@ public class RecordAudioActivity extends Activity {
 	
 	public void startRecording(){
 		mRecorder = new MediaRecorder();
+		//el erro era que desde la api 23+ tiene que pedirle los permisos
+		//la cual no lo hacia
 		mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 		mRecorder.setOutputFile(mFileName);
