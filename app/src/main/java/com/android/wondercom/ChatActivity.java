@@ -413,37 +413,37 @@ public class ChatActivity extends Activity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.setHeaderTitle("Options");
+		menu.setHeaderTitle(R.string.opciones);
 
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		Message mes = listMessage.get((int) info.position);
 
 		//Option to delete message independently of its type
-		menu.add(0, DELETE_MESSAGE, Menu.NONE, "Delete message");
+		menu.add(0, DELETE_MESSAGE, Menu.NONE, R.string.Borrar_mensaje);
 
 		if(!mes.getmText().equals("")){
 			//Option to copy message's text to clipboard
-			menu.add(0, COPY_TEXT, Menu.NONE, "Copy message text");
+			menu.add(0, COPY_TEXT, Menu.NONE, R.string.copiar_mensaje);
 			//Option to share message's text
-			menu.add(0, SHARE_TEXT, Menu.NONE, "Share message text");
+			menu.add(0, SHARE_TEXT, Menu.NONE, R.string.Compartir_mensaje);
 		}
 
 		int type = mes.getmType();
 		switch(type){
 			case Message.IMAGE_MESSAGE:
-				menu.add(0, DOWNLOAD_IMAGE, Menu.NONE, "Download image");
+				menu.add(0, DOWNLOAD_IMAGE, Menu.NONE, R.string.Descargar_imagen);
 				break;
 			case Message.FILE_MESSAGE:
-				menu.add(0, DOWNLOAD_FILE, Menu.NONE, "Download file");
+				menu.add(0, DOWNLOAD_FILE, Menu.NONE, R.string.Descargar_archivo);
 				break;
 			case Message.AUDIO_MESSAGE:
-				menu.add(0, DOWNLOAD_FILE, Menu.NONE, "Download audio file");
+				menu.add(0, DOWNLOAD_FILE, Menu.NONE, R.string.Descargar_audio);
 				break;
 			case Message.VIDEO_MESSAGE:
-				menu.add(0, DOWNLOAD_FILE, Menu.NONE, "Download video file");
+				menu.add(0, DOWNLOAD_FILE, Menu.NONE, R.string.Descargar_video);
 				break;
 			case Message.DRAWING_MESSAGE:
-				menu.add(0, DOWNLOAD_FILE, Menu.NONE, "Download drawing");
+				menu.add(0, DOWNLOAD_FILE, Menu.NONE, R.string.Descargar_dibujo);
 				break;
 		}
 	}

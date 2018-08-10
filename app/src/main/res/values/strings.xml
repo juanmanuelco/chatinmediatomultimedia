@@ -72,5 +72,14 @@
         Si usted es el servidor, todos los demás usuarios también se desconectarán.</string>
     <string name="confirmar">Si</string>
     <string name="cancelar">Cancelar</string>
+    <string name="opciones">Opciones</string>
+    <string name="Borrar_mensaje">Borrar mensaje</string>
+    <string name="copiar_mensaje">Copiar texto del mensaje</string>
+    <string name="Compartir_mensaje">Compartir mensaje de texto</string>
+    <string name="Descargar_imagen">Descargar imagen</string>
+    <string name="Descargar_archivo">Descargar archivo</string>
+    <string name="Descargar_audio">Descargar audio</string>
+    <string name="Descargar_video">Descargar video</string>
+    <string name="Descargar_dibujo">Descargar dibujo</string>
 
 </resources>

@@ -70,9 +70,9 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 			//check if Wifi P2P is supported
 			int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
 			if(state == WifiP2pManager.WIFI_P2P_STATE_ENABLED){
-				Toast.makeText(mActivity, "Wifi P2P is supported by this device", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(mActivity, "Wifi P2P is supported by this device", Toast.LENGTH_SHORT).show();
 			} else{
-				Toast.makeText(mActivity, "Wifi P2P is not supported by this device", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(mActivity, "Wifi P2P is not supported by this device", Toast.LENGTH_SHORT).show();
 			}
 		}
 		
