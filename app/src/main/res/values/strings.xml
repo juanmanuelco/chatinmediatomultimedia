@@ -51,10 +51,26 @@
     <!-- Drawing buttons -->
     <string name="new_drawing">Nuevo</string>
     <string name="brush">Dibujar</string>
+    <string name="Eraser_size">Tamaño del borrador</string>
     <string name="eraser">Borrar</string>
+    <string name="Brush_size">Tamaño del pincel</string>
     <string name="save_and_send">Guardar y enviar</string>
     <string name="file_interno">Memoria interna</string>
     <string name="file_externo">Memoria externa</string>
     <string name="noSD">No hay una tarjeta SD en el dispositivo</string>
+    <string name="New_drawing">Nuevo dibujo</string>
+    <string name="contenido_new_drawing">¿Estás seguro de que quieres comenzar un nuevo dibujo? (perderá el dibujo actual)</string>
+
+    <!-- Mensajes -->
+    <string name="Titulo_enviar_mensaje"> Enviar Mensaje</string>
+    <string name="contenido_enivar_mensaje">¿Seguro que quieres enviar este archivo?</string>
+    <string name="titulo_enviar_dibujo">Enviar dibujo</string>
+    <string name="contenido_enivar_dibujo">¿Desea guardar y enviar este dibujo?</string>
+    <string name="Close_chatroom">Cerrar la sala de chat</string>
+    <string name="contenido_Close_chatroom">¿Estás seguro de que quieres cerrar esta sala de chat?,
+        Ya no podrás recibir mensajes, y se borrarán todos los archivos multimedia no guardados.
+        Si usted es el servidor, todos los demás usuarios también se desconectarán.</string>
+    <string name="confirmar">Si</string>
+    <string name="cancelar">Cancelar</string>
 
 </resources>
