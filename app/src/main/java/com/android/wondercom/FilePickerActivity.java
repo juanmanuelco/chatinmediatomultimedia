@@ -18,7 +18,7 @@ import com.android.wondercom.CustomAdapters.FileListAdapter;
 import com.android.wondercom.Entities.Item;
 
 public class FilePickerActivity extends ListActivity{
-	
+
 	private File currentDir;
 	private String rootDirPath;
 	private FileListAdapter adapter;
@@ -28,7 +28,7 @@ public class FilePickerActivity extends ListActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_file_picker);
-		
+
 		listView = (ListView) findViewById(android.R.id.list);
 		escogerDirectorio(1);
 	}
@@ -40,19 +40,19 @@ public class FilePickerActivity extends ListActivity{
 		rootDirPath = currentDir.getName();
 		fillDirectory(currentDir);
 	}
-	
+
 	public void fillDirectory(File file){
 		//Set title to the current directory
 		setTitle(file.getName());
-		
+
 		//Retrieve all files in this directory
-		File[] dirs = file.listFiles();		
-		
+		File[] dirs = file.listFiles();
+
 		//List of directories
 		List<Item> directories = new ArrayList<Item>();
 		//List if files
 		List<Item> files = new ArrayList<Item>();
-		
+
 		for(File f : dirs){
 			//Is a directory
 			if(f.isDirectory()){
@@ -62,7 +62,7 @@ public class FilePickerActivity extends ListActivity{
 					numItems = innerFiles.length;
 				else
 					numItems = 0;
-				
+
 				Item item = new Item(Item.DIRECTORY, f.getName(), numItems, f.getAbsolutePath());
 				directories.add(item);
 			}
@@ -72,23 +72,23 @@ public class FilePickerActivity extends ListActivity{
 				files.add(item);
 			}
 		}
-		
+
 		directories.addAll(files);
-		
+
 		if(!currentDir.getName().equals(rootDirPath)){
 			directories.add(0, new Item(Item.UP, "../", file.getParent()));
 		}
-		
+
 		adapter = new FileListAdapter(this, directories);
-		listView.setAdapter(adapter);		
+		listView.setAdapter(adapter);
 	}
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		
+
 		Item item = (Item) adapter.getItem(position);
-		
+
 		int typeItem = item.getTypeItem();
 		if(typeItem==Item.DIRECTORY || typeItem==Item.UP){
 			currentDir = new File(item.getAbsolutePath());
@@ -98,13 +98,13 @@ public class FilePickerActivity extends ListActivity{
 			chooseFile(item);
 		}
 	}
-	
+
 	public void chooseFile(final Item item){
 		AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
-		newDialog.setTitle("Send file");
-		newDialog.setMessage("Are you sure you want to send this file?");
-		
-		newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+		newDialog.setTitle(R.string.Titulo_enviar_mensaje);
+		newDialog.setMessage(R.string.contenido_enivar_mensaje);
+
+		newDialog.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener(){
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -113,20 +113,20 @@ public class FilePickerActivity extends ListActivity{
 				setResult(RESULT_OK, intent);
 				finish();
 			}
-			
+
 		});
-		
-		newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			
+
+		newDialog.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
 			}
 		});
-		
+
 		newDialog.show();
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		if(!currentDir.getName().equals(rootDirPath)){

@@ -165,12 +165,12 @@ public class MainActivity extends Activity{
 					
 					//Start the init process
 					if(mReceiver.isGroupeOwner() ==  WifiDirectBroadcastReceiver.IS_OWNER){
-						Toast.makeText(MainActivity.this, "Soy el servidor " + mReceiver.getOwnerAddr().getHostAddress(), Toast.LENGTH_SHORT).show();
+						//Toast.makeText(MainActivity.this, "Soy el servidor " + mReceiver.getOwnerAddr().getHostAddress(), Toast.LENGTH_SHORT).show();
 						server = new ServerInit();
 						server.start();
 					}
 					else if(mReceiver.isGroupeOwner() ==  WifiDirectBroadcastReceiver.IS_CLIENT){
-						Toast.makeText(MainActivity.this, "Soy el cliente", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(MainActivity.this, "Soy el cliente", Toast.LENGTH_SHORT).show();
 						ClientInit client = new ClientInit(mReceiver.getOwnerAddr());
 						client.start();
 					}

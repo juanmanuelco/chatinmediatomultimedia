@@ -31,86 +31,86 @@ public class DrawingActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_drawing);
-		
+
 		drawView = (DrawingView)findViewById(R.id.drawing);
 		LinearLayout layout = (LinearLayout) findViewById(R.id.colorPalette);
 		brushButton = (Button) findViewById(R.id.chooseBrush);
 		eraserButton = (Button) findViewById(R.id.chooseEraser);
 		newDrawing = (Button) findViewById(R.id.newDrawing);
 		saveDrawing = (Button) findViewById(R.id.saveDrawing);
-		
+
 		//Retrieve brush sizes
 		smallBrush = getResources().getInteger(R.integer.small_size);
 		mediumBrush = getResources().getInteger(R.integer.medium_size);
 		largeBrush = getResources().getInteger(R.integer.large_size);
-		
+
 		//Default colour is the first color in the color palette
 		currentPaint = (ImageButton) layout.getChildAt(0);
 		drawView.setColor(currentPaint.getTag().toString());
-		
+
 		//Default brush size is medium
-		drawView.setBrushSize(smallBrush);	
+		drawView.setBrushSize(smallBrush);
 		drawView.setLastBrushSize(smallBrush);
-		
+
 		brushButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				chooseBrush();
 			}
 		});
-		
+
 		eraserButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				chooseEraser();
 			}
 		});
-		
+
 		newDrawing.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				newDrawing();
 			}
 		});
-		
+
 		saveDrawing.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				saveDrawing();
 			}
 		});
 	}
-	
+
 	public void paintClicked(View view){
-	    if(currentPaint != view){
-	    	ImageButton button = (ImageButton) view;
-	    	String color = view.getTag().toString();
-	    	drawView.setColor(color);
-	    	
-	    	//Change the background of the old color to normal, and change background of the new color to 'pressed'
-	    	currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint));
-	    	currentPaint=(ImageButton) button;
-	    	currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_selected));
-	    	
-	    	drawView.setErase(false);
-	    	drawView.setBrushSize(drawView.getLastBrushSize());
-	    }
+		if(currentPaint != view){
+			ImageButton button = (ImageButton) view;
+			String color = view.getTag().toString();
+			drawView.setColor(color);
+
+			//Change the background of the old color to normal, and change background of the new color to 'pressed'
+			currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint));
+			currentPaint=(ImageButton) button;
+			currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_selected));
+
+			drawView.setErase(false);
+			drawView.setBrushSize(drawView.getLastBrushSize());
+		}
 	}
-	
+
 	private void chooseBrush(){
 		Log.v(TAG, "Choose brush size");
 		final Dialog brushDialog = new Dialog(DrawingActivity.this);
-		brushDialog.setTitle("Brush size");
+		brushDialog.setTitle(R.string.Brush_size);
 		brushDialog.setContentView(R.layout.brush_chooser);
 		brushDialog.show();
-		
+
 		ImageView smallBrush = (ImageView) brushDialog.findViewById(R.id.small_brush);
 		smallBrush.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				drawView.setBrushSize(DrawingActivity.this.smallBrush);
@@ -119,10 +119,10 @@ public class DrawingActivity extends Activity {
 				brushDialog.dismiss();
 			}
 		});
-		
+
 		ImageView mediumBrush = (ImageView) brushDialog.findViewById(R.id.medium_brush);
 		mediumBrush.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				drawView.setBrushSize(DrawingActivity.this.mediumBrush);
@@ -131,10 +131,10 @@ public class DrawingActivity extends Activity {
 				brushDialog.dismiss();
 			}
 		});
-		
+
 		ImageView largeBrush = (ImageView) brushDialog.findViewById(R.id.large_brush);
 		largeBrush.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				drawView.setBrushSize(DrawingActivity.this.largeBrush);
@@ -144,17 +144,17 @@ public class DrawingActivity extends Activity {
 			}
 		});
 	}
-	
+
 	private void chooseEraser(){
 		Log.v(TAG, "Choose eraser size");
 		final Dialog eraserDialog = new Dialog(DrawingActivity.this);
-		eraserDialog.setTitle("Eraser size");
+		eraserDialog.setTitle(R.string.Eraser_size);
 		eraserDialog.setContentView(R.layout.brush_chooser);
 		eraserDialog.show();
-		
+
 		ImageView smallBrush = (ImageView) eraserDialog.findViewById(R.id.small_brush);
 		smallBrush.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				drawView.setErase(true);
@@ -162,10 +162,10 @@ public class DrawingActivity extends Activity {
 				eraserDialog.dismiss();
 			}
 		});
-		
+
 		ImageView mediumBrush = (ImageView) eraserDialog.findViewById(R.id.medium_brush);
 		mediumBrush.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				drawView.setErase(true);
@@ -173,10 +173,10 @@ public class DrawingActivity extends Activity {
 				eraserDialog.dismiss();
 			}
 		});
-		
+
 		ImageView largeBrush = (ImageView) eraserDialog.findViewById(R.id.large_brush);
 		largeBrush.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				drawView.setErase(true);
@@ -185,38 +185,38 @@ public class DrawingActivity extends Activity {
 			}
 		});
 	}
-	
+
 	private void newDrawing(){
 		AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
-		newDialog.setTitle("New drawing");
-		newDialog.setMessage("Are you sure you want to start a new drawing? (you will lose the current drawing)");
-		
-		newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+		newDialog.setTitle(R.string.new_drawing);
+		newDialog.setMessage(R.string.contenido_new_drawing);
+
+		newDialog.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener(){
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				drawView.startNewDrawing();
 			}
-			
+
 		});
-		
-		newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			
+
+		newDialog.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
 			}
 		});
-		
+
 		newDialog.show();
 	}
-	
+
 	private void saveDrawing(){
 		AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
-		newDialog.setTitle("Send drawing");
-		newDialog.setMessage("You want to save and send this drawing?");
-		
-		newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+		newDialog.setTitle(R.string.titulo_enviar_dibujo);
+		newDialog.setMessage(R.string.contenido_enivar_dibujo);
+
+		newDialog.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener(){
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -225,23 +225,23 @@ public class DrawingActivity extends Activity {
 				String fileName = FileUtilities.fileName() + ".jpg";
 				FileUtilities.saveImageFromBitmap(DrawingActivity.this, drawView.getDrawingCache(), path, fileName);
 				drawView.destroyDrawingCache();
-				
+
 				Intent intent = getIntent();
 				intent.putExtra("drawingPath", path + File.separator + fileName);
 				setResult(RESULT_OK, intent);
 				finish();
 			}
-			
+
 		});
-		
-		newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			
+
+		newDialog.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
 			}
 		});
-		
+
 		newDialog.show();
 	}
 }
