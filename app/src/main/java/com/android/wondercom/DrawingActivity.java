@@ -7,8 +7,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,7 +21,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.wondercom.CustomViews.DrawingView;
+import com.android.wondercom.Entities.Image;
 import com.android.wondercom.util.FileUtilities;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class DrawingActivity extends Activity {
 	private static final String TAG = "DrawingActivity";
@@ -26,12 +38,30 @@ public class DrawingActivity extends Activity {
 	private ImageButton currentPaint;
 	private float smallBrush, mediumBrush, largeBrush;
 	private Button brushButton, eraserButton, newDrawing, saveDrawing;
+	LinearLayout mLayout;
+	int mDefaulColor;
+	Button mButton;
+	ImageButton mButton2;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_drawing);
 
+		mLayout = (LinearLayout) findViewById(R.id.layout);
+		mDefaulColor= ContextCompat.getColor(DrawingActivity.this,R.color.button_background);
+		mButton = (Button) findViewById(R.id.button1);
+		mButton2 = (ImageButton) findViewById(R.id.button3);
+
+		mButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				OpenColor();
+			}
+		});
+
+		mButton2.setTag("vacio");
 		drawView = (DrawingView)findViewById(R.id.drawing);
 		LinearLayout layout = (LinearLayout) findViewById(R.id.colorPalette);
 		brushButton = (Button) findViewById(R.id.chooseBrush);
@@ -85,19 +115,45 @@ public class DrawingActivity extends Activity {
 		});
 	}
 
+	public void OpenColor(){
+		AmbilWarnaDialog color = new AmbilWarnaDialog(this, mDefaulColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+			@Override
+			public void onCancel(AmbilWarnaDialog dialog) {
+
+			}
+
+			@Override
+			public void onOk(AmbilWarnaDialog dialog, int color) {
+				mDefaulColor=color;
+				mButton2.setBackgroundColor(mDefaulColor);
+				mButton2.setTag(String.format("#%X", mDefaulColor ));
+				String colors = mButton2.getTag().toString();
+				drawView.setColor(colors);
+				currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint));
+				currentPaint=(ImageButton) mButton2;
+				currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_selected));
+				drawView.setErase(false);
+				drawView.setBrushSize(drawView.getLastBrushSize());
+				Toast.makeText(DrawingActivity.this, "Formato 1 "+String.format("#%X", mDefaulColor )+" Formato 2 "+"#"+Integer.toHexString(mDefaulColor) , Toast.LENGTH_LONG).show();
+			}
+		});
+		color.show();
+	}
 	public void paintClicked(View view){
 		if(currentPaint != view){
 			ImageButton button = (ImageButton) view;
 			String color = view.getTag().toString();
-			drawView.setColor(color);
+			if (color!="vacio") {
+				drawView.setColor(color);
 
-			//Change the background of the old color to normal, and change background of the new color to 'pressed'
-			currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint));
-			currentPaint=(ImageButton) button;
-			currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_selected));
+				//Change the background of the old color to normal, and change background of the new color to 'pressed'
+				currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint));
+				currentPaint = (ImageButton) button;
+				currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_selected));
 
-			drawView.setErase(false);
-			drawView.setBrushSize(drawView.getLastBrushSize());
+				drawView.setErase(false);
+				drawView.setBrushSize(drawView.getLastBrushSize());
+			}
 		}
 	}
 
@@ -196,6 +252,8 @@ public class DrawingActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				drawView.startNewDrawing();
+				mButton2.setBackgroundColor(Color.WHITE);
+				mButton2.setTag("vacio");
 			}
 
 		});

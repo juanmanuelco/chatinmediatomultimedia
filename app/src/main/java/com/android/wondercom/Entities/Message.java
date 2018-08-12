@@ -59,7 +59,7 @@ public class Message implements Serializable{
 		senderAddress = sender;
 		chatName = name;
 	}
-	
+
 	public Bitmap byteArrayToBitmap(byte[] b){
 		Log.v(TAG, "Convert byte array to image (bitmap)");
 		return BitmapFactory.decodeByteArray(b, 0, b.length);

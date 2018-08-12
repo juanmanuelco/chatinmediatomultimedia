@@ -117,7 +117,7 @@ public class ChatActivity extends Activity {
 					Log.v(TAG, "Send message");
 					sendMessage(Message.TEXT_MESSAGE);
 				} else {
-					Toast.makeText(ChatActivity.this, "Please enter a not empty message", Toast.LENGTH_SHORT).show();
+					Toast.makeText(ChatActivity.this, R.string.mensaje_vacio, Toast.LENGTH_SHORT).show();
 				}
 
 			}
@@ -249,7 +249,7 @@ public class ChatActivity extends Activity {
 	public void sendMessage(int type){
 		Log.v(TAG, "Send message starts");
 		// Message written in EditText is always sent
-		Message mes = new Message(type, edit.getText().toString(), null, MainActivity.chatName);
+		Message mes = new Message(type, edit.getText().toString(), null, MainActivity.chatName );
 
 		switch(type){
 			case Message.IMAGE_MESSAGE:

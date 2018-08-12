@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.text.util.Linkify;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,8 +25,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.wondercom.ChatActivity;
+import com.android.wondercom.MainActivity;
 import com.android.wondercom.PlayVideoActivity;
 import com.android.wondercom.R;
 import com.android.wondercom.ViewImageActivity;
@@ -31,6 +36,7 @@ import com.android.wondercom.Entities.Message;
 import com.android.wondercom.util.FileUtilities;
 
 public class ChatAdapter extends BaseAdapter {
+	private Activity activity;
 	private List<Message> listMessage;
 	private LayoutInflater inflater;
 	public static Bitmap bitmap;
@@ -58,19 +64,18 @@ public class ChatAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return position;
 	}
-	
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		//LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 		View view = convertView;
-		
+		int layoutResource = 0; // determined by view type
 		Message mes = listMessage.get(position);
 		int type = mes.getmType();
-		
 		if(view == null){
 			CacheView cache = new CacheView();            
             
-			view = inflater.inflate(R.layout.chat_row, null);
+			view = inflater.inflate(R.layout.chat_row,parent, false);
 			cache.chatName = (TextView) view.findViewById(R.id.chatName);
             cache.text = (TextView) view.findViewById(R.id.text);
             cache.image = (ImageView) view.findViewById(R.id.image);
@@ -97,14 +102,23 @@ public class ChatAdapter extends BaseAdapter {
 				return true;
 			}
 		});
-        
+		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)cache.relativeLayout.getLayoutParams();
         //Colourise differently own message
         if((Boolean) listMessage.get(position).isMine()){
-        	cache.relativeLayout.setBackground(view.getResources().getDrawable(R.drawable.chat_bubble_mine));
-        }   
+        	params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			cache.relativeLayout.setBackground(view.getResources().getDrawable(R.drawable.chat_bubble_mine));
+			cache.chatName.setTextColor(Color.BLACK);
+			cache.text.setTextColor(Color.BLACK);
+		}
         else{
-        	cache.relativeLayout.setBackground(view.getResources().getDrawable(R.drawable.chat_bubble));
+			params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			cache.relativeLayout.setBackground(view.getResources().getDrawable(R.drawable.chat_bubble));
+			cache.chatName.setTextColor(Color.WHITE);
+			cache.text.setTextColor(Color.WHITE);
         }
+
         
         //We disable all the views and enable certain views depending on the message's type
         disableAllMediaViews(cache);
@@ -251,7 +265,6 @@ public class ChatAdapter extends BaseAdapter {
 				}
 			});
 		}
-        
 		return view;
 	}
 	

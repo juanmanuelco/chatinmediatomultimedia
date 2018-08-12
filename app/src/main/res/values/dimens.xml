@@ -12,4 +12,6 @@
 	<dimen name="large_brush">30dp</dimen>
 	<integer name="large_size">30</integer>
 
+
+
 </resources>
