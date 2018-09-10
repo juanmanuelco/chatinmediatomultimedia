@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InicioActivity"
+    android:background="@color/app_background" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="32dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"
+            android:text="@string/encabezado_principal"
+            android:textColor="@color/negro"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hing_principal"
+            android:gravity="center"
+            android:id="@+id/ET_Main_Nickname"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/pregunta_principal"
+            android:textColor="@color/negro"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/fondo_boton"
+            android:drawableLeft="@mipmap/ic_launcher_bluetooth"
+            android:drawablePadding="10dp"
+            android:padding="10dp"
+            android:text="@string/Bluetooth"
+            android:textColor="@color/Texto_boton"
+            android:gravity="center_vertical"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/fondo_boton"
+            android:drawableLeft="@mipmap/ic_launcher_wifi"
+            android:drawablePadding="10dp"
+            android:padding="10dp"
+            android:text="@string/wifi"
+            android:textColor="@color/Texto_boton"
+            android:gravity="center_vertical"
+            android:onClick="wifi"/>
+    </LinearLayout>
+</RelativeLayout>

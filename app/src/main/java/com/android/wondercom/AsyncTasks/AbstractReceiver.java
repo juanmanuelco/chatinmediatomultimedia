@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
+import com.android.wondercom.InicioActivity;
 import com.android.wondercom.MainActivity;
 import com.android.wondercom.R;
 import com.android.wondercom.Entities.Message;
@@ -26,7 +27,7 @@ public class AbstractReceiver extends AsyncTask<Void, Message, Void>{
 		Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		
 		//Intent exactly like Android intent to launch the app => the app is simply brought back to front
-		Intent intent = new Intent(context, MainActivity.class);
+		Intent intent = new Intent(context, InicioActivity.class);
 		intent.setAction(Intent.ACTION_MAIN);
 		intent.addCategory(Intent.CATEGORY_LAUNCHER);
 		

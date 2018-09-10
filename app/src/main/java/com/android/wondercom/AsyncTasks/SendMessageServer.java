@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.android.wondercom.ChatActivity;
+import com.android.wondercom.InicioActivity;
 import com.android.wondercom.MainActivity;
 import com.android.wondercom.Entities.Message;
 import com.android.wondercom.InitThreads.ServerInit;
@@ -73,7 +74,7 @@ public class SendMessageServer extends AsyncTask<Message, Message, Message>{
 	protected void onProgressUpdate(Message... values) {
 		super.onProgressUpdate(values);
 		
-		if(isActivityRunning(MainActivity.class)){
+		if(isActivityRunning(InicioActivity.class)){
 			ChatActivity.refreshList(values[0], isMine);
 		}
 	}

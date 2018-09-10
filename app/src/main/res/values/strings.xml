@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="app_name">SOSCHAT</string>
+    <string name="ERROR">Error</string>
+    <string name="TARDE">Intente nuevamente más tarde</string>
+    <string name="VERIFY">Verificando</string>
+    <string name="NONAME">Ingrese un Nickname</string>
+    <string name="NO_PART">No se encontraron más participantes</string>
+    <string name="ERROR_BUSC">Ha ocurrido un error mientras se buscaban contactos</string>
+    <string name="NO_ENCONT">Tu ya no eres encontrable</string>
+    <string name="BUSCANDO_PART">Buscando participantes</string>
+    <string name="ENCONTRADOS">Usuarios conectados en la misma red</string>
+
+    <string name="encabezado_principal">Bienvenido</string>
+    <string name="hing_principal">Esciba un nombre</string>
+    <string name="pregunta_principal">¿Como desea conectarse?</string>
+    <string name="Bluetooth">Chat por Bluetooth</string>
+    <string name="lan">Chat por Lan</string>
+    <string name="wifi">Chat por Wifi Direct</string>
+
+    <string name="title_activity_tabbed">TabbedActivity</string>
+    <string name="tab_text_1">Encontrados</string>
+    <string name="tab_text_2">Mensaje</string>
+    <string name="tab_text_3">Historico</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+
     <!-- App and Activities -->
-    <string name="app_name">ChatInmediato</string>
     <string name="title_activity_view_image">Ver imágen</string>
     <string name="title_activity_chat">Sala de chat</string>
     <string name="title_activity_record_audio">Grabar audio</string>
@@ -84,5 +109,10 @@
 
     <!-- Toast -->
     <string name="mensaje_vacio">Por favor ingrese un mensaje no vacío</string>
+    <string name="title_activity_borrar">Borrar</string>
+    <string name="title_activity_testing">testing</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

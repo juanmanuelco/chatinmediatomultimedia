@@ -18,8 +18,8 @@ public class ActivityUtilities {
             titleId = R.id.action_bar_title;
 
         if(titleId>0){
-            TextView titleView = (TextView) activity.findViewById(titleId);
-            titleView.setTextSize(22);
+            //TextView titleView = (TextView) activity.findViewById(titleId);
+            //titleView.setTextSize(22);
         }
     }
 	

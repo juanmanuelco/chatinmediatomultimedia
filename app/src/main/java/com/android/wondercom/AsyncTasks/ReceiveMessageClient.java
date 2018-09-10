@@ -12,6 +12,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 
 import com.android.wondercom.ChatActivity;
+import com.android.wondercom.InicioActivity;
 import com.android.wondercom.MainActivity;
 import com.android.wondercom.Entities.Message;
 
@@ -70,7 +71,7 @@ public class ReceiveMessageClient extends AbstractReceiver {
 			values[0].saveByteArrayToFile(mContext);
 		}
 		
-		if(isActivityRunning(MainActivity.class)){
+		if(isActivityRunning(InicioActivity.class)){
 			ChatActivity.refreshList(values[0], false);
 		}			
 	}

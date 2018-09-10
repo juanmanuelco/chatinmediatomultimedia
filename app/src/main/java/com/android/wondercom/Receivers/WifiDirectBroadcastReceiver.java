@@ -4,7 +4,9 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.wondercom.FuncionActivity;
 import com.android.wondercom.MainActivity;
+import com.android.wondercom.R;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -18,16 +20,18 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-/*
- * This class implements the Singleton pattern
- */
+import org.w3c.dom.Text;
+
 public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	public static final int IS_OWNER = 1;
 	public static final int IS_CLIENT = 2;
 	private static final String TAG = "WifiDirectBroadcastReceiver";
-	
 	private WifiP2pManager mManager;
 	private Channel mChannel;
 	private Activity mActivity;
@@ -60,42 +64,24 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		
-		/**********************************
-		 Wifi P2P is enabled or disabled 
-		**********************************/
-		if(action.equals(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)){ 
-			Log.v(TAG, "WIFI_P2P_STATE_CHANGED_ACTION");
-			
-			//check if Wifi P2P is supported
+		if(action.equals(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)){
 			int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
 			if(state == WifiP2pManager.WIFI_P2P_STATE_ENABLED){
-				//Toast.makeText(mActivity, "Wifi P2P is supported by this device", Toast.LENGTH_SHORT).show();
+
 			} else{
-				//Toast.makeText(mActivity, "Wifi P2P is not supported by this device", Toast.LENGTH_SHORT).show();
+
 			}
+			return;
 		}
-		
-		/**********************************
-		 Available peer list has changed
-		**********************************/
-		else if(action.equals(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)){ 
-//			Log.v(TAG, "WIFI_P2P_PEERS_CHANGED_ACTION");
+
+		if(action.equals(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)){
+			return;
 		}
-		
-		/***************************************
-		 This device's wifi state has changed 
-		***************************************/
-		else if(action.equals(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)){ 
-			Log.v(TAG, "WIFI_P2P_THIS_DEVICE_CHANGED_ACTION");
-			
+		if(action.equals(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)){
+			return;
 		}
-		
-		/******************************************************************
-		 State of connectivity has changed (new connection/disconnection) 
-		******************************************************************/
-		else if(action.equals(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION)){
-			Log.v(TAG, "WIFI_P2P_CONNECTION_CHANGED_ACTION");
+
+		if(action.equals(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION)){
 			
 			if(mManager == null){
 				return;
@@ -108,22 +94,14 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 					public void onConnectionInfoAvailable(WifiP2pInfo info) {
 						InetAddress groupOwnerAddress = info.groupOwnerAddress;
 						ownerAddr= groupOwnerAddress;
-						
-						/******************************************************************
-						 The GO : create a server thread and accept incoming connections 
-						******************************************************************/
-						if (info.groupFormed && info.isGroupOwner) { 
-							isGroupeOwner = IS_OWNER;	
+						if (info.groupFormed && info.isGroupOwner) {
+							isGroupeOwner = IS_OWNER;
 							activateGoToChat("server");
 						}
-						
-						/******************************************************************
-						 The client : create a client thread that connects to the group owner 
-						******************************************************************/
-						else if (info.groupFormed) { 
-							isGroupeOwner = IS_CLIENT;		
+						else if (info.groupFormed) {
+							isGroupeOwner = IS_CLIENT;
 							activateGoToChat("client");
-						}	
+						}
 					}
 				});				
 			}
@@ -131,14 +109,35 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	}
 	
 	public void activateGoToChat(String role){
-		if(mActivity.getClass() == MainActivity.class){
-			((MainActivity)mActivity).getGoToChat().setText("Start the chat "+role);
-			((MainActivity)mActivity).getGoToChat().setVisibility(View.VISIBLE);
-			((MainActivity)mActivity).getSetChatName().setVisibility(View.VISIBLE);
-			((MainActivity)mActivity).getSetChatNameLabel().setVisibility(View.VISIBLE);
-			((MainActivity)mActivity).getDisconnect().setVisibility(View.VISIBLE);
-			((MainActivity)mActivity).getGoToSettings().setVisibility(View.GONE);
-			((MainActivity)mActivity).getGoToSettingsText().setVisibility(View.GONE);
+		if(mActivity.getClass() == FuncionActivity.class){
+
+			Button gotochat = mActivity.findViewById(R.id.goToChat);
+			gotochat.setText("Start the chat "+role);
+			gotochat.setVisibility(View.VISIBLE);
+
+			EditText setChatName= mActivity.findViewById(R.id.setChatName);
+			setChatName.setVisibility(View.VISIBLE);
+			TextView setChatNameLabel = mActivity.findViewById(R.id.setChatNameLabel);
+			setChatNameLabel.setVisibility(View.VISIBLE);
+
+			ImageView disconnect= mActivity.findViewById(R.id.disconnect);
+			disconnect.setVisibility(View.VISIBLE);
+
+			ImageView goToSettings= mActivity.findViewById(R.id.goToSettings);
+			goToSettings.setVisibility(View.GONE);
+
+			TextView textGoToSettings= mActivity.findViewById(R.id.textGoToSettings);
+			textGoToSettings.setVisibility(View.GONE);
+
+			/*
+			((FuncionActivity)mActivity).getGoToChat().setText("Start the chat "+role);
+			((FuncionActivity)mActivity).getGoToChat().setVisibility(View.VISIBLE);
+			((FuncionActivity)mActivity).getSetChatName().setVisibility(View.VISIBLE);
+			((FuncionActivity)mActivity).getSetChatNameLabel().setVisibility(View.VISIBLE);
+			((FuncionActivity)mActivity).getDisconnect().setVisibility(View.VISIBLE);
+			((FuncionActivity)mActivity).getGoToSettings().setVisibility(View.GONE);
+			((FuncionActivity)mActivity).getGoToSettingsText().setVisibility(View.GONE);
+			*/
 		}
 	}
 
