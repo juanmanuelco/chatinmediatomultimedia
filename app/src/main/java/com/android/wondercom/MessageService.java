@@ -5,14 +5,16 @@ import com.android.wondercom.AsyncTasks.ReceiveMessageServer;
 import com.android.wondercom.Receivers.WifiDirectBroadcastReceiver;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
 
 public class MessageService extends Service {
 	private static final String TAG = "MessageService";
-
+	WifiManager wifiManager;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
@@ -21,7 +23,11 @@ public class MessageService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		WifiDirectBroadcastReceiver mReceiver = WifiDirectBroadcastReceiver.createInstance();
-		
+		wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+		if(!wifiManager.isWifiEnabled())
+			wifiManager.setWifiEnabled(true);
+
 		//Start the AsyncTask for the server to receive messages
         if(mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_OWNER){
         	Log.v(TAG, "Start the AsyncTask for the server to receive messages");

@@ -1,5 +1,8 @@
 package com.android.wondercom.NEGOCIO;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -26,5 +29,9 @@ public class Validaciones {
             return true;
         else
             return false;
+    }
+    public static String loadChatName(Context context, String key, String defaultText) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(key, defaultText);
     }
 }

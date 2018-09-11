@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.AsyncTask;
@@ -78,6 +79,8 @@ public class ChatActivity extends Activity {
 	private String fileURL;
 	private ArrayList<Uri> tmpFilesUri;
 
+	WifiManager wifiManager;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,7 @@ public class ChatActivity extends Activity {
 		mChannel = mManager.initialize(this, getMainLooper(), null);
 		mReceiver = WifiDirectBroadcastReceiver.createInstance();
 		mReceiver.setmActivity(this);
+		wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -172,10 +176,13 @@ public class ChatActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
+				wifiManager.setWifiEnabled(false);
+				wifiManager.setWifiEnabled(true);
 				clearTmpFiles(getExternalFilesDir(null));
 				if(MainActivity.server!=null){
 					MainActivity.server.interrupt();
 				}
+
 				android.os.Process.killProcess(android.os.Process.myPid());
 			}
 
