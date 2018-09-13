@@ -8,8 +8,8 @@
     <color name="app_background">#FFFFFF</color>
     <color name="app_text">#1e88e5</color>
 
-    <color name="actionbar_background">#FFFFFF</color>
-    <color name="actionbar_text">#1e88e5</color>
+    <color name="actionbar_background">#1e88e5</color>
+    <color name="actionbar_text">#FFFFFF</color>
     
     <color name="chat_text_background">#D6D9FF</color>
     <color name="chat_text_background_mine">#013991</color>

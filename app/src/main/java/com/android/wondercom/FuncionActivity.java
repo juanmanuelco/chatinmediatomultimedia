@@ -7,16 +7,21 @@ import android.app.FragmentTransaction;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.android.wondercom.Fragments.FM_encontrados;
@@ -27,6 +32,12 @@ public class FuncionActivity extends Activity implements ActionBar.TabListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
+
+    private MenuItem myActionMenuItem;
+    private SearchView searchView = null;
+    private SearchView.OnQueryTextListener queryTextListener;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +63,6 @@ public class FuncionActivity extends Activity implements ActionBar.TabListener {
                     actionBar.newTab()
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
-            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.button_background)));
             actionBar.setTitle(getResources().getString(R.string.app_name));
         }
 
@@ -61,8 +71,51 @@ public class FuncionActivity extends Activity implements ActionBar.TabListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_principal, menu);
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
 
-        getMenuInflater().inflate(R.menu.menu_borrar, menu);
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
+
+            queryTextListener = new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    Log.i("onQueryTextChange", newText);
+                    /*Log.i("CantidadConectado",String.valueOf(conectados.size()));
+                    String s="";
+
+                    if(newText!=null && !newText.isEmpty()){
+                        newText = newText.toLowerCase();
+                        encontrados= new ArrayList<>();
+                        for (Host items: conectados2 ){
+                            String nombre = items.getName().toLowerCase();
+                            if (nombre.contains(newText)){
+                                encontrados.add(items);
+                            }
+                        }
+                        Log.i("QueryEncontrados", encontrados.toString());
+                        mParticipantsAdapter.actualizar(encontrados);
+                    }else{
+                        if (a!=null && !a.isEmpty()){
+                            mParticipantsAdapter.setData(a);
+                        }
+                        Log.i("NoSeEncontro", "No se encontro el "+ newText.toString());
+                    }*/
+                    return true;
+                }
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    Log.i("onQueryTextSubmit", query);
+
+                    return true;
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
         return true;
     }
 

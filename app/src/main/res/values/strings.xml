@@ -112,6 +112,10 @@
     <string name="title_activity_borrar">Borrar</string>
     <string name="title_activity_testing">testing</string>
 
+    <!-- Menu searches and reload -->
+    <string name="search">Búsqueda</string>
+    <string name="reload">Recargar</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

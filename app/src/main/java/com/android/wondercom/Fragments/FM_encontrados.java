@@ -14,9 +14,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +40,7 @@ import com.android.wondercom.Receivers.WifiDirectBroadcastReceiver;
 import java.util.TimerTask;
 
 
-public class FM_encontrados extends Fragment {
+public class FM_encontrados extends Fragment{
     WifiManager wifiManager;
     public static final String TAG = "MainActivity";
     public static final String DEFAULT_CHAT_NAME = Dispositivo.getDeviceName();
@@ -103,6 +105,17 @@ public class FM_encontrados extends Fragment {
         descubrir();
 
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_principal, menu);
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        //searchView.setOnQueryTextListener(this);
+        searchView.setQueryHint("Search");
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public void descubrir(){
