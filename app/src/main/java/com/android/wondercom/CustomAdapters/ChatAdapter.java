@@ -88,7 +88,7 @@ public class ChatAdapter extends BaseAdapter {
 	            
 			view.setTag(cache);
 		}
-		
+
 		//Retrive the items from cache
         CacheView cache = (CacheView) view.getTag();
         cache.chatName.setText(listMessage.get(position).getChatName());
@@ -126,15 +126,17 @@ public class ChatAdapter extends BaseAdapter {
         /***********************************************
           				Text Message
          ***********************************************/
-        if(type == Message.TEXT_MESSAGE){           
-        	enableTextView(cache, mes.getmText());
+		long millis = System.currentTimeMillis();
+		String mensaje= mes.getmText()+ " milisegundos recepcion: "+millis;
+        if(type == Message.TEXT_MESSAGE){
+        	enableTextView(cache, mensaje);
 		}
         
         /***********************************************
 			            Image Message
          ***********************************************/
 		else if(type == Message.IMAGE_MESSAGE){
-			enableTextView(cache, mes.getmText());
+			enableTextView(cache, mensaje);
 			cache.image.setVisibility(View.VISIBLE);
 			
 			if(!mapThumb.containsKey(mes.getFileName())){
@@ -164,7 +166,7 @@ public class ChatAdapter extends BaseAdapter {
         				Audio Message
          ***********************************************/
 		else if(type == Message.AUDIO_MESSAGE){
-			enableTextView(cache, mes.getmText());
+			enableTextView(cache, mensaje);
 			cache.audioPlayer.setVisibility(View.VISIBLE);
 			cache.audioPlayer.setTag(position);
 			cache.audioPlayer.setOnClickListener(new OnClickListener() {
@@ -203,7 +205,7 @@ public class ChatAdapter extends BaseAdapter {
         				Video Message
          ***********************************************/
 		else if(type == Message.VIDEO_MESSAGE){
-			enableTextView(cache, mes.getmText());
+			enableTextView(cache, mensaje);
 			cache.videoPlayer.setVisibility(View.VISIBLE);
 			cache.videoPlayerButton.setVisibility(View.VISIBLE);
 			
@@ -230,7 +232,7 @@ public class ChatAdapter extends BaseAdapter {
 						File Message
          ***********************************************/
 		else if(type == Message.FILE_MESSAGE){
-			enableTextView(cache, mes.getmText());
+			enableTextView(cache, mensaje);
 			cache.fileSavedIcon.setVisibility(View.VISIBLE);
 			cache.fileSaved.setVisibility(View.VISIBLE);
 			cache.fileSaved.setText(mes.getFileName());
@@ -240,7 +242,7 @@ public class ChatAdapter extends BaseAdapter {
 					Drawing Message
 		***********************************************/
 		else if(type == Message.DRAWING_MESSAGE){
-			enableTextView(cache, mes.getmText());			
+			enableTextView(cache, mensaje);
 			cache.image.setVisibility(View.VISIBLE);
 			
 			if(!mapThumb.containsKey(mes.getFileName())){

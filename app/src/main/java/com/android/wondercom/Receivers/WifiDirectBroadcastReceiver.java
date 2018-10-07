@@ -39,6 +39,8 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 
 	WifiManager wifiManager;
 
+
+
 	public static final int IS_OWNER = 1;
 	public static final int IS_CLIENT = 2;
 	private static final String TAG = "WifiDirectBroadcastReceiver";
@@ -61,6 +63,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	}
 	
 	public static WifiDirectBroadcastReceiver createInstance(){
+
 		if(instance == null){
 			instance = new WifiDirectBroadcastReceiver();
 		}
@@ -79,9 +82,11 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 
 	@Override
 	public void onReceive(final Context context, Intent intent) {
+
 		String action = intent.getAction();
 		listado= new ArrayList<String[]>();
 		wifiManager = (WifiManager) mActivity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
 		if(action.equals(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)){
 			int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
 			if(state != WifiP2pManager.WIFI_P2P_STATE_ENABLED){

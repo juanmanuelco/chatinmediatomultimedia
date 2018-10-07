@@ -16,28 +16,40 @@
     
     <LinearLayout
         android:id="@id/writeZone"
+		android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:background="@color/app_background" >
-        
-	    <EditText 
-	        android:id="@+id/editMessage"
-	        android:layout_width="0dp"
-	        android:layout_weight="5"
-	        android:layout_height="match_parent"
-	        android:inputType="textMultiLine|textCapSentences"
-	        android:maxLines="4"
-	        android:hint="@string/enter_text"/>
-	    <Button 
-	        android:id="@+id/sendMessage"
-	        android:layout_width="0dp"
-	        android:layout_weight="2"
-	        android:layout_height="match_parent"
-	        android:text="@string/send_button"
-	        android:background="@drawable/button"
-	        android:textColor="@color/button_text" />
+		android:layout_alignParentBottom="true"
+		android:background="@color/app_background"
+        android:layout_height="wrap_content" >
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/velocidadInternet"
+			android:textSize="10dp"
+			/>
+
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:orientation="horizontal"
+			android:layout_height="wrap_content">
+			<EditText
+				android:id="@+id/editMessage"
+				android:layout_width="0dp"
+				android:layout_weight=".7"
+				android:layout_height="match_parent"
+				android:inputType="textMultiLine|textCapSentences"
+				android:maxLines="4"
+				android:hint="@string/enter_text"/>
+			<Button
+				android:id="@+id/sendMessage"
+				android:layout_width="0dp"
+				android:layout_weight=".3"
+				android:layout_height="match_parent"
+				android:text="@string/send_button"
+				android:background="@drawable/button"
+				android:textColor="@color/button_text" />
+		</LinearLayout>
 	
 	</LinearLayout>
     

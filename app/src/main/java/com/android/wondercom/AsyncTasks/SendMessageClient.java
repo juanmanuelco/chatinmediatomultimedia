@@ -31,8 +31,7 @@ public class SendMessageClient extends AsyncTask<Message, Message, Message>{
 	
 	@Override
 	protected Message doInBackground(Message... msg) {
-		Log.v(TAG, "doInBackground");
-		
+
 		//Display le message on the sender before sending it
 		publishProgress(msg);
 		

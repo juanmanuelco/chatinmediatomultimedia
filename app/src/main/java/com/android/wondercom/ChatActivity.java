@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
@@ -34,6 +35,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.wondercom.AsyncTasks.SendMessageClient;
@@ -47,10 +49,10 @@ import com.android.wondercom.util.ActivityUtilities;
 import com.android.wondercom.util.FileUtilities;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ChatActivity extends Activity {
 	private static final String TAG = "ChatActivity";
@@ -91,6 +93,25 @@ public class ChatActivity extends Activity {
 		mReceiver = WifiDirectBroadcastReceiver.createInstance();
 		mReceiver.setmActivity(this);
 		wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+		final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+		final TextView netInfo = findViewById(R.id.velocidadInternet);
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new TimerTask() {
+                    @Override
+                    public void run() {
+                        int velocidad = wifiInfo.getLinkSpeed();
+                        int frecuencia = 0;
+                        int fuerzaSenal = wifiInfo.getRssi(); //Indicador de fuerza de señal recibida
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+                            frecuencia = wifiInfo.getFrequency();
+                        netInfo.setText(datosSenal(velocidad, frecuencia, fuerzaSenal));
+                    }
+                });
+            }
+        }, 0, 3000);
+
 
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -123,14 +144,21 @@ public class ChatActivity extends Activity {
 				} else {
 					Toast.makeText(ChatActivity.this, R.string.mensaje_vacio, Toast.LENGTH_SHORT).show();
 				}
-
 			}
 
 		});
-
 		//Register the context menu to the list view (for pop up menu)
 		registerForContextMenu(listView);
 	}
+
+	public String datosSenal(int velocidad, int frecuencia, int fuerza){
+		String respuesta= "Velocidad: " + velocidad +" Mbps, ";
+		respuesta=respuesta.concat("Frecuencia: " + frecuencia+" Mhz, ");
+		respuesta=respuesta.concat("Fuerza de señal: " + fuerza);
+		return respuesta;
+	}
+
+
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -172,14 +200,14 @@ public class ChatActivity extends Activity {
 		newDialog.setTitle(R.string.Close_chatroom);
 		newDialog.setMessage(R.string.contenido_Close_chatroom);
 
-		newDialog.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener(){
+		newDialog.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				wifiManager.setWifiEnabled(false);
 				wifiManager.setWifiEnabled(true);
 				clearTmpFiles(getExternalFilesDir(null));
-				if(MainActivity.server!=null){
+				if (MainActivity.server != null) {
 					MainActivity.server.interrupt();
 				}
 
@@ -210,7 +238,7 @@ public class ChatActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		switch(requestCode){
+		switch (requestCode) {
 			case PICK_IMAGE:
 				if (resultCode == RESULT_OK && data.getData() != null) {
 					fileUri = data.getData();
@@ -244,7 +272,7 @@ public class ChatActivity extends Activity {
 				}
 				break;
 			case DRAWING:
-				if(resultCode == RESULT_OK){
+				if (resultCode == RESULT_OK) {
 					fileURL = (String) data.getStringExtra("drawingPath");
 					sendMessage(Message.DRAWING_MESSAGE);
 				}
@@ -253,12 +281,13 @@ public class ChatActivity extends Activity {
 	}
 
 	// Hydrate Message object then launch the AsyncTasks to send it
-	public void sendMessage(int type){
+	public void sendMessage(int type) {
 		Log.v(TAG, "Send message starts");
 		// Message written in EditText is always sent
-		Message mes = new Message(type, edit.getText().toString(), null, MainActivity.chatName );
+		long millis = System.currentTimeMillis();
+		Message mes = new Message(type, edit.getText().toString()+" milisegundos envio: "+millis, null, MainActivity.chatName);
 
-		switch(type){
+		switch (type) {
 			case Message.IMAGE_MESSAGE:
 				Image image = new Image(this, fileUri);
 				Log.v(TAG, "Bitmap from url ok");
@@ -295,11 +324,10 @@ public class ChatActivity extends Activity {
 		Log.v(TAG, "Message object hydrated");
 
 		Log.v(TAG, "Start AsyncTasks to send the message");
-		if(mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_OWNER){
+		if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_OWNER) {
 			Log.v(TAG, "Message hydrated, start SendMessageServer AsyncTask");
 			new SendMessageServer(ChatActivity.this, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
-		}
-		else if(mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_CLIENT){
+		} else if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_CLIENT) {
 			Log.v(TAG, "Message hydrated, start SendMessageClient AsyncTask");
 			new SendMessageClient(ChatActivity.this, mReceiver.getOwnerAddr()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
 		}
@@ -308,7 +336,7 @@ public class ChatActivity extends Activity {
 	}
 
 	// Refresh the message list
-	public static void refreshList(Message message, boolean isMine){
+	public static void refreshList(Message message, boolean isMine) {
 		Log.v(TAG, "Refresh message list starts");
 
 		message.setMine(isMine);
@@ -323,7 +351,7 @@ public class ChatActivity extends Activity {
 	}
 
 	// Save the app's state (foreground or background) to a SharedPrefereces
-	public void saveStateForeground(boolean isForeground){
+	public void saveStateForeground(boolean isForeground) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor edit = prefs.edit();
 		edit.putBoolean("isForeground", isForeground);
@@ -340,7 +368,7 @@ public class ChatActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int idItem = item.getItemId();
-		switch(idItem){
+		switch (idItem) {
 			case R.id.send_image:
 				showPopup(edit);
 				return true;
@@ -377,7 +405,9 @@ public class ChatActivity extends Activity {
 				return super.onOptionsItemSelected(item);
 		}
 	}
+
 	private Uri mPhotoUri;
+
 	//Show the popup menu
 	public void showPopup(View v) {
 		PopupMenu popup = new PopupMenu(this, v);
@@ -385,7 +415,7 @@ public class ChatActivity extends Activity {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				switch(item.getItemId()){
+				switch (item.getItemId()) {
 					case R.id.pick_image:
 						Log.v(TAG, "Pick an image");
 						Intent intent = new Intent(Intent.ACTION_PICK);
@@ -428,7 +458,7 @@ public class ChatActivity extends Activity {
 		//Option to delete message independently of its type
 		menu.add(0, DELETE_MESSAGE, Menu.NONE, R.string.Borrar_mensaje);
 
-		if(!mes.getmText().equals("")){
+		if (!mes.getmText().equals("")) {
 			//Option to copy message's text to clipboard
 			menu.add(0, COPY_TEXT, Menu.NONE, R.string.copiar_mensaje);
 			//Option to share message's text
@@ -436,7 +466,7 @@ public class ChatActivity extends Activity {
 		}
 
 		int type = mes.getmType();
-		switch(type){
+		switch (type) {
 			case Message.IMAGE_MESSAGE:
 				menu.add(0, DOWNLOAD_IMAGE, Menu.NONE, R.string.Descargar_imagen);
 				break;
@@ -487,7 +517,7 @@ public class ChatActivity extends Activity {
 	}
 
 	//Download image and save it to Downloads
-	public void downloadImage(long id){
+	public void downloadImage(long id) {
 		Message mes = listMessage.get((int) id);
 		Bitmap bm = mes.byteArrayToBitmap(mes.getByteArray());
 		String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
@@ -497,7 +527,7 @@ public class ChatActivity extends Activity {
 	}
 
 	//Download file and save it to Downloads
-	public void downloadFile(long id){
+	public void downloadFile(long id) {
 		Message mes = listMessage.get((int) id);
 		String sourcePath = mes.getFilePath();
 		String destinationPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
@@ -507,33 +537,32 @@ public class ChatActivity extends Activity {
 	}
 
 	//Delete a message from the message list (doesn't delete on other phones)
-	public void deleteMessage(long id){
+	public void deleteMessage(long id) {
 		listMessage.remove((int) id);
 		chatAdapter.notifyDataSetChanged();
 	}
 
-	private void clearTmpFiles(File dir){
+	private void clearTmpFiles(File dir) {
 		File[] childDirs = dir.listFiles();
-		for(File child : childDirs){
-			if(child.isDirectory()){
+		for (File child : childDirs) {
+			if (child.isDirectory()) {
 				clearTmpFiles(child);
-			}
-			else{
+			} else {
 				child.delete();
 			}
 		}
-		for(Uri uri: tmpFilesUri){
+		for (Uri uri : tmpFilesUri) {
 			getContentResolver().delete(uri, null, null);
 		}
 		FileUtilities.refreshMediaLibrary(this);
 	}
 
-	public void talkTo(String destination){
+	public void talkTo(String destination) {
 		edit.setText("@" + destination + " : ");
 		edit.setSelection(edit.getText().length());
 	}
 
-	private void copyTextToClipboard(long id){
+	private void copyTextToClipboard(long id) {
 		Message mes = listMessage.get((int) id);
 		ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		ClipData clip = ClipData.newPlainText("message", mes.getmText());
@@ -541,10 +570,10 @@ public class ChatActivity extends Activity {
 		Toast.makeText(this, "Message copied to clipboard", Toast.LENGTH_SHORT).show();
 	}
 
-	private void shareMedia(long id, int type){
+	private void shareMedia(long id, int type) {
 		Message mes = listMessage.get((int) id);
 
-		switch(type){
+		switch (type) {
 			case Message.TEXT_MESSAGE:
 				Intent sendIntent = new Intent();
 				sendIntent.setAction(Intent.ACTION_SEND);
@@ -553,5 +582,4 @@ public class ChatActivity extends Activity {
 				startActivity(sendIntent);
 		}
 	}
-
 }
