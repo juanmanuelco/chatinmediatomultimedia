@@ -30,7 +30,8 @@ public class ReceiveMessageServer extends AbstractReceiver {
 				InputStream inputStream = clientSocket.getInputStream();				
 				ObjectInputStream objectIS = new ObjectInputStream(inputStream);
 				Message message = (Message) objectIS.readObject();
-				
+				long millis= System.currentTimeMillis();
+				message.setMili_recibo(millis);
 				//Add the InetAdress of the sender to the message
 				InetAddress senderAddr = clientSocket.getInetAddress();
 				message.setSenderAddress(senderAddr);

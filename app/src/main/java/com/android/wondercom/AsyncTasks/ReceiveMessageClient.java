@@ -35,8 +35,10 @@ public class ReceiveMessageClient extends AbstractReceiver {
 				InputStream inputStream = destinationSocket.getInputStream();
 				BufferedInputStream buffer = new BufferedInputStream(inputStream);
 				ObjectInputStream objectIS = new ObjectInputStream(buffer);
-				Message message = (Message) objectIS.readObject();
-				
+
+				long millis= System.currentTimeMillis();
+				Message message = (Message) objectIS.readObject(); //Aqui va el agregado
+				message.setMili_recibo(millis);
 				destinationSocket.close();
 				publishProgress(message);
 			}

@@ -20,8 +20,10 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -87,6 +89,7 @@ public class ChatActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		SystemClock.setCurrentTimeMillis(0);
 		setContentView(R.layout.activity_chat);
 		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
 		mChannel = mManager.initialize(this, getMainLooper(), null);
@@ -285,7 +288,8 @@ public class ChatActivity extends Activity {
 		Log.v(TAG, "Send message starts");
 		// Message written in EditText is always sent
 		long millis = System.currentTimeMillis();
-		Message mes = new Message(type, edit.getText().toString()+" milisegundos envio: "+millis, null, MainActivity.chatName);
+		Message mes = new Message(type, edit.getText().toString(), null, MainActivity.chatName);
+		mes.setMili_envio(millis);
 
 		switch (type) {
 			case Message.IMAGE_MESSAGE:

@@ -122,12 +122,19 @@ public class ChatAdapter extends BaseAdapter {
         
         //We disable all the views and enable certain views depending on the message's type
         disableAllMediaViews(cache);
-        
+
+        String tiempoEnvio="";
+
+        if(mes.tiempo_recibo()!=0){
+        	tiempoEnvio=" Tiempo de respuesta: "+ mes.tiempoEnvio();
+		}
+
+        String mensaje= mes.getmText()+ tiempoEnvio;
+
         /***********************************************
           				Text Message
          ***********************************************/
-		long millis = System.currentTimeMillis();
-		String mensaje= mes.getmText()+ " milisegundos recepcion: "+millis;
+
         if(type == Message.TEXT_MESSAGE){
         	enableTextView(cache, mensaje);
 		}

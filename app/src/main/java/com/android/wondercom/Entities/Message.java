@@ -30,6 +30,9 @@ public class Message implements Serializable{
 	private long fileSize;
 	private String filePath;
 	private boolean isMine;
+
+	public long mili_envio;
+	public long mili_recibo;
 	
 	//Getters and Setters
 	public int getmType() { return mType; }
@@ -50,12 +53,19 @@ public class Message implements Serializable{
 	public void setFilePath(String filePath) { this.filePath = filePath; }
 	public boolean isMine() { return isMine; }
 	public void setMine(boolean isMine) { this.isMine = isMine; }
+
+	public void setMili_envio(long milisegundo){this.mili_envio=milisegundo;}
+	public void setMili_recibo(long miliseundo){this.mili_recibo=miliseundo;}
+
+	public long tiempo_recibo(){return this.mili_recibo;}
+
+	public long tiempoEnvio(){return mili_recibo-mili_envio;}
 	
 	
 	
 	public Message(int type, String text, InetAddress sender, String name){
 		mType = type;
-		mText = text;	
+		mText = text;
 		senderAddress = sender;
 		chatName = name;
 	}
