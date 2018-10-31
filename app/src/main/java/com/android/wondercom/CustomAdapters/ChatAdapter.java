@@ -142,6 +142,10 @@ public class ChatAdapter extends BaseAdapter {
         /***********************************************
 			            Image Message
          ***********************************************/
+
+
+
+
 		else if(type == Message.IMAGE_MESSAGE){
 			enableTextView(cache, mensaje);
 			cache.image.setVisibility(View.VISIBLE);
