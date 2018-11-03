@@ -31,9 +31,15 @@ public class Message implements Serializable{
 	private String filePath;
 	private boolean isMine;
 
+
 	public long mili_envio;
 	public long mili_recibo;
-	
+
+	public String macOrigen="null";
+	public String macDestino="null";
+
+	public Boolean activador=true;
+
 	//Getters and Setters
 	public int getmType() { return mType; }
 	public void setmType(int mType) { this.mType = mType; }
@@ -61,8 +67,15 @@ public class Message implements Serializable{
 
 	public long tiempoEnvio(){return mili_recibo-mili_envio;}
 	
-	
-	
+	public void setMacOrigen(String origen){this.macOrigen=origen;}
+	public void setMacDestino(String destino){this.macDestino=destino;}
+
+	public String getMacOrigen(){return this.macOrigen;}
+	public String getMacDestino(){return this.macDestino;}
+
+	public void setActivador(Boolean activado){this.activador=activado;}
+	public Boolean getActivador(){return this.activador;}
+
 	public Message(int type, String text, InetAddress sender, String name){
 		mType = type;
 		mText = text;

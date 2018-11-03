@@ -23,7 +23,6 @@ import android.os.Environment;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -46,6 +45,7 @@ import com.android.wondercom.CustomAdapters.ChatAdapter;
 import com.android.wondercom.Entities.Image;
 import com.android.wondercom.Entities.MediaFile;
 import com.android.wondercom.Entities.Message;
+import com.android.wondercom.NEGOCIO.DireccionMAC;
 import com.android.wondercom.Receivers.WifiDirectBroadcastReceiver;
 import com.android.wondercom.util.ActivityUtilities;
 import com.android.wondercom.util.FileUtilities;
@@ -55,6 +55,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.android.wondercom.NEGOCIO.Mensajes.datosSenal;
+import static com.android.wondercom.NEGOCIO.Mensajes.getMacAddr;
 
 public class ChatActivity extends Activity {
 	private static final String TAG = "ChatActivity";
@@ -70,7 +73,6 @@ public class ChatActivity extends Activity {
 	private static final int COPY_TEXT = 103;
 	private static final int SHARE_TEXT = 104;
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE_CONTENT_RESOLVER = 101;
-
 	private WifiP2pManager mManager;
 	private Channel mChannel;
 	private WifiDirectBroadcastReceiver mReceiver;
@@ -82,13 +84,13 @@ public class ChatActivity extends Activity {
 	private Uri fileUri;
 	private String fileURL;
 	private ArrayList<Uri> tmpFilesUri;
-
+    SharedPreferences sharedPref;
 	WifiManager wifiManager;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 		SystemClock.setCurrentTimeMillis(0);
 		setContentView(R.layout.activity_chat);
 		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
@@ -115,7 +117,6 @@ public class ChatActivity extends Activity {
             }
         }, 0, 3000);
 
-
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -128,6 +129,7 @@ public class ChatActivity extends Activity {
 		//Initialize the adapter for the chat
 		listView = (ListView) findViewById(R.id.messageList);
 		listMessage = new ArrayList<Message>();
+
 		chatAdapter = new ChatAdapter(this, listMessage);
 		listView.setAdapter(chatAdapter);
 
@@ -138,35 +140,21 @@ public class ChatActivity extends Activity {
 		Button button = (Button) findViewById(R.id.sendMessage);
 		edit = (EditText) findViewById(R.id.editMessage);
 		button.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View arg0) {
-				if (!edit.getText().toString().equals("")) {
-					Log.v(TAG, "Send message");
+				if (!edit.getText().toString().equals(""))
 					sendMessage(Message.TEXT_MESSAGE);
-				} else {
+				else
 					Toast.makeText(ChatActivity.this, R.string.mensaje_vacio, Toast.LENGTH_SHORT).show();
-				}
 			}
-
 		});
-		//Register the context menu to the list view (for pop up menu)
 		registerForContextMenu(listView);
 	}
-
-	public String datosSenal(int velocidad, int frecuencia, int fuerza){
-		String respuesta= "Velocidad: " + velocidad +" Mbps, ";
-		respuesta=respuesta.concat("Frecuencia: " + frecuencia+" Mhz, ");
-		respuesta=respuesta.concat("Fuerza de señal: " + fuerza);
-		return respuesta;
-	}
-
 
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-
 		ActivityUtilities.customiseActionBar(this);
 	}
 
@@ -174,17 +162,12 @@ public class ChatActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		registerReceiver(mReceiver, mIntentFilter);
-
 		mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-
 			@Override
 			public void onSuccess() {
-				Log.v(TAG, "Discovery process succeeded");
 			}
-
 			@Override
 			public void onFailure(int reason) {
-				Log.v(TAG, "Discovery process failed");
 			}
 		});
 		saveStateForeground(true);
@@ -202,31 +185,23 @@ public class ChatActivity extends Activity {
 		AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
 		newDialog.setTitle(R.string.Close_chatroom);
 		newDialog.setMessage(R.string.contenido_Close_chatroom);
-
 		newDialog.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener() {
-
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				wifiManager.setWifiEnabled(false);
 				wifiManager.setWifiEnabled(true);
 				clearTmpFiles(getExternalFilesDir(null));
-				if (MainActivity.server != null) {
+				if (MainActivity.server != null)
 					MainActivity.server.interrupt();
-				}
-
 				android.os.Process.killProcess(android.os.Process.myPid());
 			}
-
 		});
-
 		newDialog.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
 			}
 		});
-
 		newDialog.show();
 	}
 
@@ -236,11 +211,9 @@ public class ChatActivity extends Activity {
 		clearTmpFiles(getExternalFilesDir(null));
 	}
 
-	// Handle the data sent back by the 'for result' activities (pick/take image, record audio/video)
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-
 		switch (requestCode) {
 			case PICK_IMAGE:
 				if (resultCode == RESULT_OK && data.getData() != null) {
@@ -283,10 +256,7 @@ public class ChatActivity extends Activity {
 		}
 	}
 
-	// Hydrate Message object then launch the AsyncTasks to send it
 	public void sendMessage(int type) {
-		Log.v(TAG, "Send message starts");
-		// Message written in EditText is always sent
 		long millis = System.currentTimeMillis();
 		Message mes = new Message(type, edit.getText().toString(), null, MainActivity.chatName);
 		mes.setMili_envio(millis);
@@ -325,9 +295,8 @@ public class ChatActivity extends Activity {
 				mes.setFilePath(drawingFile.getFilePath());
 				break;
 		}
-		Log.v(TAG, "Message object hydrated");
-
-		Log.v(TAG, "Start AsyncTasks to send the message");
+		mes.setMacOrigen(getMacAddr());
+		mes.setMacDestino(DireccionMAC.direccion);
 		if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_OWNER) {
 			Log.v(TAG, "Message hydrated, start SendMessageServer AsyncTask");
 			new SendMessageServer(ChatActivity.this, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
@@ -335,22 +304,13 @@ public class ChatActivity extends Activity {
 			Log.v(TAG, "Message hydrated, start SendMessageClient AsyncTask");
 			new SendMessageClient(ChatActivity.this, mReceiver.getOwnerAddr()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
 		}
-
 		edit.setText("");
 	}
 
-	// Refresh the message list
 	public static void refreshList(Message message, boolean isMine) {
-		Log.v(TAG, "Refresh message list starts");
-
 		message.setMine(isMine);
-
 		listMessage.add(message);
 		chatAdapter.notifyDataSetChanged();
-
-		Log.v(TAG, "Chat Adapter notified of the changes");
-
-		//Scroll to the last element of the list
 		listView.setSelection(listMessage.size() - 1);
 	}
 
@@ -368,7 +328,6 @@ public class ChatActivity extends Activity {
 		return true;
 	}
 
-	// Handle click on the menu
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int idItem = item.getItemId();
@@ -376,35 +335,23 @@ public class ChatActivity extends Activity {
 			case R.id.send_image:
 				showPopup(edit);
 				return true;
-
 			case R.id.send_audio:
-				Log.v(TAG, "Start activity to record audio");
 				startActivityForResult(new Intent(this, RecordAudioActivity.class), RECORD_AUDIO);
 				return true;
-
 			case R.id.send_video:
-
-				Log.v(TAG, "Start activity to record video");
 				Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 				takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-				if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+				if (takeVideoIntent.resolveActivity(getPackageManager()) != null)
 					startActivityForResult(takeVideoIntent, RECORD_VIDEO);
-				}
-
 				return true;
-
 			case R.id.send_file:
-				Log.v(TAG, "Start activity to choose file");
 				Intent chooseFileIntent = new Intent(this, FilePickerActivity.class);
 				startActivityForResult(chooseFileIntent, CHOOSE_FILE);
 				return true;
-
 			case R.id.send_drawing:
-				Log.v(TAG, "Start activity to draw");
 				Intent drawIntent = new Intent(this, DrawingActivity.class);
 				startActivityForResult(drawIntent, DRAWING);
 				return true;
-
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -412,7 +359,6 @@ public class ChatActivity extends Activity {
 
 	private Uri mPhotoUri;
 
-	//Show the popup menu
 	public void showPopup(View v) {
 		PopupMenu popup = new PopupMenu(this, v);
 		popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -421,26 +367,20 @@ public class ChatActivity extends Activity {
 			public boolean onMenuItemClick(MenuItem item) {
 				switch (item.getItemId()) {
 					case R.id.pick_image:
-						Log.v(TAG, "Pick an image");
 						Intent intent = new Intent(Intent.ACTION_PICK);
 						intent.setType("image/*");
 						intent.setAction(Intent.ACTION_GET_CONTENT);
-
-						// Prevent crash if no app can handle the intent
-						if (intent.resolveActivity(getPackageManager()) != null) {
+						if (intent.resolveActivity(getPackageManager()) != null)
 							startActivityForResult(intent, PICK_IMAGE);
-						}
 						break;
 
 					case R.id.take_photo:
 						mPhotoUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
 								new ContentValues());
-						Log.v(TAG, "Take a photo");
 						Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 						intent2.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
-						if (intent2.resolveActivity(getPackageManager()) != null) {
+						if (intent2.resolveActivity(getPackageManager()) != null)
 							startActivityForResult(intent2, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE_CONTENT_RESOLVER);
-						}
 						break;
 				}
 				return true;
@@ -450,7 +390,6 @@ public class ChatActivity extends Activity {
 		popup.show();
 	}
 
-	//Create pop up menu for image download, delete message, etc...
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -576,7 +515,6 @@ public class ChatActivity extends Activity {
 
 	private void shareMedia(long id, int type) {
 		Message mes = listMessage.get((int) id);
-
 		switch (type) {
 			case Message.TEXT_MESSAGE:
 				Intent sendIntent = new Intent();

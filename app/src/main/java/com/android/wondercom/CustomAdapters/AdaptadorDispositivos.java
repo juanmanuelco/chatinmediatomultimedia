@@ -15,6 +15,7 @@ public class AdaptadorDispositivos extends RecyclerView.Adapter<AdaptadorDisposi
 
     ArrayList<String[]>listado;
 
+
     private View.OnClickListener listener;
 
     public AdaptadorDispositivos(ArrayList<String[]> listado) {

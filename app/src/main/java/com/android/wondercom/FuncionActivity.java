@@ -23,9 +23,11 @@ import android.view.ViewGroup;
 
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.wondercom.Fragments.FM_encontrados;
 import com.android.wondercom.Fragments.FM_historico;
+import com.android.wondercom.NEGOCIO.DireccionMAC;
 
 public class FuncionActivity extends Activity implements ActionBar.TabListener {
 
@@ -43,6 +45,7 @@ public class FuncionActivity extends Activity implements ActionBar.TabListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_funcion);
+        DireccionMAC.direccion="";
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -73,6 +76,7 @@ public class FuncionActivity extends Activity implements ActionBar.TabListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_principal, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
+
         SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
 
         if (searchItem != null) {
@@ -211,5 +215,11 @@ public class FuncionActivity extends Activity implements ActionBar.TabListener {
             }
             return null;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        DireccionMAC.direccion="";
+        super.onResume();
     }
 }

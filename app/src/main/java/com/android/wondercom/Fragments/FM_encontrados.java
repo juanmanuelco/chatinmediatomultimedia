@@ -1,21 +1,17 @@
 package com.android.wondercom.Fragments;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,16 +24,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.wondercom.ChatActivity;
-import com.android.wondercom.InitThreads.ClientInit;
 import com.android.wondercom.InitThreads.ServerInit;
 import com.android.wondercom.MainActivity;
 import com.android.wondercom.NEGOCIO.Dispositivo;
 import com.android.wondercom.NEGOCIO.Validaciones;
 import com.android.wondercom.R;
 import com.android.wondercom.Receivers.WifiDirectBroadcastReceiver;
-
-import java.util.TimerTask;
 
 
 public class FM_encontrados extends Fragment{
@@ -59,6 +51,7 @@ public class FM_encontrados extends Fragment{
     public static final int request_code = 1000;
     RecyclerView rv_participants;
     int intentos=0;
+    ProgressDialog pDialog;
 
     //Getters and Setters
     public WifiP2pManager getmManager() { return mManager; }
@@ -75,12 +68,11 @@ public class FM_encontrados extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.fragment_fm_encontrados, container, false);
-
+        pDialog=new ProgressDialog(getActivity());
         wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(!wifiManager.isWifiEnabled())
             wifiManager.setWifiEnabled(true);
         requestPermissionFromDevice();
-
         rv_participants=v.findViewById(R.id.participants_rv);
         rv_participants.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -92,6 +84,7 @@ public class FM_encontrados extends Fragment{
         mReceiver.setmActivity(getActivity());
         mReceiver.setFragment(this);
         mReceiver.setRecycler(rv_participants);
+        mReceiver.setDialogo(pDialog);
 
         MainActivity.server=server;
         MainActivity.chatName=Validaciones.loadChatName(getActivity(), "nickname", DEFAULT_CHAT_NAME);

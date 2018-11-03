@@ -168,6 +168,7 @@ public class MainActivity extends Activity{
 						//Toast.makeText(MainActivity.this, "Soy el servidor " + mReceiver.getOwnerAddr().getHostAddress(), Toast.LENGTH_SHORT).show();
 						server = new ServerInit();
 						server.start();
+
 					}
 					else if(mReceiver.isGroupeOwner() ==  WifiDirectBroadcastReceiver.IS_CLIENT){
 						//Toast.makeText(MainActivity.this, "Soy el cliente", Toast.LENGTH_SHORT).show();

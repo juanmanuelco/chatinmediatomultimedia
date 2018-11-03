@@ -26,7 +26,6 @@ public class InicioActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
-
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(!wifiManager.isWifiEnabled())
             wifiManager.setWifiEnabled(true);

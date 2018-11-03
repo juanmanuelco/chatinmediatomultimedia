@@ -10,9 +10,11 @@ import com.android.wondercom.Fragments.FM_encontrados;
 import com.android.wondercom.InitThreads.ClientInit;
 import com.android.wondercom.InitThreads.ServerInit;
 import com.android.wondercom.MainActivity;
+import com.android.wondercom.NEGOCIO.DireccionMAC;
 import com.android.wondercom.R;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +31,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
+
+import static com.android.wondercom.NEGOCIO.Mensajes.cargando;
 
 public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 
@@ -55,6 +59,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	FM_encontrados fm;
 
 	RecyclerView RV;
+	ProgressDialog pDialog;
 
 	private static WifiDirectBroadcastReceiver instance;
 	
@@ -79,6 +84,8 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	public void setmActivity(Activity mActivity) { this.mActivity = mActivity; }
 	public void setFragment(FM_encontrados FM){ this.fm= FM;}
 	public void setRecycler(RecyclerView  recycler){ this.RV=recycler;}
+
+	public void setDialogo(ProgressDialog dialogo){this.pDialog=dialogo;}
 
 	@Override
 	public void onReceive(final Context context, Intent intent) {
@@ -112,6 +119,8 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 								deviceArray[index]= device;
 								index++;
 							}
+
+
 							AdaptadorDispositivos adapter= new AdaptadorDispositivos(listado);
 							adapter.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -122,9 +131,9 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 									mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
 										@Override
 										public void onSuccess() {
-											Toast.makeText(context, "Conectando..."+ device.deviceName, Toast.LENGTH_SHORT).show();
+											DireccionMAC.direccion=device.deviceAddress;
+											cargando(R.string.CONECT, pDialog, context);
 										}
-
 										@Override
 										public void onFailure(int reason) {
 											Toast.makeText(context, "Error al conectarse con "+ device.deviceName, Toast.LENGTH_SHORT).show();

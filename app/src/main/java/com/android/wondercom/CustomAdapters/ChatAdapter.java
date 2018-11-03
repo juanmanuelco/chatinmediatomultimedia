@@ -15,7 +15,6 @@ import android.media.ThumbnailUtils;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.text.util.Linkify;
 import android.util.Patterns;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,15 +24,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.wondercom.ChatActivity;
-import com.android.wondercom.MainActivity;
+import com.android.wondercom.NEGOCIO.DireccionMAC;
 import com.android.wondercom.PlayVideoActivity;
 import com.android.wondercom.R;
 import com.android.wondercom.ViewImageActivity;
 import com.android.wondercom.Entities.Message;
 import com.android.wondercom.util.FileUtilities;
+
+import static com.android.wondercom.NEGOCIO.Mensajes.getMacAddr;
 
 public class ChatAdapter extends BaseAdapter {
 	private Activity activity;
@@ -42,6 +42,8 @@ public class ChatAdapter extends BaseAdapter {
 	public static Bitmap bitmap;
 	private Context mContext;
 	private HashMap<String,Bitmap> mapThumb;
+
+
 
 	public ChatAdapter(Context context, List<Message> listMessage){
 		this.listMessage = listMessage;
@@ -67,14 +69,12 @@ public class ChatAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		//LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 		View view = convertView;
 		int layoutResource = 0; // determined by view type
 		Message mes = listMessage.get(position);
 		int type = mes.getmType();
 		if(view == null){
-			CacheView cache = new CacheView();            
-            
+			CacheView cache = new CacheView();
 			view = inflater.inflate(R.layout.chat_row,parent, false);
 			cache.chatName = (TextView) view.findViewById(R.id.chatName);
             cache.text = (TextView) view.findViewById(R.id.text);
@@ -104,12 +104,16 @@ public class ChatAdapter extends BaseAdapter {
 		});
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)cache.relativeLayout.getLayoutParams();
         //Colourise differently own message
-        if((Boolean) listMessage.get(position).isMine()){
+		//if((Boolean) listMessage.get(position).isMine()){
+        if(mes.getMacOrigen().equals(getMacAddr())){
         	params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
 			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			cache.relativeLayout.setBackground(view.getResources().getDrawable(R.drawable.chat_bubble_mine));
 			cache.chatName.setTextColor(Color.BLACK);
 			cache.text.setTextColor(Color.BLACK);
+			cache.chatName.setText("Yo");
+			if(mes.getMacDestino().equals("null"))
+				mes.setMacDestino(DireccionMAC.direccion);
 		}
         else{
 			params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -117,19 +121,19 @@ public class ChatAdapter extends BaseAdapter {
 			cache.relativeLayout.setBackground(view.getResources().getDrawable(R.drawable.chat_bubble));
 			cache.chatName.setTextColor(Color.WHITE);
 			cache.text.setTextColor(Color.WHITE);
+			DireccionMAC.direccion=mes.getMacOrigen();
+			if(mes.getMacDestino().equals("null"))
+				mes.setMacDestino(getMacAddr());
         }
+        if(mes.getActivador()){
+			mes.setActivador(false);
+		}
 
-        
+
         //We disable all the views and enable certain views depending on the message's type
         disableAllMediaViews(cache);
 
-        String tiempoEnvio="";
-
-        if(mes.tiempo_recibo()!=0){
-        	tiempoEnvio=" Tiempo de respuesta: "+ mes.tiempoEnvio();
-		}
-
-        String mensaje= mes.getmText()+ tiempoEnvio;
+        String mensaje= mes.getmText();
 
         /***********************************************
           				Text Message
@@ -142,9 +146,6 @@ public class ChatAdapter extends BaseAdapter {
         /***********************************************
 			            Image Message
          ***********************************************/
-
-
-
 
 		else if(type == Message.IMAGE_MESSAGE){
 			enableTextView(cache, mensaje);
