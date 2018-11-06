@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.wondercom.ChatActivity;
+import com.android.wondercom.DB.DB_SOSCHAT;
 import com.android.wondercom.NEGOCIO.DireccionMAC;
 import com.android.wondercom.PlayVideoActivity;
 import com.android.wondercom.R;
@@ -42,6 +43,7 @@ public class ChatAdapter extends BaseAdapter {
 	public static Bitmap bitmap;
 	private Context mContext;
 	private HashMap<String,Bitmap> mapThumb;
+	DB_SOSCHAT db;
 
 
 
@@ -50,6 +52,7 @@ public class ChatAdapter extends BaseAdapter {
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mContext = context;
 		mapThumb = new HashMap<String, Bitmap>();
+		db = new DB_SOSCHAT(context);
 	}
 	
 	@Override
@@ -105,14 +108,20 @@ public class ChatAdapter extends BaseAdapter {
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)cache.relativeLayout.getLayoutParams();
         //Colourise differently own message
 		//if((Boolean) listMessage.get(position).isMine()){
-        if(mes.getMacOrigen().equals(getMacAddr())){
+
+		if(mes.getActivador()){
+			mes.setActivador(false);
+		}
+
+
+		if(mes.getMacOrigen().equals(getMacAddr())){
         	params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
 			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			cache.relativeLayout.setBackground(view.getResources().getDrawable(R.drawable.chat_bubble_mine));
 			cache.chatName.setTextColor(Color.BLACK);
 			cache.text.setTextColor(Color.BLACK);
 			cache.chatName.setText("Yo");
-			if(mes.getMacDestino().equals("null"))
+			if(mes.getMacDestino().equals(""))
 				mes.setMacDestino(DireccionMAC.direccion);
 		}
         else{
@@ -122,12 +131,12 @@ public class ChatAdapter extends BaseAdapter {
 			cache.chatName.setTextColor(Color.WHITE);
 			cache.text.setTextColor(Color.WHITE);
 			DireccionMAC.direccion=mes.getMacOrigen();
-			if(mes.getMacDestino().equals("null"))
+			if(mes.getMacDestino().equals(""))
 				mes.setMacDestino(getMacAddr());
         }
-        if(mes.getActivador()){
-			mes.setActivador(false);
-		}
+
+        if(db.validarRegistro(mes))
+	        db.guardarMensaje(mes);
 
 
         //We disable all the views and enable certain views depending on the message's type

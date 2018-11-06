@@ -1,5 +1,6 @@
 package com.android.wondercom;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -20,7 +21,6 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -42,11 +42,14 @@ import android.widget.Toast;
 import com.android.wondercom.AsyncTasks.SendMessageClient;
 import com.android.wondercom.AsyncTasks.SendMessageServer;
 import com.android.wondercom.CustomAdapters.ChatAdapter;
+import com.android.wondercom.DB.DB_SOSCHAT;
 import com.android.wondercom.Entities.Image;
 import com.android.wondercom.Entities.MediaFile;
 import com.android.wondercom.Entities.Message;
 import com.android.wondercom.NEGOCIO.DireccionMAC;
+import com.android.wondercom.NEGOCIO.eliminarDuplicados;
 import com.android.wondercom.Receivers.WifiDirectBroadcastReceiver;
+import com.android.wondercom.TAD.Lista;
 import com.android.wondercom.util.ActivityUtilities;
 import com.android.wondercom.util.FileUtilities;
 
@@ -87,11 +90,14 @@ public class ChatActivity extends Activity {
     SharedPreferences sharedPref;
 	WifiManager wifiManager;
 
+	DB_SOSCHAT db;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		db = new DB_SOSCHAT(this);
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-		SystemClock.setCurrentTimeMillis(0);
+		//SystemClock.setCurrentTimeMillis(0);
 		setContentView(R.layout.activity_chat);
 		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
 		mChannel = mManager.initialize(this, getMainLooper(), null);
@@ -130,6 +136,17 @@ public class ChatActivity extends Activity {
 		listView = (ListView) findViewById(R.id.messageList);
 		listMessage = new ArrayList<Message>();
 
+
+		listMessage.addAll(db.mensajesEnDB());
+
+		eliminarDuplicados duplicados= new eliminarDuplicados(listMessage);
+		listMessage=duplicados.eiminar();
+
+		//Básicamente ordanaba los mensajes por fecha y hora
+		/*Lista lista= new Lista(listMessage);
+		listMessage=lista.Ordenados();*/
+
+
 		chatAdapter = new ChatAdapter(this, listMessage);
 		listView.setAdapter(chatAdapter);
 
@@ -150,6 +167,8 @@ public class ChatActivity extends Activity {
 		});
 		registerForContextMenu(listView);
 	}
+
+
 
 
 	@Override
@@ -205,6 +224,7 @@ public class ChatActivity extends Activity {
 		newDialog.show();
 	}
 
+	@SuppressLint("MissingSuperCall")
 	@Override
 	protected void onDestroy() {
 		super.onStop();
@@ -305,6 +325,7 @@ public class ChatActivity extends Activity {
 			new SendMessageClient(ChatActivity.this, mReceiver.getOwnerAddr()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
 		}
 		edit.setText("");
+
 	}
 
 	public static void refreshList(Message message, boolean isMine) {
