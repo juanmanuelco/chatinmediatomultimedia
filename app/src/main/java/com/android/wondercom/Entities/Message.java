@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Objects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -20,9 +22,34 @@ public class Message implements Serializable{
 	public static final int AUDIO_MESSAGE = 4;
 	public static final int FILE_MESSAGE = 5;
 	public static final int DRAWING_MESSAGE = 6;
-	
+
+
+	@Override
+	public String toString() {
+		return null+","+chatName+","+byteArray+","+senderAddress+","+fileName+","+fileSize+","+filePath+","+isMine+
+				","+tiempoEnvio()+","+ tiempo_recibo()+","+macOrigen+","+macDestino+","+activador+","+mText;
+	}
+
 	private int mType;
 	private String mText;
+
+	public Message(int mType, String mText, String chatName, byte[] byteArray, InetAddress senderAddress, String fileName, long fileSize, String filePath, boolean isMine, long mili_envio, long mili_recibo, String macOrigen, String macDestino, Boolean activador) {
+		this.mType = mType;
+		this.mText = mText;
+		this.chatName = chatName;
+		this.byteArray = byteArray;
+		this.senderAddress = senderAddress;
+		this.fileName = fileName;
+		this.fileSize = fileSize;
+		this.filePath = filePath;
+		this.isMine = isMine;
+		this.mili_envio = mili_envio;
+		this.mili_recibo = mili_recibo;
+		this.macOrigen = macOrigen;
+		this.macDestino = macDestino;
+		this.activador = activador;
+	}
+
 	private String chatName;
 	private byte[] byteArray;
 	private InetAddress senderAddress;
@@ -30,15 +57,40 @@ public class Message implements Serializable{
 	private long fileSize;
 	private String filePath;
 	private boolean isMine;
-
-
 	public long mili_envio;
 	public long mili_recibo;
-
 	public String macOrigen="null";
 	public String macDestino="null";
-
 	public Boolean activador=true;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Message)) return false;
+		Message message = (Message) o;
+		return getmType() == message.getmType() &&
+				getFileSize() == message.getFileSize() &&
+				isMine() == message.isMine() &&
+				mili_envio == message.mili_envio &&
+				mili_recibo == message.mili_recibo &&
+				Objects.equals(getmText(), message.getmText()) &&
+				Objects.equals(getChatName(), message.getChatName()) &&
+				Arrays.equals(getByteArray(), message.getByteArray()) &&
+				Objects.equals(getSenderAddress(), message.getSenderAddress()) &&
+				Objects.equals(getFileName(), message.getFileName()) &&
+				Objects.equals(getFilePath(), message.getFilePath()) &&
+				Objects.equals(getMacOrigen(), message.getMacOrigen()) &&
+				Objects.equals(getMacDestino(), message.getMacDestino()) &&
+				Objects.equals(getActivador(), message.getActivador());
+	}
+
+	@Override
+	public int hashCode() {
+
+		int result = Objects.hash(getmType(), getmText(), getChatName(), getSenderAddress(), getFileName(), getFileSize(), getFilePath(), isMine(), mili_envio, mili_recibo, getMacOrigen(), getMacDestino(), getActivador());
+		result = 31 * result + Arrays.hashCode(getByteArray());
+		return result;
+	}
 
 	//Getters and Setters
 	public int getmType() { return mType; }

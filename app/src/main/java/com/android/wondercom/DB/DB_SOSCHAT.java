@@ -4,13 +4,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.android.wondercom.CustomAdapters.ChatAdapter;
 import com.android.wondercom.Entities.Message;
+import com.android.wondercom.NEGOCIO.Mensajes;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DB_SOSCHAT extends SQLiteOpenHelper {
 
@@ -57,6 +62,19 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
     }
 
     public void guardarMensaje(Message mensaje){
+        Set<Message> msm = new HashSet<Message>();
+        Message a = null;
+        if (validarRegistro(mensaje)){
+             a = new Message(mensaje.getmType(),mensaje.getmText(),mensaje.getChatName(),mensaje.getByteArray(),
+                    mensaje.getSenderAddress(), mensaje.getFileName(), mensaje.getFileSize(),mensaje.getFilePath(),
+                    mensaje.isMine(), mensaje.mili_envio, mensaje.mili_recibo, mensaje.macOrigen, mensaje.macDestino,
+                    mensaje.activador);
+        }
+        msm.add(a);
+        Log.i("CantidadMensaje",String.valueOf(msm.size()));
+        String contenid=String.valueOf(msm);
+        Log.i("ContenidoMensaje",contenid);
+
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(String.format("INSERT INTO %s VALUES ( NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                 TABLA_NOMBRE,
@@ -75,12 +93,12 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
                 mensaje.getActivador(),//13
                 mensaje.getmText()));//14
     }
+
     public Cursor selectVerTodos(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery(String.format("select * from %s",TABLA_NOMBRE),null);
+        Cursor res = db.rawQuery(String.format("select * from "+TABLA_NOMBRE),null);
         return  res;
     }
-
     public List<Message> mensajesEnDB(){
         Cursor obtenidos= selectVerTodos();
         List<Message> respuesta= new ArrayList<Message>();
@@ -102,6 +120,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
             mensaje.setMacDestino(obtenidos.getString(12));
             mensaje.setActivador(Boolean.parseBoolean(obtenidos.getString(13)));
             respuesta.add(mensaje);
+            eliminarDatos();
         }
         return respuesta;
     }
@@ -133,14 +152,16 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor registro= db.rawQuery(
                 String.format(
-                        "SELECT * FROM '%s' WHERE '%s' = '%s' ",
+                        "SELECT * FROM "+TABLA_NOMBRE+" WHERE "+COL_12+" = '"+mes.getMacOrigen()+"' AND " +
+                                ""+COL_13+" = '"+mes.getMacDestino()+"' AND "+ COL_10 +" = '"+mes.tiempoEnvio()+"'"
+                        /*"SELECT * FROM '%s' WHERE '%s' = '%s' ",
                         TABLA_NOMBRE,
                         COL_12,
                         mes.getMacOrigen(),
                         COL_13,
                         mes.getMacDestino(),
                         COL_10,
-                        mes.tiempoEnvio()
+                        mes.tiempoEnvio()*/
                 ), null );
         if(registro.getCount()>0)
             respuesta=false;

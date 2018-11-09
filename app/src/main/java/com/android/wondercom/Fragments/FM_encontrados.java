@@ -95,6 +95,7 @@ public class FM_encontrados extends Fragment{
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
+
         descubrir();
 
         return v;

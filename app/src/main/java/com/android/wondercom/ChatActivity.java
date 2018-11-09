@@ -135,12 +135,12 @@ public class ChatActivity extends Activity {
 		//Initialize the adapter for the chat
 		listView = (ListView) findViewById(R.id.messageList);
 		listMessage = new ArrayList<Message>();
-
-
 		listMessage.addAll(db.mensajesEnDB());
 
-		eliminarDuplicados duplicados= new eliminarDuplicados(listMessage);
-		listMessage=duplicados.eiminar();
+		//eliminarDuplicados duplicados= new eliminarDuplicados(listMessage);
+		//listMessage=duplicados.eiminar();
+		//Log.i("CantidadMensajes",String.valueOf(duplicados.hashCode()));
+		//Log.i("CantidadMensajes2",String.valueOf(duplicados.retorna()));
 
 		//Básicamente ordanaba los mensajes por fecha y hora
 		/*Lista lista= new Lista(listMessage);
