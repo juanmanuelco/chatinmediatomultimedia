@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.android.wondercom.Fragments.FM_encontrados;
 import com.android.wondercom.Fragments.FM_historico;
-import com.android.wondercom.Fragments.FM_mensajes;
 import com.android.wondercom.NEGOCIO.DireccionMAC;
 
 public class FuncionActivity extends Activity implements ActionBar.TabListener {
@@ -189,7 +188,7 @@ public class FuncionActivity extends Activity implements ActionBar.TabListener {
                     fm=new FM_encontrados();
                     break;
                 case 1:
-                    fm= new FM_mensajes();
+                    fm= new FM_historico();
                     break;
                 case 2:
                     fm=new FM_historico();

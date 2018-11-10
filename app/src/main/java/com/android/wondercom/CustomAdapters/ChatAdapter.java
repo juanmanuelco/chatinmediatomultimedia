@@ -14,7 +14,6 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +28,6 @@ import android.widget.TextView;
 import com.android.wondercom.ChatActivity;
 import com.android.wondercom.DB.DB_SOSCHAT;
 import com.android.wondercom.NEGOCIO.DireccionMAC;
-import com.android.wondercom.NEGOCIO.eliminarDuplicados;
 import com.android.wondercom.PlayVideoActivity;
 import com.android.wondercom.R;
 import com.android.wondercom.ViewImageActivity;
@@ -37,7 +35,6 @@ import com.android.wondercom.Entities.Message;
 import com.android.wondercom.util.FileUtilities;
 
 import static com.android.wondercom.NEGOCIO.Mensajes.getMacAddr;
-import com.android.wondercom.NEGOCIO.eliminarDuplicados;
 
 public class ChatAdapter extends BaseAdapter {
 	private Activity activity;
@@ -72,12 +69,12 @@ public class ChatAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return position;
 	}
-	Message mes;
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = convertView;
 		int layoutResource = 0; // determined by view type
-		mes = listMessage.get(position);
+		Message mes = listMessage.get(position);
 		int type = mes.getmType();
 		if(view == null){
 			CacheView cache = new CacheView();
@@ -137,8 +134,10 @@ public class ChatAdapter extends BaseAdapter {
 			if(mes.getMacDestino().equals(""))
 				mes.setMacDestino(getMacAddr());
         }
+
         if(db.validarRegistro(mes))
 	        db.guardarMensaje(mes);
+
 
         //We disable all the views and enable certain views depending on the message's type
         disableAllMediaViews(cache);
