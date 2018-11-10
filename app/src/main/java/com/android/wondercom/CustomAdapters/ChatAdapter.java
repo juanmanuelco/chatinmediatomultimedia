@@ -109,10 +109,6 @@ public class ChatAdapter extends BaseAdapter {
         //Colourise differently own message
 		//if((Boolean) listMessage.get(position).isMine()){
 
-		if(mes.getActivador()){
-			mes.setActivador(false);
-		}
-
 
 		if(mes.getMacOrigen().equals(getMacAddr())){
         	params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -121,8 +117,11 @@ public class ChatAdapter extends BaseAdapter {
 			cache.chatName.setTextColor(Color.BLACK);
 			cache.text.setTextColor(Color.BLACK);
 			cache.chatName.setText("Yo");
-			if(mes.getMacDestino().equals(""))
+			if(mes.getMacDestino().equals("")){
 				mes.setMacDestino(DireccionMAC.direccion);
+				db.actualizarMacDestino(mes.tiempoEnvio(), DireccionMAC.direccion);
+			}
+
 		}
         else{
 			params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -131,12 +130,12 @@ public class ChatAdapter extends BaseAdapter {
 			cache.chatName.setTextColor(Color.WHITE);
 			cache.text.setTextColor(Color.WHITE);
 			DireccionMAC.direccion=mes.getMacOrigen();
-			if(mes.getMacDestino().equals(""))
+			if(mes.getMacDestino().equals("")){
 				mes.setMacDestino(getMacAddr());
-        }
+				db.actualizarMacDestino(mes.tiempoEnvio(), getMacAddr());
+			}
 
-        if(db.validarRegistro(mes))
-	        db.guardarMensaje(mes);
+        }
 
 
         //We disable all the views and enable certain views depending on the message's type

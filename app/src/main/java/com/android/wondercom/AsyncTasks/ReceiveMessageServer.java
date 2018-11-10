@@ -9,15 +9,19 @@ import java.net.Socket;
 
 import android.content.Context;
 
+import com.android.wondercom.DB.DB_SOSCHAT;
 import com.android.wondercom.Entities.Message;
 
 public class ReceiveMessageServer extends AbstractReceiver {
 	private static final int SERVER_PORT = 4445;
 	private Context mContext;
 	private ServerSocket serverSocket;
+	DB_SOSCHAT db;
+
 
 	public ReceiveMessageServer(Context context){
 		mContext = context;
+		this.db = new DB_SOSCHAT(context);
 	}
 	
 	@Override
@@ -35,7 +39,12 @@ public class ReceiveMessageServer extends AbstractReceiver {
 				//Add the InetAdress of the sender to the message
 				InetAddress senderAddr = clientSocket.getInetAddress();
 				message.setSenderAddress(senderAddr);
-				
+
+				if(db.validarRegistro(message)){
+					db.guardarMensaje(message);
+				}
+
+
 				clientSocket.close();
 				publishProgress(message);
 			}

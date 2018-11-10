@@ -33,5 +33,10 @@
 	    android:title="@string/send_drawing"
 	    android:showAsAction="ifRoom"
 	    android:icon="@drawable/ic_action_edit"/>
+	<item
+		android:id="@+id/vaciar"
+		android:title="Borrar registro"
+		android:showAsAction="ifRoom"
+		android:icon="@drawable/ic_action_edit"/>
 
 </menu>

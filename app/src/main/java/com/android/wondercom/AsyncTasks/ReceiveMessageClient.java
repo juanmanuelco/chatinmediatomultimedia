@@ -12,6 +12,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 
 import com.android.wondercom.ChatActivity;
+import com.android.wondercom.DB.DB_SOSCHAT;
 import com.android.wondercom.InicioActivity;
 import com.android.wondercom.MainActivity;
 import com.android.wondercom.Entities.Message;
@@ -20,9 +21,11 @@ public class ReceiveMessageClient extends AbstractReceiver {
 	private static final int SERVER_PORT = 4446;
 	private Context mContext;
 	private ServerSocket socket;
+	DB_SOSCHAT db;
 
 	public ReceiveMessageClient(Context context){
 		mContext = context;
+		this.db = new DB_SOSCHAT(context);
 	}
 	
 	@Override
@@ -39,8 +42,15 @@ public class ReceiveMessageClient extends AbstractReceiver {
 				long millis= System.currentTimeMillis();
 				Message message = (Message) objectIS.readObject(); //Aqui va el agregado
 				message.setMili_recibo(millis);
+
+				if(db.validarRegistro(message)){
+					db.guardarMensaje(message);
+				}
+
 				destinationSocket.close();
 				publishProgress(message);
+
+
 			}
 			
 		} catch (IOException e) {

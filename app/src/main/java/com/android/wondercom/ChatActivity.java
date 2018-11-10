@@ -61,6 +61,7 @@ import java.util.TimerTask;
 
 import static com.android.wondercom.NEGOCIO.Mensajes.datosSenal;
 import static com.android.wondercom.NEGOCIO.Mensajes.getMacAddr;
+import static com.android.wondercom.NEGOCIO.Mensajes.mostrarMensaje;
 
 public class ChatActivity extends Activity {
 	private static final String TAG = "ChatActivity";
@@ -90,7 +91,7 @@ public class ChatActivity extends Activity {
     SharedPreferences sharedPref;
 	WifiManager wifiManager;
 
-	DB_SOSCHAT db;
+	static DB_SOSCHAT db;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -137,16 +138,6 @@ public class ChatActivity extends Activity {
 		listMessage = new ArrayList<Message>();
 
 
-		listMessage.addAll(db.mensajesEnDB());
-
-		eliminarDuplicados duplicados= new eliminarDuplicados(listMessage);
-		listMessage=duplicados.eiminar();
-
-		//Básicamente ordanaba los mensajes por fecha y hora
-		/*Lista lista= new Lista(listMessage);
-		listMessage=lista.Ordenados();*/
-
-
 		chatAdapter = new ChatAdapter(this, listMessage);
 		listView.setAdapter(chatAdapter);
 
@@ -166,6 +157,8 @@ public class ChatActivity extends Activity {
 			}
 		});
 		registerForContextMenu(listView);
+
+		diseminacion(db.mensajesEnDB());
 	}
 
 
@@ -276,9 +269,24 @@ public class ChatActivity extends Activity {
 		}
 	}
 
+	public void diseminacion(List<Message>mensajes){
+		for (Message mensaje:mensajes ) {
+			enviarDiseminado(mensaje);
+		}
+	}
+	public void enviarDiseminado(Message mensaje){
+		if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_OWNER) {
+			Log.v(TAG, "Message hydrated, start SendMessageServer AsyncTask");
+			new SendMessageServer(ChatActivity.this, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mensaje);
+		} else if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_CLIENT) {
+			Log.v(TAG, "Message hydrated, start SendMessageClient AsyncTask");
+			new SendMessageClient(ChatActivity.this, mReceiver.getOwnerAddr()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mensaje);
+		}
+	}
+
 	public void sendMessage(int type) {
 		long millis = System.currentTimeMillis();
-		Message mes = new Message(type, edit.getText().toString(), null, MainActivity.chatName);
+		Message mes = new Message(type, edit.getText().toString(), null, DireccionMAC.nombre);
 		mes.setMili_envio(millis);
 
 		switch (type) {
@@ -325,12 +333,16 @@ public class ChatActivity extends Activity {
 			new SendMessageClient(ChatActivity.this, mReceiver.getOwnerAddr()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
 		}
 		edit.setText("");
-
+		db.guardarMensaje(mes);
 	}
 
 	public static void refreshList(Message message, boolean isMine) {
 		message.setMine(isMine);
-		listMessage.add(message);
+
+		if(db.validarRegistro(message)){
+			listMessage.add(message);
+		}
+
 		chatAdapter.notifyDataSetChanged();
 		listView.setSelection(listMessage.size() - 1);
 	}
@@ -372,6 +384,10 @@ public class ChatActivity extends Activity {
 			case R.id.send_drawing:
 				Intent drawIntent = new Intent(this, DrawingActivity.class);
 				startActivityForResult(drawIntent, DRAWING);
+				return true;
+			case R.id.vaciar:
+				db.eliminarDatos();
+				mostrarMensaje("Listo", "Registros elminados con éxito", this);
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);

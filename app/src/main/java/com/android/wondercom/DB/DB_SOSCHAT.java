@@ -135,15 +135,18 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
                 String.format(
                         "SELECT * FROM '%s' WHERE '%s' = '%s' ",
                         TABLA_NOMBRE,
-                        COL_12,
-                        mes.getMacOrigen(),
-                        COL_13,
-                        mes.getMacDestino(),
                         COL_10,
                         mes.tiempoEnvio()
                 ), null );
         if(registro.getCount()>0)
             respuesta=false;
         return respuesta;
+    }
+
+    public void actualizarMacDestino(long id, String mac){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(String.format(
+                "UPDATE '%s' SET '%s' = '%s' ",
+                TABLA_NOMBRE, COL_13,mac, COL_10, id ));
     }
 }
