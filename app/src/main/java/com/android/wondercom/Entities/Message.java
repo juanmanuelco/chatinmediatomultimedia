@@ -40,6 +40,9 @@ public class Message implements Serializable{
 
 	public Boolean activador=true;
 
+
+	public long key=0;
+
 	//Getters and Setters
 	public int getmType() { return mType; }
 	public void setmType(int mType) { this.mType = mType; }
@@ -65,7 +68,8 @@ public class Message implements Serializable{
 
 	public long tiempo_recibo(){return this.mili_recibo;}
 
-	public long tiempoEnvio(){return mili_recibo-mili_envio;}
+	public long tiempoEnvio(){return mili_envio;}
+
 	
 	public void setMacOrigen(String origen){this.macOrigen=origen;}
 	public void setMacDestino(String destino){this.macDestino=destino;}
@@ -75,6 +79,14 @@ public class Message implements Serializable{
 
 	public void setActivador(Boolean activado){this.activador=activado;}
 	public Boolean getActivador(){return this.activador;}
+
+	public void setKey(long K){
+		this.key=K;
+	}
+
+	public long getKey(){
+		return this.key;
+	}
 
 	public Message(int type, String text, InetAddress sender, String name){
 		mType = type;

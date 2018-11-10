@@ -70,6 +70,14 @@ public class ChatAdapter extends BaseAdapter {
 		return position;
 	}
 
+	public String tiempo_envio(Message ms){
+		String cadena=ms.getmText();
+		if(ms.tiempoEnvio()>0 && ms.tiempo_recibo()>0 ){
+			return cadena+ " "+ Math.abs((ms.tiempo_recibo()-ms.tiempoEnvio()));
+		}
+		return cadena;
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = convertView;
@@ -119,7 +127,7 @@ public class ChatAdapter extends BaseAdapter {
 			cache.chatName.setText("Yo");
 			if(mes.getMacDestino().equals("")){
 				mes.setMacDestino(DireccionMAC.direccion);
-				db.actualizarMacDestino(mes.tiempoEnvio(), DireccionMAC.direccion);
+				db.actualizarMacDestino(mes.getKey(), DireccionMAC.direccion);
 			}
 
 		}
@@ -132,7 +140,7 @@ public class ChatAdapter extends BaseAdapter {
 			DireccionMAC.direccion=mes.getMacOrigen();
 			if(mes.getMacDestino().equals("")){
 				mes.setMacDestino(getMacAddr());
-				db.actualizarMacDestino(mes.tiempoEnvio(), getMacAddr());
+				db.actualizarMacDestino(mes.getKey(), getMacAddr());
 			}
 
         }
@@ -141,7 +149,8 @@ public class ChatAdapter extends BaseAdapter {
         //We disable all the views and enable certain views depending on the message's type
         disableAllMediaViews(cache);
 
-        String mensaje= mes.getmText();
+        //String mensaje= mes.getmText();
+        String mensaje = tiempo_envio(mes);
 
         /***********************************************
           				Text Message

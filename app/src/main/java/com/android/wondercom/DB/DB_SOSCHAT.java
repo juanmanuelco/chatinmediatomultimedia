@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DB_SOSCHAT extends SQLiteOpenHelper {
 
-    public static final String DB_NOMBRE = "DB_SOSCHAT_v2.db";
+    public static final String DB_NOMBRE = "DB_SOSCHAT_FINAL.db";
     public static final String TABLA_NOMBRE = "MENSAJES_SOSCHAT";
     public static final String COL_1 = "ID";
     public static final String COL_2 = "TIPO";
@@ -31,6 +31,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
     public static final String COL_13 = "MAC_DESTINO";
     public static final String COL_14 = "ACTIVADOR";
     public static final String COL_15= "TEXTO";
+    public static final String COL_16= "KEY";
 
     public DB_SOSCHAT(Context context) {
         super(context, DB_NOMBRE, null, 1);
@@ -44,8 +45,8 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
                         "CREATE TABLE %s (" +
                                 "ID INTEGER PRIMARY KEY AUTOINCREMENT" +
                                 ", %s INTEGER , %s TEXT, %s BLOB , %s BLOB , %s TEXT , %s NUMERIC" +
-                                ", %s TEXT , %s BOOLEAN , %s NUMERIC , %s NUMERIC , %s TEXT , %s TEXT, %s BOOLEAN, %s TEXT)"
-                        ,TABLA_NOMBRE ,COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8, COL_9, COL_10, COL_11, COL_12, COL_13, COL_14, COL_15
+                                ", %s TEXT , %s BOOLEAN , %s NUMERIC , %s NUMERIC , %s TEXT , %s TEXT, %s BOOLEAN, %s TEXT, %s NUMERIC)"
+                        ,TABLA_NOMBRE ,COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8, COL_9, COL_10, COL_11, COL_12, COL_13, COL_14, COL_15, COL_16
                 )
         );
     }
@@ -58,7 +59,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
 
     public void guardarMensaje(Message mensaje){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(String.format("INSERT INTO %s VALUES ( NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+        db.execSQL(String.format("INSERT INTO %s VALUES ( NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                 TABLA_NOMBRE,
                 mensaje.getmType(), //1
                 mensaje.getChatName(), //2
@@ -68,21 +69,26 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
                 mensaje.getFileSize(),//6
                 mensaje.getFilePath(),//7
                 mensaje.isMine(),//8
-                mensaje.tiempoEnvio(),//9
-                mensaje.tiempo_recibo(),//10
+                mensaje.tiempoEnvio(),
+                mensaje.tiempo_recibo(),
                 mensaje.getMacOrigen(),//11
                 mensaje.getMacDestino(),//12
                 mensaje.getActivador(),//13
-                mensaje.getmText()));//14
+                mensaje.getmText(),
+                mensaje.getKey()));//14
+
     }
     public Cursor selectVerTodos(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery(String.format("select * from %s",TABLA_NOMBRE),null);
+        Cursor res = db.rawQuery(String.format("select * from %s ORDER BY ID ASC",TABLA_NOMBRE),null);
         return  res;
     }
 
-    public List<Message> mensajesEnDB(){
-        Cursor obtenidos= selectVerTodos();
+
+    public List<Message> mensajesEnDB(int tipo){
+        Cursor obtenidos=null;
+            obtenidos= selectVerTodos();
+
         List<Message> respuesta= new ArrayList<Message>();
         while (obtenidos.moveToNext()){
             Message mensaje= new Message(
@@ -101,10 +107,12 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
             mensaje.setMacOrigen(obtenidos.getString(11));
             mensaje.setMacDestino(obtenidos.getString(12));
             mensaje.setActivador(Boolean.parseBoolean(obtenidos.getString(13)));
+            mensaje.setKey(obtenidos.getLong(15));
             respuesta.add(mensaje);
         }
         return respuesta;
     }
+
 
 
     public byte[] obtenerInet(InetAddress direccion){
@@ -131,22 +139,23 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
     public Boolean validarRegistro(Message mes){
         Boolean respuesta=true;
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor registro= db.rawQuery(
-                String.format(
-                        "SELECT * FROM '%s' WHERE '%s' = '%s' ",
-                        TABLA_NOMBRE,
-                        COL_10,
-                        mes.tiempoEnvio()
-                ), null );
-        if(registro.getCount()>0)
+        Cursor registro= db.rawQuery(String.format("SELECT * FROM '%s'", TABLA_NOMBRE), null );
+        ArrayList<Long> keys = new ArrayList<Long>();
+        while (registro.moveToNext()){
+            keys.add(registro.getLong(15));
+        }
+        if(keys.contains(mes.getKey())){
             respuesta=false;
+        }
         return respuesta;
     }
 
     public void actualizarMacDestino(long id, String mac){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(String.format(
-                "UPDATE '%s' SET '%s' = '%s' ",
-                TABLA_NOMBRE, COL_13,mac, COL_10, id ));
+                "UPDATE '%s' SET '%s' = '%s' WHERE '%s' = '%s' ",
+                TABLA_NOMBRE, COL_13,mac, COL_16, id ));
     }
+
+
 }

@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Adapter;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,6 +56,7 @@ import com.android.wondercom.util.FileUtilities;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -62,6 +64,7 @@ import java.util.TimerTask;
 import static com.android.wondercom.NEGOCIO.Mensajes.datosSenal;
 import static com.android.wondercom.NEGOCIO.Mensajes.getMacAddr;
 import static com.android.wondercom.NEGOCIO.Mensajes.mostrarMensaje;
+
 
 public class ChatActivity extends Activity {
 	private static final String TAG = "ChatActivity";
@@ -158,7 +161,7 @@ public class ChatActivity extends Activity {
 		});
 		registerForContextMenu(listView);
 
-		diseminacion(db.mensajesEnDB());
+		diseminacion(db.mensajesEnDB(1));
 	}
 
 
@@ -287,7 +290,8 @@ public class ChatActivity extends Activity {
 	public void sendMessage(int type) {
 		long millis = System.currentTimeMillis();
 		Message mes = new Message(type, edit.getText().toString(), null, DireccionMAC.nombre);
-		mes.setMili_envio(millis);
+		mes.setMili_envio(Math.abs(millis));
+		mes.setKey(System.currentTimeMillis());
 
 		switch (type) {
 			case Message.IMAGE_MESSAGE:
@@ -338,13 +342,19 @@ public class ChatActivity extends Activity {
 
 	public static void refreshList(Message message, boolean isMine) {
 		message.setMine(isMine);
-
-		if(db.validarRegistro(message)){
-			listMessage.add(message);
-		}
-
+		listMessage.add(message);
 		chatAdapter.notifyDataSetChanged();
 		listView.setSelection(listMessage.size() - 1);
+
+		int conteo=0, posicion=-1;
+		for (Message men_list:listMessage) {
+			if(men_list.getKey() == message.getKey())
+				conteo++;
+			posicion++;
+		}
+		if(conteo>1)
+			listMessage.remove(posicion);
+
 	}
 
 	// Save the app's state (foreground or background) to a SharedPrefereces
@@ -561,4 +571,5 @@ public class ChatActivity extends Activity {
 				startActivity(sendIntent);
 		}
 	}
+
 }

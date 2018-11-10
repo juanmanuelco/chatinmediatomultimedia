@@ -5,11 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.EditText;
 
-import com.android.wondercom.Entities.Message;
-
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class Validaciones {
     public static boolean vacio(EditText[] campos){
@@ -37,4 +34,6 @@ public class Validaciones {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(key, defaultText);
     }
+
+
 }

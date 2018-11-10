@@ -46,7 +46,7 @@ public class Lista {
         sgt2=this.cabeza.sig;
         while (cab!=null){
             while (sgt2 != null){
-                if(cab.info.tiempoEnvio() > sgt2.info.tiempoEnvio()){
+                if(cab.info.getKey() > sgt2.info.getKey()){
                     aux = cab.info;
                     cab.info = sgt2.info;
                     sgt2.info= aux;
