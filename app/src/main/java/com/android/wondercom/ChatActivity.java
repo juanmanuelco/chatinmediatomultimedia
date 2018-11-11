@@ -30,7 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Adapter;
+
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,9 +48,10 @@ import com.android.wondercom.Entities.Image;
 import com.android.wondercom.Entities.MediaFile;
 import com.android.wondercom.Entities.Message;
 import com.android.wondercom.NEGOCIO.DireccionMAC;
-import com.android.wondercom.NEGOCIO.eliminarDuplicados;
+
+import com.android.wondercom.NEGOCIO.Validaciones;
 import com.android.wondercom.Receivers.WifiDirectBroadcastReceiver;
-import com.android.wondercom.TAD.Lista;
+
 import com.android.wondercom.util.ActivityUtilities;
 import com.android.wondercom.util.FileUtilities;
 
@@ -161,7 +162,7 @@ public class ChatActivity extends Activity {
 		});
 		registerForContextMenu(listView);
 
-		diseminacion(db.mensajesEnDB(1));
+		Toast.makeText(this, DireccionMAC.guardado, Toast.LENGTH_SHORT).show();
 	}
 
 
@@ -171,6 +172,7 @@ public class ChatActivity extends Activity {
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		ActivityUtilities.customiseActionBar(this);
+		diseminacion(db.mensajesEnDB(1));
 	}
 
 	@Override
@@ -273,11 +275,24 @@ public class ChatActivity extends Activity {
 	}
 
 	public void diseminacion(List<Message>mensajes){
-		for (Message mensaje:mensajes ) {
-			enviarDiseminado(mensaje);
+		for (final Message mensaje:mensajes ) {
+		    if(mensaje.getMacDestino().equals("")){
+		        mensaje.setMacDestino(DireccionMAC.direccion);
+            }
+		    AsyncTask proceso= new AsyncTask() {
+                @Override
+                protected Object doInBackground(Object[] objects) {
+                    enviarDiseminado(mensaje);
+                    return null;
+                }
+            };
+		    proceso.execute();
 		}
 	}
 	public void enviarDiseminado(Message mensaje){
+		if(mensaje.getMacDestino().equals("")){
+			mensaje.setMacDestino(DireccionMAC.direccion);
+		}
 		if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_OWNER) {
 			Log.v(TAG, "Message hydrated, start SendMessageServer AsyncTask");
 			new SendMessageServer(ChatActivity.this, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mensaje);
@@ -328,7 +343,10 @@ public class ChatActivity extends Activity {
 				break;
 		}
 		mes.setMacOrigen(getMacAddr());
-		mes.setMacDestino(DireccionMAC.direccion);
+		if(mes.getMacDestino().equals("")){
+			mes.setMacDestino(DireccionMAC.direccion);
+		}
+
 		if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_OWNER) {
 			Log.v(TAG, "Message hydrated, start SendMessageServer AsyncTask");
 			new SendMessageServer(ChatActivity.this, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
@@ -342,19 +360,19 @@ public class ChatActivity extends Activity {
 
 	public static void refreshList(Message message, boolean isMine) {
 		message.setMine(isMine);
-		listMessage.add(message);
-		chatAdapter.notifyDataSetChanged();
-		listView.setSelection(listMessage.size() - 1);
 
-		int conteo=0, posicion=-1;
-		for (Message men_list:listMessage) {
-			if(men_list.getKey() == message.getKey())
-				conteo++;
-			posicion++;
-		}
-		if(conteo>1)
-			listMessage.remove(posicion);
-
+        listMessage.add(message);
+        int conteo=0, posicion=-1;
+        for (Message men_list:listMessage) {
+            if(men_list.getKey() == message.getKey())
+                conteo++;
+            posicion++;
+        }
+        if(conteo>1){
+            listMessage.remove(posicion);
+        }
+        chatAdapter.notifyDataSetChanged();
+        listView.setSelection(listMessage.size() - 1);
 	}
 
 	// Save the app's state (foreground or background) to a SharedPrefereces

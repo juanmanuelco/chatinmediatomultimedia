@@ -96,7 +96,7 @@ public class ChatAdapter extends BaseAdapter {
             cache.fileSaved = (TextView) view.findViewById(R.id.fileSaved);
             cache.videoPlayerButton = (ImageView) view.findViewById(R.id.buttonPlayVideo);
             cache.fileSavedIcon = (ImageView) view.findViewById(R.id.file_attached_icon);
-	            
+
 			view.setTag(cache);
 		}
 
@@ -105,7 +105,7 @@ public class ChatAdapter extends BaseAdapter {
         cache.chatName.setText(listMessage.get(position).getChatName());
         cache.chatName.setTag(cache);
         cache.chatName.setOnLongClickListener(new OnLongClickListener() {
-			
+
 			@Override
 			public boolean onLongClick(View v) {
 				CacheView cache = (CacheView) v.getTag();
@@ -125,11 +125,6 @@ public class ChatAdapter extends BaseAdapter {
 			cache.chatName.setTextColor(Color.BLACK);
 			cache.text.setTextColor(Color.BLACK);
 			cache.chatName.setText("Yo");
-			if(mes.getMacDestino().equals("")){
-				mes.setMacDestino(DireccionMAC.direccion);
-				db.actualizarMacDestino(mes.getKey(), DireccionMAC.direccion);
-			}
-
 		}
         else{
 			params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -137,20 +132,14 @@ public class ChatAdapter extends BaseAdapter {
 			cache.relativeLayout.setBackground(view.getResources().getDrawable(R.drawable.chat_bubble));
 			cache.chatName.setTextColor(Color.WHITE);
 			cache.text.setTextColor(Color.WHITE);
-			DireccionMAC.direccion=mes.getMacOrigen();
-			if(mes.getMacDestino().equals("")){
-				mes.setMacDestino(getMacAddr());
-				db.actualizarMacDestino(mes.getKey(), getMacAddr());
-			}
-
         }
 
 
         //We disable all the views and enable certain views depending on the message's type
         disableAllMediaViews(cache);
 
-        //String mensaje= mes.getmText();
-        String mensaje = tiempo_envio(mes);
+        String mensaje= mes.getmText();
+        //String mensaje = tiempo_envio(mes);
 
         /***********************************************
           				Text Message
@@ -159,7 +148,7 @@ public class ChatAdapter extends BaseAdapter {
         if(type == Message.TEXT_MESSAGE){
         	enableTextView(cache, mensaje);
 		}
-        
+
         /***********************************************
 			            Image Message
          ***********************************************/
@@ -167,30 +156,30 @@ public class ChatAdapter extends BaseAdapter {
 		else if(type == Message.IMAGE_MESSAGE){
 			enableTextView(cache, mensaje);
 			cache.image.setVisibility(View.VISIBLE);
-			
+
 			if(!mapThumb.containsKey(mes.getFileName())){
 				Bitmap thumb = mes.byteArrayToBitmap(mes.getByteArray());
-				mapThumb.put(mes.getFileName(), thumb);				
+				mapThumb.put(mes.getFileName(), thumb);
 			}
 			cache.image.setImageBitmap(mapThumb.get(mes.getFileName()));
 			cache.image.setTag(position);
-			
+
 			cache.image.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					Message mes = listMessage.get((Integer) v.getTag());
 					bitmap = mes.byteArrayToBitmap(mes.getByteArray());
-					
+
 					Intent intent = new Intent(mContext, ViewImageActivity.class);
 					String fileName = mes.getFileName();
 					intent.putExtra("fileName", fileName);
-					
+
 					mContext.startActivity(intent);
 				}
 			});
-		}     
-        
+		}
+
         /***********************************************
         				Audio Message
          ***********************************************/
@@ -199,22 +188,22 @@ public class ChatAdapter extends BaseAdapter {
 			cache.audioPlayer.setVisibility(View.VISIBLE);
 			cache.audioPlayer.setTag(position);
 			cache.audioPlayer.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(final View v) {
 					MediaPlayer mPlayer = new MediaPlayer();
 					Message mes = listMessage.get((Integer) v.getTag());
-			        try {			        	
+			        try {
 			            mPlayer.setDataSource(mes.getFilePath());
 			            mPlayer.prepare();
 			            mPlayer.start();
-			            
+
 			            //Disable the button when the audio is playing
 			            v.setEnabled(false);
 			            ((ImageView)v).setImageDrawable(mContext.getResources().getDrawable(R.drawable.play_audio_in_progress));
-			            
+
 			            mPlayer.setOnCompletionListener(new OnCompletionListener() {
-							
+
 							@Override
 							public void onCompletion(MediaPlayer mp) {
 								//Re-enable the button when the audio has finished playing
@@ -225,11 +214,11 @@ public class ChatAdapter extends BaseAdapter {
 			        } catch (IOException e) {
 			            e.printStackTrace();
 			        }
-					
+
 				}
 			});
 		}
-        
+
         /***********************************************
         				Video Message
          ***********************************************/
@@ -237,16 +226,16 @@ public class ChatAdapter extends BaseAdapter {
 			enableTextView(cache, mensaje);
 			cache.videoPlayer.setVisibility(View.VISIBLE);
 			cache.videoPlayerButton.setVisibility(View.VISIBLE);
-			
+
 			if(!mapThumb.containsKey(mes.getFilePath())){
 				Bitmap thumb = ThumbnailUtils.createVideoThumbnail(mes.getFilePath(), Thumbnails.MINI_KIND);
-				mapThumb.put(mes.getFilePath(), thumb);				
+				mapThumb.put(mes.getFilePath(), thumb);
 			}
 			cache.videoPlayer.setImageBitmap(mapThumb.get(mes.getFilePath()));
-			
+
 			cache.videoPlayerButton.setTag(position);
 			cache.videoPlayerButton.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					Message mes = listMessage.get((Integer) v.getTag());
@@ -256,7 +245,7 @@ public class ChatAdapter extends BaseAdapter {
 				}
 			});
 		}
-        
+
         /***********************************************
 						File Message
          ***********************************************/
@@ -266,32 +255,32 @@ public class ChatAdapter extends BaseAdapter {
 			cache.fileSaved.setVisibility(View.VISIBLE);
 			cache.fileSaved.setText(mes.getFileName());
 		}
-        
+
         /***********************************************
 					Drawing Message
 		***********************************************/
 		else if(type == Message.DRAWING_MESSAGE){
 			enableTextView(cache, mensaje);
 			cache.image.setVisibility(View.VISIBLE);
-			
+
 			if(!mapThumb.containsKey(mes.getFileName())){
 				Bitmap thumb = FileUtilities.getBitmapFromFile(mes.getFilePath());
-				mapThumb.put(mes.getFileName(), thumb);				
+				mapThumb.put(mes.getFileName(), thumb);
 			}
 			cache.image.setImageBitmap(mapThumb.get(mes.getFileName()));
 			cache.image.setTag(position);
-			
+
 			cache.image.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					Message mes = listMessage.get((Integer) v.getTag());
 					bitmap = mes.byteArrayToBitmap(mes.getByteArray());
-					
+
 					Intent intent = new Intent(mContext, ViewImageActivity.class);
 					String fileName = mes.getFileName();
 					intent.putExtra("fileName", fileName);
-					
+
 					mContext.startActivity(intent);
 				}
 			});

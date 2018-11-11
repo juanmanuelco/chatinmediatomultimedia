@@ -33,6 +33,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import static com.android.wondercom.NEGOCIO.Mensajes.cargando;
+import static com.android.wondercom.NEGOCIO.Mensajes.getMacAddr;
 
 public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 
@@ -168,13 +169,13 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 						ownerAddr= groupOwnerAddress;
 						if (info.groupFormed && info.isGroupOwner) {
 							isGroupeOwner = IS_OWNER;
-							fm.server=new ServerInit();
+							fm.server=new ServerInit(getMacAddr());
 							fm.server.start();
 							MainActivity.server=fm.server;
 						}
 						else if (info.groupFormed) {
 							isGroupeOwner = IS_CLIENT;
-							ClientInit client = new ClientInit(getOwnerAddr());
+							ClientInit client = new ClientInit(getOwnerAddr(), getMacAddr());
 							client.start();
 						}
 						Intent intent = new Intent(mActivity.getApplicationContext(), ChatActivity.class);

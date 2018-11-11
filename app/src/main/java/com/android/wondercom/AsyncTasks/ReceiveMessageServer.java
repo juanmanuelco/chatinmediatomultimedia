@@ -11,6 +11,9 @@ import android.content.Context;
 
 import com.android.wondercom.DB.DB_SOSCHAT;
 import com.android.wondercom.Entities.Message;
+import com.android.wondercom.NEGOCIO.DireccionMAC;
+
+import static com.android.wondercom.NEGOCIO.Mensajes.getMacAddr;
 
 public class ReceiveMessageServer extends AbstractReceiver {
 	private static final int SERVER_PORT = 4445;
@@ -39,6 +42,17 @@ public class ReceiveMessageServer extends AbstractReceiver {
 				//Add the InetAdress of the sender to the message
 				InetAddress senderAddr = clientSocket.getInetAddress();
 				message.setSenderAddress(senderAddr);
+
+				if(message.getMacOrigen().equals(getMacAddr())){
+					if(message.getMacDestino().equals("")){
+						message.setMacDestino(DireccionMAC.direccion);
+					}
+				}else{
+					DireccionMAC.direccion=message.getMacOrigen();
+					if(message.getMacDestino().equals("")){
+						message.setMacDestino(getMacAddr());
+					}
+				}
 
 				if(db.validarRegistro(message)){
 					db.guardarMensaje(message);

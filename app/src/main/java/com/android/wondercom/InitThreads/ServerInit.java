@@ -8,14 +8,19 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
+import com.android.wondercom.NEGOCIO.DireccionMAC;
+
 public class ServerInit extends Thread{
 	private static final String TAG = "ServerInit";
 	private static final int SERVER_PORT = 4444;
 	public static ArrayList<InetAddress> clients;
 	private ServerSocket serverSocket;
+
+	public String macServer="";
 	
-	public ServerInit(){
+	public ServerInit(String mac){
 		clients = new ArrayList<InetAddress>();
+		this.macServer=mac;
 	}
 
 	@Override
