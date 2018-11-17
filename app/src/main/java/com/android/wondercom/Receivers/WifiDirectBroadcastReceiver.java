@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.android.wondercom.ChatActivity;
 import com.android.wondercom.CustomAdapters.AdaptadorDispositivos;
+import com.android.wondercom.DB.DB_SOSCHAT;
+import com.android.wondercom.Entities.ENCONTRADO;
 import com.android.wondercom.Fragments.FM_encontrados;
 import com.android.wondercom.InitThreads.ClientInit;
 import com.android.wondercom.InitThreads.ServerInit;
@@ -29,6 +31,7 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -43,6 +46,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	int conteo=0;
 
 	WifiManager wifiManager;
+	static DB_SOSCHAT db;
 
 
 
@@ -58,6 +62,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	public ArrayList <String[]> listado;
 	WifiP2pDevice[] deviceArray;
 	FM_encontrados fm;
+	ENCONTRADO encontrados;
 
 	RecyclerView RV;
 	ProgressDialog pDialog;
@@ -95,6 +100,8 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 		listado= new ArrayList<String[]>();
 		wifiManager = (WifiManager) mActivity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
+		db = new DB_SOSCHAT(context);
+
 		if(action.equals(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)){
 			int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
 			if(state != WifiP2pManager.WIFI_P2P_STATE_ENABLED){
@@ -117,10 +124,11 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 							int index=0;
 							for(WifiP2pDevice device : peerList.getDeviceList()){
 								listado.add(new String[]{device.deviceName, device.deviceAddress});
+                                db.insertar_Encontrados(device.deviceAddress,device.deviceName);
 								deviceArray[index]= device;
 								index++;
 							}
-
+							Log.i("ListaEncontrados",String.valueOf(db.encontradosLista()));
 
 							AdaptadorDispositivos adapter= new AdaptadorDispositivos(listado);
 							adapter.setOnClickListener(new View.OnClickListener() {
