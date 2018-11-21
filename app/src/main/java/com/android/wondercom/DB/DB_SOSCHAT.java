@@ -221,7 +221,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         obtenidos = Obtener_encontrado();
         List<ENCONTRADO> respuesta= new ArrayList<ENCONTRADO>();
         while (obtenidos.moveToNext()){
-            Log.i("Guardaddos",obtenidos.getString(0)+" "+obtenidos.getString(1));
+            //Log.i("Guardaddos",obtenidos.getString(0)+" "+obtenidos.getString(1));
             ENCONTRADO encontrar = new ENCONTRADO(obtenidos.getString(0),obtenidos.getString(1));
             respuesta.add(encontrar);
         }

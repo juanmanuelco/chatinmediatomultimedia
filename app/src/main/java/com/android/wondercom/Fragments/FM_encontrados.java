@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +31,9 @@ import com.android.wondercom.NEGOCIO.Dispositivo;
 import com.android.wondercom.NEGOCIO.Validaciones;
 import com.android.wondercom.R;
 import com.android.wondercom.Receivers.WifiDirectBroadcastReceiver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FM_encontrados extends Fragment{

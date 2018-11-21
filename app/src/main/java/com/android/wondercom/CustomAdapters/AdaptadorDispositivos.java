@@ -20,12 +20,15 @@ public class AdaptadorDispositivos extends RecyclerView.Adapter<AdaptadorDisposi
 
     public AdaptadorDispositivos(ArrayList<String[]> listado) {
         this.listado = listado;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public AdaptadorDispositivos.ViewHolderDatos onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_participants, null, false);
+        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        view.setLayoutParams(lp);
         view.setOnClickListener(this);
         return new ViewHolderDatos(view);
     }
@@ -58,5 +61,10 @@ public class AdaptadorDispositivos extends RecyclerView.Adapter<AdaptadorDisposi
             txtNombre=itemView.findViewById(R.id.name_tv);
             txtMAC=itemView.findViewById(R.id.ip_tv);
         }
+    }
+    public void actualizar (ArrayList<String[]> newList) {
+        listado.clear();
+        listado = new ArrayList<>(newList);
+        notifyDataSetChanged();
     }
 }

@@ -60,6 +60,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	private InetAddress ownerAddr;
 
 	public ArrayList <String[]> listado;
+
 	WifiP2pDevice[] deviceArray;
 	FM_encontrados fm;
 	ENCONTRADO encontrados;
@@ -194,4 +195,5 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 			}
 		}
 	}
+
 }
