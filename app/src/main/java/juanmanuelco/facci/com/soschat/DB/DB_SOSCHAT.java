@@ -182,7 +182,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
 
     public void actualizarMacDestino(long id, String mac){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("UPDATE "+ TABLA_MENSAJES+ " SET MAC_DESTINO = "+mac+" WHERE TIEMPO_ENVIO = "+ id + "AND MAC_DESTINO = "+ "''");
+        db.execSQL("UPDATE "+ TABLA_MENSAJES+ " SET MAC_DESTINO = '"+mac+"' WHERE TIEMPO_ENVIO = "+ id + " AND MAC_DESTINO = "+ "''");
     }
 
     public void actualizarTiempoRecibo(long id, long tiempo){
@@ -190,7 +190,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         db.execSQL(String.format(
                 "UPDATE '%s' SET '%s' = '%s' WHERE '%s' = '%s' ",
                 TABLA_MENSAJES, COL_11,tiempo, COL_12, id ));
-        db.execSQL("UPDATE "+ TABLA_MENSAJES+ " SET TIEMPO_RECIBO = "+tiempo+" WHERE TIEMPO_ENVIO = "+ id + "AND TIEMPO_RECIBO = 0");
+        db.execSQL("UPDATE "+ TABLA_MENSAJES+ " SET TIEMPO_RECIBO = "+tiempo+" WHERE TIEMPO_ENVIO = "+ id + " AND TIEMPO_RECIBO = 0");
     }
 
     public void eliminarMensajes(){

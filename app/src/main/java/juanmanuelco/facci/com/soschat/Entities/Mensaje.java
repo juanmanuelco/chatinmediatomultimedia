@@ -29,11 +29,11 @@ public class Mensaje implements Serializable{
 	private String fileName;
 	private long fileSize;
 	private String filePath;
-	public String macOrigen="";
-	public String macDestino="";
-	public long tiempoEnvio=0;
-	public long tiempoRecibo=0;
-	public boolean identificacion=true;
+	private String macOrigen="";
+	private String macDestino="";
+	private long tiempoEnvio=0;
+	private long tiempoRecibo=0;
+	private boolean identificacion=true;
 
 
 

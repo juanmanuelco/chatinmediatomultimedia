@@ -271,6 +271,7 @@ public class ChatActivity extends AppCompatActivity {
             };
             proceso.execute();
         }
+
     }
 
     public void enviarDiseminado(Mensaje mensaje){
@@ -389,6 +390,7 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                        db.eliminarMensajes();
                         listMensaje.clear();
                         chatAdapter.notifyDataSetChanged();
                         mostrarMensaje("Listo", "Registro vaciado", ChatActivity.this);

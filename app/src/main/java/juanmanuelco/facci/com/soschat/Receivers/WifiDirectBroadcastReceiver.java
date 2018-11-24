@@ -26,6 +26,7 @@ import juanmanuelco.facci.com.soschat.Fragments.FM_encontrados;
 import juanmanuelco.facci.com.soschat.FuncionActivity;
 import juanmanuelco.facci.com.soschat.InitThreads.ClientInit;
 import juanmanuelco.facci.com.soschat.InitThreads.ServerInit;
+import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
 import juanmanuelco.facci.com.soschat.R;
 
 import java.net.InetAddress;
@@ -131,6 +132,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 									final WifiP2pDevice device = deviceArray[RV.getChildAdapterPosition(v)];
 									WifiP2pConfig config =  new WifiP2pConfig();
 									config.deviceAddress=device.deviceAddress;
+									DireccionMAC.direccion=device.deviceAddress;
 									mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
 										@Override
 										public void onSuccess() {
