@@ -15,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import static juanmanuelco.facci.com.soschat.NEGOCIO.Mensajes.getMacAddr;
 import static juanmanuelco.facci.com.soschat.NEGOCIO.Validaciones.isActivityRunning;
 
 public class ReceiveMessageClient extends AbstractReceiver {
@@ -38,11 +39,16 @@ public class ReceiveMessageClient extends AbstractReceiver {
 				BufferedInputStream buffer = new BufferedInputStream(inputStream);
 				ObjectInputStream objectIS = new ObjectInputStream(buffer);
 				Mensaje mensaje = (Mensaje) objectIS.readObject();
-				mensaje.setTiempoRecibo(System.currentTimeMillis());
-				if(mensaje.getMacDestino().equals("")){
-					mensaje.setMacDestino(DireccionMAC.direccion);
-					db.actualizarMacDestino(mensaje.getTiempoEnvio(), DireccionMAC.direccion);
+
+				if(mensaje.getTiempoRecibo()==0) mensaje.setTiempoRecibo(System.currentTimeMillis());
+				if(mensaje.getMacDestino().equals("")) mensaje.setMacDestino(getMacAddr());
+				if(db.validarRegistro(mensaje)) db.guardarMensaje(mensaje);
+				else{
+					db.actualizarMacDestino(mensaje.getTiempoEnvio(),getMacAddr());
+					db.actualizarTiempoRecibo(mensaje.getTiempoEnvio(), System.currentTimeMillis());
 				}
+
+
 				destinationSocket.close();
 				publishProgress(mensaje);
 			}

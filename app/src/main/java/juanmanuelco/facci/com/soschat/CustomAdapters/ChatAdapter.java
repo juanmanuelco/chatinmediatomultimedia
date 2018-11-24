@@ -46,7 +46,6 @@ public class ChatAdapter extends BaseAdapter {
 	public static Bitmap bitmap;
 	private Context mContext;
 	private HashMap<String,Bitmap> mapThumb;
-	static DB_SOSCHAT db;
 
 
 
@@ -55,7 +54,6 @@ public class ChatAdapter extends BaseAdapter {
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mContext = context;
 		mapThumb = new HashMap<String, Bitmap>();
-		db = new DB_SOSCHAT(context);
 	}
 	
 	@Override
@@ -110,9 +108,7 @@ public class ChatAdapter extends BaseAdapter {
 			}
 		});
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)cache.relativeLayout.getLayoutParams();
-        //Colourise differently own message
-		//if((Boolean) listMensaje.get(position).isMine()){
-
+        String mensaje=mes.getTexto();
 
 		if(mes.getMacOrigen().equals(getMacAddr())){
         	params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -121,6 +117,7 @@ public class ChatAdapter extends BaseAdapter {
 			cache.chatName.setTextColor(Color.BLACK);
 			cache.text.setTextColor(Color.BLACK);
 			cache.chatName.setText("Yo");
+			if(mes.getIdentificacion()) mes.setMacDestino(DireccionMAC.direccion);
 		}
         else{
 			params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -128,18 +125,13 @@ public class ChatAdapter extends BaseAdapter {
 			cache.relativeLayout.setBackground(view.getResources().getDrawable(R.drawable.chat_bubble));
 			cache.chatName.setTextColor(Color.WHITE);
 			cache.text.setTextColor(Color.WHITE);
+			DireccionMAC.direccion=mes.getMacOrigen();
+			mensaje+="\n tiempo: "+ (mes.getTiempoRecibo()-mes.getTiempoEnvio());
         }
-
 
         //We disable all the views and enable certain views depending on the message's type
         disableAllMediaViews(cache);
 
-        //String mensaje= mes.getTexto()+ " macOrigen "+ mes.getMacOrigen()+ " mac destino "+ mes.getMacDestino()+ " tiempo_recibo "+ mes.getTiempoRecibo();
-        //String mensaje = tiempo_envio(mes);
-
-		String mensaje= mes.getTexto();
-		if(mes.getMacDestino().equals(getMacAddr()))
-			mensaje+= " tiempo: "+ (mes.getTiempoRecibo()-mes.getTiempoEnvio());
         /***********************************************
           				Text Mensaje
          ***********************************************/
@@ -284,17 +276,6 @@ public class ChatAdapter extends BaseAdapter {
 				}
 			});
 		}
-		if(mes.getTiempoRecibo()==0) {
-			long tiempo =System.currentTimeMillis();
-			mes.setTiempoRecibo(tiempo);
-			db.actualizarTiempoRecibo(mes.getTiempoEnvio(), tiempo);
-		}
-
-		if(mes.getIdentificacion()){
-			DireccionMAC.direccion=mes.getMacOrigen();
-		}
-
-		if(db.validarRegistro(mes))	db.guardarMensaje(mes);
 		return view;
 	}
 	

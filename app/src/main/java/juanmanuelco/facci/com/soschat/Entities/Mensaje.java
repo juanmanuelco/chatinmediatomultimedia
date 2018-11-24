@@ -31,8 +31,8 @@ public class Mensaje implements Serializable{
 	private String filePath;
 	public String macOrigen="";
 	public String macDestino="";
-	public long tiempoEnvio;
-	public long tiempoRecibo;
+	public long tiempoEnvio=0;
+	public long tiempoRecibo=0;
 	public boolean identificacion=true;
 
 

@@ -2,10 +2,13 @@ package juanmanuelco.facci.com.soschat.NEGOCIO;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
+
+import juanmanuelco.facci.com.soschat.R;
 
 public class Mensajes {
     public static void mostrarMensaje(String t, String m, Context c){
@@ -16,7 +19,15 @@ public class Mensajes {
         /**Personaliza el dialogo*/
         alertDialogBuilder.setTitle(t);
         alertDialogBuilder.setMessage(m);
+        alertDialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
         android.support.v7.app.AlertDialog alertDialog=alertDialogBuilder.create();
+
+
 
         /**Muestra el dialogo*/
         alertDialog.show();
@@ -30,6 +41,12 @@ public class Mensajes {
         /**Personaliza el dialogo*/
         alertDialogBuilder.setTitle(c.getResources().getString(t));
         alertDialogBuilder.setMessage(c.getResources().getString(m));
+        alertDialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
         android.support.v7.app.AlertDialog alertDialog=alertDialogBuilder.create();
 
         /**Muestra el dialogo*/

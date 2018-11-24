@@ -55,6 +55,7 @@ import juanmanuelco.facci.com.soschat.util.ActivityUtilities;
 import juanmanuelco.facci.com.soschat.util.FileUtilities;
 
 import static juanmanuelco.facci.com.soschat.NEGOCIO.Mensajes.getMacAddr;
+import static juanmanuelco.facci.com.soschat.NEGOCIO.Mensajes.mostrarMensaje;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -86,11 +87,12 @@ public class ChatActivity extends AppCompatActivity {
     static DB_SOSCHAT db;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = new DB_SOSCHAT(this);
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        db= new DB_SOSCHAT(this);
         setContentView(R.layout.activity_chat);
         mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
@@ -154,8 +156,8 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        ActivityUtilities.customiseActionBar(this);
         diseminacion(db.mensajesEnDB());
+        ActivityUtilities.customiseActionBar(this);
     }
 
 
@@ -284,6 +286,8 @@ public class ChatActivity extends AppCompatActivity {
         Mensaje mes = new Mensaje(type, edit.getText().toString(), null, DireccionMAC.nombre);
         mes.setTiempoEnvio(Math.abs(millis));
         mes.setIdentificacion(true);
+        mes.setMacOrigen(getMacAddr());
+        mes.setMacDestino(DireccionMAC.direccion);
         switch (type) {
             case Mensaje.IMAGE_MESSAGE:
                 Image image = new Image(this, fileUri);
@@ -316,34 +320,24 @@ public class ChatActivity extends AppCompatActivity {
                 mes.setPathArchivo(drawingFile.getFilePath());
                 break;
         }
-        mes.setMacOrigen(getMacAddr());
-
         if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_OWNER)
             new SendMessageServer(ChatActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
         else if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_CLIENT)
             new SendMessageClient(ChatActivity.this, mReceiver.getOwnerAddr()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
+        db.guardarMensaje(mes);
         edit.setText("");
     }
 
     public static void refreshList(Mensaje mensaje) {
-        if(mensaje.getIdentificacion()){
-            if(!mensaje.getMacDestino().equals(getMacAddr())){
-                mensaje.setMacDestino(getMacAddr());
-            }
-        }
         listMensaje.add(mensaje);
         int conteo=0, posicion=-1;
         for (Mensaje men_list:listMensaje) {
-            if(men_list.getTiempoEnvio() == mensaje.getTiempoEnvio())
-                conteo++;
+            if(men_list.getTiempoEnvio() == mensaje.getTiempoEnvio()) conteo++;
             posicion++;
         }
-        if(conteo>1){
-            listMensaje.remove(posicion);
-        }
+        if(conteo>1)listMensaje.remove(posicion);
         chatAdapter.notifyDataSetChanged();
         listView.setSelection(listMensaje.size() - 1);
-
     }
 
     public void saveStateForeground(boolean isForeground) {
@@ -384,8 +378,33 @@ public class ChatActivity extends AppCompatActivity {
                 startActivityForResult(drawIntent, DRAWING);
                 return true;
             case R.id.vaciar:
-                db.eliminarMensajes();
-                Mensajes.mostrarMensaje("Listo", "Registros elminados con éxito", this);
+                final android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
+                alertDialogBuilder=new android.support.v7.app.AlertDialog.Builder(this);
+
+                /**Personaliza el dialogo*/
+                alertDialogBuilder.setTitle("¿Borrar base de datos?");
+                alertDialogBuilder.setMessage("No se podrá recuperar");
+
+                alertDialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        listMensaje.clear();
+                        chatAdapter.notifyDataSetChanged();
+                        mostrarMensaje("Listo", "Registro vaciado", ChatActivity.this);
+                    }
+                });
+                alertDialogBuilder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                android.support.v7.app.AlertDialog alertDialog=alertDialogBuilder.create();
+
+                /**Muestra el dialogo*/
+                alertDialog.show();
                 onDestroy();
                 return true;
             default:

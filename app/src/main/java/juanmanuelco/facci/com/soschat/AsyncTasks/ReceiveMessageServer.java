@@ -13,6 +13,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import static juanmanuelco.facci.com.soschat.NEGOCIO.Mensajes.getMacAddr;
+
 public class ReceiveMessageServer extends AbstractReceiver {
 	private static final int SERVER_PORT = 4445;
 	private Context mContext;
@@ -35,13 +37,17 @@ public class ReceiveMessageServer extends AbstractReceiver {
 				InputStream inputStream = clientSocket.getInputStream();				
 				ObjectInputStream objectIS = new ObjectInputStream(inputStream);
 				Mensaje mensaje = (Mensaje) objectIS.readObject();
-				mensaje.setTiempoRecibo(System.currentTimeMillis());
 				InetAddress senderAddr = clientSocket.getInetAddress();
 				mensaje.setAddress(senderAddr);
-				if(mensaje.getMacDestino().equals("")){
-					mensaje.setMacDestino(DireccionMAC.direccion);
-					db.actualizarMacDestino(mensaje.getTiempoEnvio(), DireccionMAC.direccion);
+
+				if(mensaje.getTiempoRecibo()==0) mensaje.setTiempoRecibo(System.currentTimeMillis());
+				if(mensaje.getMacDestino().equals("")) mensaje.setMacDestino(getMacAddr());
+				if(db.validarRegistro(mensaje)) db.guardarMensaje(mensaje);
+				else{
+					db.actualizarMacDestino(mensaje.getTiempoEnvio(),getMacAddr());
+					db.actualizarTiempoRecibo(mensaje.getTiempoEnvio(), System.currentTimeMillis());
 				}
+
 				clientSocket.close();
 				publishProgress(mensaje);
 			}
