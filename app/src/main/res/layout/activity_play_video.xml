@@ -5,7 +5,7 @@
     tools:context="${packageName}.${activityClass}"
     android:background="@color/black" >
 
-    <VideoView 
+    <VideoView
         android:id="@+id/videoPlayer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

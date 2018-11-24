@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#1e88e5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
@@ -10,7 +9,7 @@
 
     <color name="actionbar_background">#1e88e5</color>
     <color name="actionbar_text">#FFFFFF</color>
-    
+
     <color name="chat_text_background">#D6D9FF</color>
     <color name="chat_text_background_mine">#013991</color>
     <color name="chat_text">#000</color>
@@ -20,12 +19,12 @@
     <color name="fondo_boton">#2196f3</color>
     <color name="negro">#000000</color>
 
-    
+
     <color name="button_background">#1e8be2</color>
     <color name="button_text">#FFFFFF</color>
 
     <color name="button_background_2">#229dff</color>
-    
+
     <!-- Generic colors -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>

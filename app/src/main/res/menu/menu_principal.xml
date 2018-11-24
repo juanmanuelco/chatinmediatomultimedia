@@ -5,12 +5,12 @@
         android:id="@+id/search"
         android:title="@string/search"
         android:icon="@drawable/action_search"
-        android:showAsAction="ifRoom|collapseActionView"
-        android:actionViewClass="android.widget.SearchView"/>
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.widget.SearchView" />
 
     <item
         android:id="@+id/reload"
         android:title="@string/reload"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/action_reload" />
+        android:icon="@drawable/action_reload"
+        app:showAsAction="ifRoom" />
 </menu>
