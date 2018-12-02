@@ -5,10 +5,10 @@ public class ENCONTRADO {
     private String Mac_destino;
     private String nickname;
 
-    public ENCONTRADO(String mac_destino, String nickname) {
+    /*public ENCONTRADO(String mac_destino, String nickname) {
         this.Mac_destino = mac_destino;
         this.nickname = nickname;
-    }
+    }*/
 
     public String getMac_destino() {
         return Mac_destino;

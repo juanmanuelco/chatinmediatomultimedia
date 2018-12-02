@@ -15,6 +15,7 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -56,6 +57,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 	private InetAddress ownerAddr;
 
 	public ArrayList <String[]> listado;
+	public ArrayList<String> listado2;
 	WifiP2pDevice[] deviceArray;
 	FM_encontrados fm;
 	ENCONTRADO encontrados;
@@ -94,9 +96,11 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 
 		String action = intent.getAction();
 		listado= new ArrayList<String[]>();
+		listado2= new ArrayList<>();
 		wifiManager = (WifiManager) mActivity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
 		db = new DB_SOSCHAT(context);
+		encontrados = new ENCONTRADO();
 
 		if(action.equals(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)){
 			int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
@@ -119,11 +123,13 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 							deviceArray= new WifiP2pDevice[peerList.getDeviceList().size()];
 							int index=0;
 							for(WifiP2pDevice device : peerList.getDeviceList()){
-								listado.add(new String[]{device.deviceName, device.deviceAddress});
-								//db.insertar_Encontrados(device.deviceAddress,device.deviceName);
+                                listado.add(new String[]{device.deviceName, device.deviceAddress});
+                                listado2.add(device.deviceName+","+device.deviceAddress);
+								db.insertar_Encontrados(device.deviceAddress,device.deviceName);
 								deviceArray[index]= device;
 								index++;
 							}
+							Log.i("ListaEncontrados",String.valueOf(db.encontradosListaHisoricos()));
 
 							AdaptadorDispositivos adapter= new AdaptadorDispositivos(listado);
 							adapter.setOnClickListener(new View.OnClickListener() {
@@ -188,5 +194,8 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 				});				
 			}
 		}
+	}
+	public ArrayList<String> retornar(){
+		return listado2;
 	}
 }

@@ -1,7 +1,32 @@
+/*while (verificar.moveToNext()){
+                if (verificar.getPosition()<0){
+                    Log.i("Posicion",String.valueOf(verificar.getPosition()) +" No hay nada");
+                }else{
+                    if (verificar.getString(0)!=address){
+                        Log.i("VerDatos","Addres " +verificar.getString(0)+" Nombre " +verificar.getString(1));
+
+                    }
+                }
+            }
+            if (verificar.getCount()<0){
+                Log.i("Entro"," al if");
+                db.execSQL(String.format("INSERT INTO %s VALUES ( '%s', '%s')",
+                        TABLA_ENCONTRADO,address,nickname));
+            }else{
+                Log.i("Entro"," al else");
+                while (verificar.moveToNext()){
+                    if (verificar.getString(0)!=address){
+                        Log.i("VerDatos","Addres " +verificar.getString(0)+" Nombre " +verificar.getString(1));
+                        //db.execSQL(String.format("INSERT INTO %s VALUES ( '%s', '%s')",
+                          //      TABLA_ENCONTRADO,address,nickname));
+                    }
+                }
+            }*/
 package juanmanuelco.facci.com.soschat.Fragments;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
@@ -12,6 +37,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +50,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import juanmanuelco.facci.com.soschat.CustomAdapters.AdaptadorDispositivos;
+import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
+import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
 import juanmanuelco.facci.com.soschat.FuncionActivity;
 import juanmanuelco.facci.com.soschat.InitThreads.ServerInit;
 import juanmanuelco.facci.com.soschat.NEGOCIO.Dispositivo;
@@ -53,6 +84,18 @@ public class FM_encontrados extends Fragment {
     int intentos=0;
     ProgressDialog pDialog;
 
+    private SearchView searchView = null;
+    private boolean searchViewShow = false;
+    private SearchView.OnQueryTextListener queryTextListener;
+    public ArrayList<String> listado2 = new ArrayList<>();
+    public ArrayList<String[]> nueva = new ArrayList<>();
+    private ArrayList<ENCONTRADO> ListaFound;
+    private DB_SOSCHAT db;
+    private ENCONTRADO encontrados;
+    private int ban=0;
+    private String[] caracter;
+    private AdaptadorDispositivos adapter;
+
     //Getters and Setters
     public WifiP2pManager getmManager() { return mManager; }
     public WifiP2pManager.Channel getmChannel() { return mChannel; }
@@ -68,6 +111,9 @@ public class FM_encontrados extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.fragment_fm_encontrados, container, false);
+        setHasOptionsMenu(true);
+        db = new DB_SOSCHAT(getContext());
+        encontrados = new ENCONTRADO();
         pDialog=new ProgressDialog(getActivity());
         wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(!wifiManager.isWifiEnabled())
@@ -101,13 +147,48 @@ public class FM_encontrados extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_principal, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) searchItem.getActionView();
-        //searchView.setOnQueryTextListener(this);
-        searchView.setQueryHint("Search");
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
 
+            queryTextListener = new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    if (newText != null && !newText.isEmpty()) {
+                        for (String c: mReceiver.retornar()){
+                            caracter=c.split(",");
+                            nueva.add(new String[]{caracter[0],caracter[1]});
+                        }
+                        adapter = new AdaptadorDispositivos(nueva);
+                        adapter.getFilter().filter(newText);
+                        rv_participants.setAdapter(adapter);
+                        //rv_participants.invalidate();
+                    }else{
+                        if (mReceiver.retornar()!=null && !mReceiver.retornar().isEmpty()){
+                            adapter = new AdaptadorDispositivos(mReceiver.listado);
+                            rv_participants.setAdapter(adapter);
+                            rv_participants.invalidate();
+                            //prueba();
+                        }
+                    }
+                    return true;
+                }
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    Log.i("onQueryTextSubmit", query);
+
+                    return true;
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -155,5 +236,4 @@ public class FM_encontrados extends Fragment {
                 Manifest.permission.CHANGE_NETWORK_STATE
         },request_code);
     }
-
 }

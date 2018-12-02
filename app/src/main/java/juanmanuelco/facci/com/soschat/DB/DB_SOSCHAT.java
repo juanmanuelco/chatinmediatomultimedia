@@ -206,14 +206,28 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         Cursor sql = db.rawQuery(String.format("select * from '%s' ",TABLA_ENCONTRADO),null);
         return sql;
     }
-
-    public List<ENCONTRADO> encontradosLista(){
+    public ArrayList<String[]> ListaStringEncontrado(){
+        Cursor obtenidos=null;
+        obtenidos = Obtener_encontrado();
+        ArrayList<String[]> respuesta= new ArrayList<>();
+        while (obtenidos.moveToNext()){
+            //Log.i("Guardaddos",obtenidos.getString(0)+" "+obtenidos.getString(1));
+            ENCONTRADO encontrar = new ENCONTRADO();
+            encontrar.setNickname(obtenidos.getString(1));
+            encontrar.setMac_destino(obtenidos.getString(0));
+            respuesta.add(new String[]{String.valueOf(encontrar)});
+        }
+        return respuesta;
+    }
+    public List<ENCONTRADO> encontradosListaHisoricos(){
         Cursor obtenidos=null;
         obtenidos = Obtener_encontrado();
         List<ENCONTRADO> respuesta= new ArrayList<ENCONTRADO>();
         while (obtenidos.moveToNext()){
-            Log.i("Guardaddos",obtenidos.getString(0)+" "+obtenidos.getString(1));
-            ENCONTRADO encontrar = new ENCONTRADO(obtenidos.getString(0),obtenidos.getString(1));
+            //Log.i("Guardaddos",obtenidos.getString(0)+" "+obtenidos.getString(1));
+            ENCONTRADO encontrar = new ENCONTRADO();
+            encontrar.setNickname(obtenidos.getString(1));
+            encontrar.setMac_destino(obtenidos.getString(0));
             respuesta.add(encontrar);
         }
         return respuesta;
