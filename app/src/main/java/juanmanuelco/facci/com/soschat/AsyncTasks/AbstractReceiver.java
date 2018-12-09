@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
+import juanmanuelco.facci.com.soschat.ChatActivity;
 import juanmanuelco.facci.com.soschat.Entities.Mensaje;
 import juanmanuelco.facci.com.soschat.InicioActivity;
 import juanmanuelco.facci.com.soschat.R;
@@ -24,14 +25,14 @@ public class AbstractReceiver extends AsyncTask<Void, Mensaje, Void>{
 	
 	protected void playNotification(Context context, Mensaje mensaje){
 		Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		Intent intent = new Intent(context, InicioActivity.class);
+		Intent intent = new Intent(context, ChatActivity.class);
 		intent.setAction(Intent.ACTION_MAIN);
 		intent.addCategory(Intent.CATEGORY_LAUNCHER);
 		PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		Notification mNotification = new Notification.Builder(context)
 			.setContentTitle(mensaje.getChatName())
 			.setContentText(mensaje.getTexto())
-			.setSmallIcon(R.drawable.icon_notification)
+			.setSmallIcon(R.drawable.logo)
 			.setContentIntent(pIntent)
 			.setSound(notification)			
 			.build();
