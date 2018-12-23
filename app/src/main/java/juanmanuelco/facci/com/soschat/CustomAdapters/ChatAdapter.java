@@ -126,7 +126,6 @@ public class ChatAdapter extends BaseAdapter {
 			cache.chatName.setTextColor(Color.WHITE);
 			cache.text.setTextColor(Color.WHITE);
 			DireccionMAC.direccion=mes.getMacOrigen();
-			mensaje+="\n tiempo: "+ (mes.getTiempoRecibo()-mes.getTiempoEnvio());
         }
 
         //We disable all the views and enable certain views depending on the message's type

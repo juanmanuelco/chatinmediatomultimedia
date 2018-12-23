@@ -85,13 +85,13 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
 
         //Tabla miembros ---------------------------------------------------------------------------
         //ID AUTOINCREMENTADO CORREGIR CUANDO SE HAGA UNA ELIMINACION EN CASCADA
-        db.execSQL(String.format("CREATE TABLE %s (" +
+        /*db.execSQL(String.format("CREATE TABLE %s (" +
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT," +
                         "FOREIGN KEY(%s) %s ," +
                         "FOREIGN KEY(%s) %s)",
                 TABLA_MIEMBROS,COL_1_MIEMBROS,COL_2_MIEMBROS,COL_3_MIEMBROS,COL_4_MIEMBROS,
                 COL_3_MIEMBROS,REFERENCIA_ID_GRUPOS
-                ));
+                ));*/
     }
 
     @Override
@@ -207,50 +207,10 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
 
     //-------------------------------------- CRUD ENCONTRADOS --------------------------------------
     // CURSOR PARA OBTENER TODOS LOS ENCONTRADOS ---------------------------------------------------
-    public Cursor Obtener_encontrado(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor sql = db.rawQuery(String.format("select * from '%s' ",TABLA_ENCONTRADO),null);
-        return sql;
-    }
-    public ArrayList<String[]> ListaStringEncontrado(){
-        Cursor obtenidos=null;
-        obtenidos = Obtener_encontrado();
-        ArrayList<String[]> respuesta= new ArrayList<>();
-        while (obtenidos.moveToNext()){
-            //Log.i("Guardaddos",obtenidos.getString(0)+" "+obtenidos.getString(1));
-            ENCONTRADO encontrar = new ENCONTRADO();
-            encontrar.setNickname(obtenidos.getString(1));
-            encontrar.setMac_destino(obtenidos.getString(0));
-            respuesta.add(new String[]{String.valueOf(encontrar)});
-        }
-        return respuesta;
-    }
-    public List<ENCONTRADO> encontradosListaHisoricos(){
-        Cursor obtenidos=null;
-        obtenidos = Obtener_encontrado();
-        List<ENCONTRADO> respuesta= new ArrayList<ENCONTRADO>();
-        while (obtenidos.moveToNext()){
-            //Log.i("Guardaddos",obtenidos.getString(0)+" "+obtenidos.getString(1));
-            ENCONTRADO encontrar = new ENCONTRADO();
-            encontrar.setNickname(obtenidos.getString(1));
-            encontrar.setMac_destino(obtenidos.getString(0));
-            respuesta.add(encontrar);
-        }
-        return respuesta;
-    }
 
-    // INSERTAR DISPOSITIVOS ENCONTRADOS -----------------------------------------------------------
-    public void insertar_Encontrados(String address, String nickname){
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor verificar=null;
-        verificar=Obtener_encontrado();
-        try{
-            db.execSQL(String.format("INSERT INTO %s VALUES ( '%s', '%s')",
-                    TABLA_ENCONTRADO,address,nickname));
-        }catch (Exception e){
-            Log.i("MAC_Repetida", String.valueOf(e));
-        }
-    }
+
+
+
     // ELIMINAR DISPOSITIVOS ENCONTRADOS -----------------------------------------------------------
     public void Eliminar_encontrados(){
         SQLiteDatabase db = this.getWritableDatabase();

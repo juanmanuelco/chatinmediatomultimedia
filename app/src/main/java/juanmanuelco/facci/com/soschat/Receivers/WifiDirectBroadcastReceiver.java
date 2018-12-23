@@ -125,7 +125,6 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 							for(WifiP2pDevice device : peerList.getDeviceList()){
                                 listado.add(new String[]{device.deviceName, device.deviceAddress});
                                 listado2.add(device.deviceName+","+device.deviceAddress);
-								db.insertar_Encontrados(device.deviceAddress,device.deviceName);
 								deviceArray[index]= device;
 								index++;
 							}
