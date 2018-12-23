@@ -87,7 +87,6 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         //ID AUTOINCREMENTADO CORREGIR CUANDO SE HAGA UNA ELIMINACION EN CASCADA
         /*db.execSQL(String.format("CREATE TABLE %s (" +
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT," +
-                        "FOREIGN KEY(%s) %s ," +
                         "FOREIGN KEY(%s) %s)",
                 TABLA_MIEMBROS,COL_1_MIEMBROS,COL_2_MIEMBROS,COL_3_MIEMBROS,COL_4_MIEMBROS,
                 COL_3_MIEMBROS,REFERENCIA_ID_GRUPOS
