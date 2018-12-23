@@ -8,17 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
 import juanmanuelco.facci.com.soschat.R;
 
 
 public class FM_mensajes extends Fragment {
+    private DB_SOSCHAT db;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fm_mensajes, container, false);
+        View v= inflater.inflate(R.layout.fragment_fm_mensajes, container, false);
+        return v;
     }
 
 
