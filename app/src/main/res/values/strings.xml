@@ -18,6 +18,8 @@
     <string name="Bluetooth">Chat por Bluetooth</string>
     <string name="lan">Chat por Lan</string>
     <string name="wifi">Chat por Wifi Direct</string>
+    <string name="AGREGAR">AGREGAR</string>
+
 
     <string name="title_activity_tabbed">TabbedActivity</string>
     <string name="tab_text_1">Encontrados</string>
@@ -96,6 +98,7 @@
         Ya no podrás recibir mensajes, y se borrarán todos los archivos multimedia no guardados.
         Si usted es el servidor, todos los demás usuarios también se desconectarán.</string>
     <string name="confirmar">Si</string>
+    <string name="negar">No</string>
     <string name="cancelar">Cancelar</string>
     <string name="opciones">Opciones</string>
     <string name="Borrar_mensaje">Borrar mensaje</string>
