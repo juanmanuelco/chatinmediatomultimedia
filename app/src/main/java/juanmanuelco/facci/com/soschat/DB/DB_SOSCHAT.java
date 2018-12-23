@@ -35,21 +35,22 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
     public static final String COL_12 = "TIEMPO_ENVIO"; //11
     public static final String COL_13 = "TIEMPO_RECIBO"; //12
 
-    //Tabla Encontrados ----------------------------------------------------------------------------
-    public static final String TABLA_ENCONTRADO= "ENCONTRADOS_SOSCHAT";
-    public static final String COL_1_ENCONTRADO= "MAC_ADDRESS_ENCONTRADO";
-    public static final String COL_2_ENCONTRADO= "NICKNAME";
+    //Tabla usuario --------------------------------------------------------------------------------
+    public static final String TABLA_ENCONTRADO= "USUARIOS";
+    public static final String COL_1_ENCONTRADO= "USER_MAC";
+    public static final String COL_2_ENCONTRADO= "USER_NAME";
+    public static final String COL_3_ENCONTRADO= "USER_ESTADO";
     //Tabla Miembros -------------------------------------------------------------------------------
     public static final String TABLA_MIEMBROS= "MIEMBROS_SOSCHAT";
-    public static final String COL_1_MIEMBROS= "ID_MIEMBRO";
-    public static final String COL_2_MIEMBROS= "MAC_ADDRESS_ENCONTRADO";
-    public static final String COL_3_MIEMBROS= "ID_GRUPOS";
-    public static final String COL_4_MIEMBROS= "FECHA_UNION";
+    public static final String COL_1_MIEMBROS= "MEMBER_ID";
+    public static final String COL_2_MIEMBROS= "MEMBER_MAC";
+    public static final String COL_3_MIEMBROS= "GROUP_ID";
+    public static final String COL_4_MIEMBROS= "MEMBER_DATE";
     //Tablas grupos --------------------------------------------------------------------------------
     public static final String TABLA_GRUPOS= "GRUPOS_SOSCHAT";
-    public static final String COL_1_GRUPOS= "ID_GRUPOS";
-    public static final String COL_2_GRUPOS= "NOMBRES";
-    public static final String COL_3_GRUPOS= "FECHA_CREACION";
+    public static final String COL_1_GRUPOS= "GROUP_ID";
+    public static final String COL_2_GRUPOS= "GROUP_NAME";
+    public static final String COL_3_GRUPOS= "GROUP_DATE";
     //Referencias ----------------------------------------------------------------------------------
     public static final String REFERENCIA_ID_MENSAJE = String.format("REFERENCES %s(%s)",TABLA_MENSAJES,COL_1);
     public static final String REFERENCIA_ID_MIEMBROS = String.format("REFERENCES %s(%s)",TABLA_MIEMBROS,COL_1_MIEMBROS);
@@ -74,22 +75,21 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
                 COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8, COL_9, COL_10, COL_11, COL_12, COL_13
         ));
 
-        //Tabla encontrados ------------------------------------------------------------------------
-        db.execSQL(String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY, %s TEXT)"
-                ,TABLA_ENCONTRADO,COL_1_ENCONTRADO,COL_2_ENCONTRADO));
+        //Tabla usuario ----------------------------------------------------------------------------
+        db.execSQL(String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY, %s TEXT, %s TEXT)"
+                ,TABLA_ENCONTRADO,COL_1_ENCONTRADO,COL_2_ENCONTRADO,COL_3_ENCONTRADO));
 
         //Tabla grupos -----------------------------------------------------------------------------
-        db.execSQL(String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s text)",
+        db.execSQL(String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT)",
                 TABLA_GRUPOS,COL_1_GRUPOS,COL_2_GRUPOS,COL_3_GRUPOS));
 
         //Tabla miembros ---------------------------------------------------------------------------
         //ID AUTOINCREMENTADO CORREGIR CUANDO SE HAGA UNA ELIMINACION EN CASCADA
         db.execSQL(String.format("CREATE TABLE %s (" +
-                        "%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s TEXT, %s TEXT," +
+                        "%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT," +
                         "FOREIGN KEY(%s) %s ," +
                         "FOREIGN KEY(%s) %s)",
                 TABLA_MIEMBROS,COL_1_MIEMBROS,COL_2_MIEMBROS,COL_3_MIEMBROS,COL_4_MIEMBROS,
-                COL_2_MIEMBROS,REFERENCIA_ID_ENCONTRADOS,
                 COL_3_MIEMBROS,REFERENCIA_ID_GRUPOS
                 ));
     }
