@@ -198,6 +198,12 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         db.execSQL(String.format("DELETE FROM %s", TABLA_MENSAJES));
     }
 
+    public void finVidaMensaje(long milisegundo){
+        milisegundo=milisegundo-86400000;
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(String.format("DELETE FROM %s WHERE %s < %s ", TABLA_MENSAJES, COL_12, milisegundo));
+    }
+
 
     //-------------------------------------- CRUD ENCONTRADOS --------------------------------------
     // CURSOR PARA OBTENER TODOS LOS ENCONTRADOS ---------------------------------------------------

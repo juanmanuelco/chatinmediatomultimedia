@@ -29,6 +29,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
@@ -57,31 +58,25 @@ import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
 import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
 import juanmanuelco.facci.com.soschat.FuncionActivity;
 import juanmanuelco.facci.com.soschat.InitThreads.ServerInit;
+import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
 import juanmanuelco.facci.com.soschat.NEGOCIO.Dispositivo;
 import juanmanuelco.facci.com.soschat.NEGOCIO.Validaciones;
 import juanmanuelco.facci.com.soschat.R;
 import juanmanuelco.facci.com.soschat.Receivers.WifiDirectBroadcastReceiver;
+import juanmanuelco.facci.com.soschat.Reflexion.ReflectionUtils;
 
 
 public class FM_encontrados extends Fragment {
     WifiManager wifiManager;
-    public static final String TAG = "MainActivity";
     public static final String DEFAULT_CHAT_NAME = Dispositivo.getDeviceName();
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
     private WifiDirectBroadcastReceiver mReceiver;
     private IntentFilter mIntentFilter;
-    private Button goToChat;
-    private ImageView goToSettings;
-    private TextView goToSettingsText;
-    private TextView setChatNameLabel;
-    private EditText setChatName;
-    private ImageView disconnect;
     public static String chatName;
     public static ServerInit server;
     public static final int request_code = 1000;
     RecyclerView rv_participants;
-    int intentos=0;
     ProgressDialog pDialog;
 
     private SearchView searchView = null;
@@ -92,21 +87,14 @@ public class FM_encontrados extends Fragment {
     private ArrayList<ENCONTRADO> ListaFound;
     private DB_SOSCHAT db;
     private ENCONTRADO encontrados;
-    private int ban=0;
     private String[] caracter;
     private AdaptadorDispositivos adapter;
 
-    //Getters and Setters
-    public WifiP2pManager getmManager() { return mManager; }
-    public WifiP2pManager.Channel getmChannel() { return mChannel; }
-    public WifiDirectBroadcastReceiver getmReceiver() { return mReceiver; }
-    public IntentFilter getmIntentFilter() { return mIntentFilter; }
-    public Button getGoToChat(){ return goToChat; }
-    public TextView getSetChatNameLabel() { return setChatNameLabel; }
-    public ImageView getGoToSettings() { return goToSettings; }
-    public EditText getSetChatName() { return setChatName; }
-    public TextView getGoToSettingsText() { return goToSettingsText; }
-    public ImageView getDisconnect() { return disconnect; }
+    SharedPreferences sharedPref;
+
+
+    WifiP2pManager mWifiP2pManager;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -118,6 +106,13 @@ public class FM_encontrados extends Fragment {
         wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(!wifiManager.isWifiEnabled())
             wifiManager.setWifiEnabled(true);
+
+        mWifiP2pManager = (WifiP2pManager) getActivity().getSystemService(Context.WIFI_P2P_SERVICE);
+        if (mWifiP2pManager != null) {
+            mChannel = mWifiP2pManager.initialize(getContext(),  getActivity().getMainLooper(), null);
+            if (mChannel == null)  mWifiP2pManager = null;
+        }
+
         requestPermissionFromDevice();
         rv_participants=v.findViewById(R.id.participants_rv);
         rv_participants.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -140,6 +135,8 @@ public class FM_encontrados extends Fragment {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        sharedPref = this.getActivity().getPreferences(Context.MODE_PRIVATE);
 
         descubrir();
 
@@ -193,6 +190,27 @@ public class FM_encontrados extends Fragment {
     }
 
     public void descubrir(){
+        int numberOfParams = 3;
+        Class[] methodParameters = new Class[numberOfParams];
+        methodParameters[0] = WifiP2pManager.Channel.class;
+        methodParameters[1] = String.class;
+        methodParameters[2] = WifiP2pManager.ActionListener.class;
+
+        Object arglist[] = new Object[numberOfParams];
+        arglist[0] = mChannel;
+        arglist[1] = DireccionMAC.wifiNombre;
+        arglist[2] = new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+
+            }
+        };
+        ReflectionUtils.executePrivateMethod(mWifiP2pManager,WifiP2pManager.class,"setDeviceName",methodParameters,arglist);
         try {
             Thread.sleep(300);
             mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {

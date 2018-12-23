@@ -129,7 +129,6 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 								deviceArray[index]= device;
 								index++;
 							}
-							Log.i("ListaEncontrados",String.valueOf(db.encontradosListaHisoricos()));
 
 							AdaptadorDispositivos adapter= new AdaptadorDispositivos(listado);
 							adapter.setOnClickListener(new View.OnClickListener() {
