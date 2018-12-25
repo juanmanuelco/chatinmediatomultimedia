@@ -4,11 +4,14 @@ public class ENCONTRADO {
 
     private String Mac_destino;
     private String nickname;
+    private Boolean estado;
 
     /*public ENCONTRADO(String mac_destino, String nickname) {
         this.Mac_destino = mac_destino;
         this.nickname = nickname;
     }*/
+
+
 
     public String getMac_destino() {
         return Mac_destino;

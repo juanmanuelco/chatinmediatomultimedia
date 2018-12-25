@@ -53,7 +53,8 @@ public class AdaptadorDispositivos extends RecyclerView.Adapter<AdaptadorDisposi
 
     @Override
     public void onBindViewHolder(@NonNull AdaptadorDispositivos.ViewHolderDatos viewHolderDatos, final int i) {
-        viewHolderDatos.txtNombre.setText(listado.get(i)[0]);
+        String nombre= Character.toUpperCase(listado.get(i)[0].charAt(0)) + listado.get(i)[0].substring(1,listado.get(i)[0].length());
+        viewHolderDatos.txtNombre.setText(nombre);
         viewHolderDatos.txtMAC.setText(listado.get(i)[1]);
 
         if(db.validarAgregado(listado.get(i)[1])) viewHolderDatos.sw_agregado.setChecked(true);

@@ -129,6 +129,8 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
+    <string name="NOADD">No hay dispositivos agregados</string>
+
     <string name="ADD">Usuario agregado a la Base de datos</string>
     <string name="NADD">Usuario eliminado de la Base de datos</string>
 
