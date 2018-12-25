@@ -35,7 +35,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/AGREGAR"/>
                     <Switch
-                        android:id="@+id/switch3"
+                        android:id="@+id/sw_agregado"
                         android:layout_width="wrap_content"
                         android:textOn="@string/confirmar"
                         android:textOff="@string/negar"
@@ -52,7 +52,7 @@
                     android:layout_alignParentTop="true"
                     android:textAlignment="center"
                     android:gravity="center"
-                    android:textSize="26dp"
+                    android:textSize="20dp"
                     />
 
                 <TextView

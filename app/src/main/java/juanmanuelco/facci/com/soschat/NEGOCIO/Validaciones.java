@@ -42,8 +42,7 @@ public class Validaciones {
         List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
 
         for (ActivityManager.RunningTaskInfo task : tasks) {
-            if (activityClass.getCanonicalName().equalsIgnoreCase(task.baseActivity.getClassName()))
-                return true;
+            if (activityClass.getCanonicalName().equalsIgnoreCase(task.baseActivity.getClassName())) return true;
         }
         return false;
     }

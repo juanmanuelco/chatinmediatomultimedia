@@ -284,7 +284,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void sendMessage(int type) {
         long millis = System.currentTimeMillis();
-        Mensaje mes = new Mensaje(type, edit.getText().toString(), null, DireccionMAC.nombre);
+        Mensaje mes = new Mensaje(type, edit.getText().toString(), null, DireccionMAC.wifiNombre);
         mes.setTiempoEnvio(Math.abs(millis));
         mes.setIdentificacion(true);
         mes.setMacOrigen(getMacAddr());

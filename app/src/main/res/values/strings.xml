@@ -22,7 +22,7 @@
 
 
     <string name="title_activity_tabbed">TabbedActivity</string>
-    <string name="tab_text_1">Encontrados</string>
+    <string name="tab_text_1">Cercanos</string>
     <string name="tab_text_2">Mensaje</string>
     <string name="tab_text_3">Historico</string>
     <string name="action_settings">Settings</string>
@@ -128,5 +128,8 @@
     <string name="title_activity_funcion">Función</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="ADD">Usuario agregado a la Base de datos</string>
+    <string name="NADD">Usuario eliminado de la Base de datos</string>
 
 </resources>

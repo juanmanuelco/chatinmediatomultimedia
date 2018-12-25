@@ -75,7 +75,6 @@ public class FM_encontrados extends Fragment {
     private IntentFilter mIntentFilter;
     public static String chatName;
     public static ServerInit server;
-    public static final int request_code = 1000;
     RecyclerView rv_participants;
     ProgressDialog pDialog;
 
@@ -85,7 +84,6 @@ public class FM_encontrados extends Fragment {
     public ArrayList<String> listado2 = new ArrayList<>();
     public ArrayList<String[]> nueva = new ArrayList<>();
     private ArrayList<ENCONTRADO> ListaFound;
-    private DB_SOSCHAT db;
     private ENCONTRADO encontrados;
     private String[] caracter;
     private AdaptadorDispositivos adapter;
@@ -100,7 +98,6 @@ public class FM_encontrados extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.fragment_fm_encontrados, container, false);
         setHasOptionsMenu(true);
-        db = new DB_SOSCHAT(getContext());
         encontrados = new ENCONTRADO();
         pDialog=new ProgressDialog(getActivity());
         wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -113,7 +110,7 @@ public class FM_encontrados extends Fragment {
             if (mChannel == null)  mWifiP2pManager = null;
         }
 
-        requestPermissionFromDevice();
+        Dispositivo.requestPermissionFromDevice(getActivity());
         rv_participants=v.findViewById(R.id.participants_rv);
         rv_participants.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -163,13 +160,13 @@ public class FM_encontrados extends Fragment {
                             caracter=c.split(",");
                             nueva.add(new String[]{caracter[0],caracter[1]});
                         }
-                        adapter = new AdaptadorDispositivos(nueva);
+                        adapter = new AdaptadorDispositivos(nueva, getContext());
                         adapter.getFilter().filter(newText);
                         rv_participants.setAdapter(adapter);
                         //rv_participants.invalidate();
                     }else{
                         if (mReceiver.retornar()!=null && !mReceiver.retornar().isEmpty()){
-                            adapter = new AdaptadorDispositivos(mReceiver.listado);
+                            adapter = new AdaptadorDispositivos(mReceiver.listado, getContext());
                             rv_participants.setAdapter(adapter);
                             rv_participants.invalidate();
                             //prueba();
@@ -243,15 +240,5 @@ public class FM_encontrados extends Fragment {
         getActivity().unregisterReceiver(mReceiver);
     }
 
-    private void requestPermissionFromDevice() {
-        ActivityCompat.requestPermissions(getActivity(), new String[]{
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_NETWORK_STATE,
-                Manifest.permission.CHANGE_NETWORK_STATE
-        },request_code);
-    }
+
 }

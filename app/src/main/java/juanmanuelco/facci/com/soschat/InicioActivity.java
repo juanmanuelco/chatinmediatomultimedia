@@ -32,7 +32,7 @@ public class InicioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
         db= new DB_SOSCHAT(this);
-
+        Dispositivo.requestPermissionFromDevice(this);
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(true);
         pDialog=new ProgressDialog(this);
@@ -40,7 +40,6 @@ public class InicioActivity extends AppCompatActivity {
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         ET_Main_Nickname.setText(sharedPref.getString("nickname", Dispositivo.getDeviceName()));
         db.finVidaMensaje(System.currentTimeMillis());
-
     }
     public void bluethoot (View v){
         abrirChat(0);
@@ -48,44 +47,33 @@ public class InicioActivity extends AppCompatActivity {
     public void wifi (View v){
         abrirChat(1);
     }
-    public void lan (View v){
-        abrirChat(2);
-    }
+
     public void abrirChat(int valor){
         Mensajes.cargando(R.string.VERIFY, pDialog, this);
         String nickname= ET_Main_Nickname.getText().toString();
-        DireccionMAC.nombre=nickname;
-
         if(Validaciones.vacio(new EditText[]{ET_Main_Nickname})){
-            GuardarPreferencia();
+            GuardarPreferencia(nickname);
             Intent act_chat= null;
-            act_chat= new Intent(InicioActivity.this, FuncionActivity.class);
-            act_chat.putExtra("tipo", valor);
-            act_chat.putExtra("nickname", nickname );
-            System.setProperty("net.hostname", nickname);
+            if(valor==1) act_chat= new Intent(InicioActivity.this, FuncionActivity.class);
             DireccionMAC.wifiNombre=ET_Main_Nickname.getText().toString();
             startActivity(act_chat);
-        }else{
-            Mensajes.mostrarMensaje(R.string.ERROR, R.string.NONAME, this);
-        }
+        }else Mensajes.mostrarMensaje(R.string.ERROR, R.string.NONAME, this);
     }
-    public void GuardarPreferencia(){
+    public void GuardarPreferencia(String name){
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("nickname", ET_Main_Nickname.getText().toString());
+        editor.putString("nickname", name);
         editor.commit();
     }
     @Override
     protected void onResume() {
         super.onResume();
-        if (pDialog != null)
-            pDialog.dismiss();
+        if (pDialog != null) pDialog.dismiss();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (pDialog != null)
-            pDialog.dismiss();
+        if (pDialog != null) pDialog.dismiss();
     }
 }

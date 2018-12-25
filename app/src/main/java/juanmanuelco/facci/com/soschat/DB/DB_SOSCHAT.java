@@ -4,12 +4,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
 import juanmanuelco.facci.com.soschat.Entities.Mensaje;
 import juanmanuelco.facci.com.soschat.Entities.Miembros;
 import juanmanuelco.facci.com.soschat.Entities.grupos;
+import juanmanuelco.facci.com.soschat.R;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -76,7 +78,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         ));
 
         //Tabla usuario ----------------------------------------------------------------------------
-        db.execSQL(String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY, %s TEXT, %s TEXT)"
+        db.execSQL(String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY, %s TEXT, %s NUMERIC)"
                 ,TABLA_ENCONTRADO,COL_1_ENCONTRADO,COL_2_ENCONTRADO,COL_3_ENCONTRADO));
 
         //Tabla grupos -----------------------------------------------------------------------------
@@ -174,8 +176,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         while (registro.moveToNext()){
             keys.add(registro.getLong(11));
         }
-        if(keys.contains(mes.getTiempoEnvio()))
-            respuesta=false;
+        if(keys.contains(mes.getTiempoEnvio())) respuesta=false;
         return respuesta;
     }
 
@@ -207,95 +208,28 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
     //-------------------------------------- CRUD ENCONTRADOS --------------------------------------
     // CURSOR PARA OBTENER TODOS LOS ENCONTRADOS ---------------------------------------------------
 
-
-
-
-    // ELIMINAR DISPOSITIVOS ENCONTRADOS -----------------------------------------------------------
-    public void Eliminar_encontrados(){
+    public Boolean validarAgregado(String mac){
+        Boolean respuesta= false;
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(String.format("DELETE FROM %s", TABLA_ENCONTRADO));
+        SQLiteStatement s = db.compileStatement( "SELECT (USER_ESTADO) from USUARIOS WHERE USER_MAC = '"+mac+"'" );
+        Boolean data=Boolean.parseBoolean(s.simpleQueryForString());
+        if(data) respuesta=true;
+        return respuesta;
     }
 
-    //-------------------------------------- CRUD GRUPOS --------------------------------------
-    // CURSOR PARA OBTENER TODOS LOS GRUPOS --------------------------------------------------------
-    public Cursor Obtener_grupos(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor sql = db.rawQuery(String.format("select * from '%s' ",TABLA_GRUPOS),null);
-        return sql;
-    }
 
-    public List<grupos> GruposLista(){
-        Cursor obtenidos=null;
-        obtenidos = Obtener_grupos();
-        List<grupos> grupos= new ArrayList<grupos>();
-        while (obtenidos.moveToNext()){
-            Log.i("Guardaddos",obtenidos.getString(0)+" "+obtenidos.getString(1)+
-                                        " "+obtenidos.getString(2));
-            grupos encontrados = new grupos(
-                    obtenidos.getString(0),
-                    obtenidos.getString(1),
-                    obtenidos.getString(2));
-            grupos.add(encontrados);
-        }
-        return grupos;
-    }
-    // INSERTAR DISPOSITIVOS ENCONTRADOS -----------------------------------------------------------
-    public void insertar_grupos(grupos grupo){
+    public void insertarUsuario(String Mac, String Nombre){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor verificar=null;
-        verificar=Obtener_grupos();
-        try{
-            db.execSQL(String.format("INSERT INTO %s VALUES ( '%s', '%s', '%s')",
-                    TABLA_GRUPOS,grupo.getId_grupo(),grupo.getNombre(),grupo.getFecha()));
-        }catch (Exception e){
-            Log.i("Grupo_repetido", String.valueOf(e));
-        }
+        SQLiteStatement s = db.compileStatement( "SELECT COUNT (USER_MAC) from USUARIOS WHERE USER_MAC = '"+Mac+"'" );
+        long count = s.simpleQueryForLong();
+        if(count <1) db.execSQL(String.format("INSERT INTO %s VALUES ( '%s', '%s', 'false')", TABLA_ENCONTRADO, Mac, Nombre));
     }
-    // ELIMINAR DISPOSITIVOS ENCONTRADOS -----------------------------------------------------------
-    public void Eliminar_grupos(){
+    public int ActualizarUsuario(String Mac, Boolean estado){
+        int respuesta=0;
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(String.format("DELETE FROM %s", TABLA_GRUPOS));
-    }
-
-    //-------------------------------------- CRUD MIEMBROS --------------------------------------
-    // CURSOR PARA OBTENER TODOS LOS MIEMBROS --------------------------------------------------------
-    public Cursor Obtener_miembros(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor sql = db.rawQuery(String.format("select * from '%s' ",TABLA_MIEMBROS),null);
-        return sql;
-    }
-
-    public List<Miembros> MiembrosLista(){
-        Cursor obtenidos=null;
-        obtenidos = Obtener_miembros();
-        List<Miembros> grupos= new ArrayList<Miembros>();
-        while (obtenidos.moveToNext()){
-            Log.i("Guardaddos",obtenidos.getString(0)+" "+obtenidos.getString(1)+
-                    " "+obtenidos.getString(2)+" "+obtenidos.getString(3));
-            Miembros encontrados = new Miembros(
-                    obtenidos.getString(0),
-                    obtenidos.getString(1),
-                    obtenidos.getString(2),
-                    obtenidos.getString(3));
-            grupos.add(encontrados);
-        }
-        return grupos;
-    }
-    // INSERTAR DISPOSITIVOS ENCONTRADOS -----------------------------------------------------------
-    public void insertar_miembros(Miembros miembro){
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor verificar=null;
-        verificar=Obtener_miembros();
-        try{
-            db.execSQL(String.format("INSERT INTO %s VALUES ( '%s', '%s', '%s', '%s')",
-                    TABLA_GRUPOS,miembro.getId(),miembro.getMac_encontrado(),miembro.getId_grupo(),miembro.getFecha()));
-        }catch (Exception e){
-            Log.i("Miembro repetido", String.valueOf(e));
-        }
-    }
-    // ELIMINAR DISPOSITIVOS ENCONTRADOS -----------------------------------------------------------
-    public void Eliminar_miembro(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(String.format("DELETE FROM %s", TABLA_MIEMBROS));
+        db.execSQL(String.format("UPDATE %s SET %s = '%s' WHERE %s = '%s'", TABLA_ENCONTRADO, COL_3_ENCONTRADO, estado, COL_1_ENCONTRADO, Mac ));
+        if(estado) respuesta=R.string.ADD;
+        else respuesta=R.string.NADD;
+        return respuesta;
     }
 }
