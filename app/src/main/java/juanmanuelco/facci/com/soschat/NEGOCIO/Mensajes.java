@@ -84,4 +84,14 @@ public class Mensajes {
         }
         return "02:00:00:00:00:00";
     }
+    public static String  contadorTiempo(long tiempo){
+        String respuesta="";
+        long tiempoActual= System.currentTimeMillis();
+        long resta = Math.abs(tiempoActual-tiempo);
+        if(resta < 1000) respuesta = "Justo ahora";
+        else if(resta < 60000) respuesta = "Hace menos de un minuto";
+        else if (resta < 3600000 ) respuesta = "Hace "+ Math.round(resta/60000) +" minutos";
+        else if (resta < 86400000) respuesta = "Hace "+ Math.round(resta/3600000) + " horas";
+        return respuesta;
+    }
 }

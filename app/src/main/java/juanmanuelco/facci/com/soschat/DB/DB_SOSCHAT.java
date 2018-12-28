@@ -18,6 +18,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static juanmanuelco.facci.com.soschat.NEGOCIO.Mensajes.getMacAddr;
+
 public class DB_SOSCHAT extends SQLiteOpenHelper {
 
     public static final String DB_NOMBRE = "DB_SOSCHAT_FINAL_V2.db";
@@ -154,6 +156,22 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         }
         return respuesta;
     }
+
+    public ArrayList<String[]> mensajesRecibidos(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<String[]> respuesta= new ArrayList<>();
+        Cursor obtenidos = db.rawQuery(
+                String.format(
+                        "SELECT * FROM %s WHERE (%s IN (SELECT MAX (%s) FROM %s GROUP BY %s ) ) AND (%s = '%s') ORDER BY %s DESC",
+                        TABLA_MENSAJES, COL_12, COL_12, TABLA_MENSAJES, COL_10, COL_11, getMacAddr(), COL_12),null);
+        while (obtenidos.moveToNext()){
+            respuesta.add(new String[]{ obtenidos.getString(3),obtenidos.getString(2), obtenidos.getLong(11)+""});
+        }
+        return respuesta;
+    }
+
+
+
 
     public InetAddress obtenerInetAddress(byte[] valor){
         InetAddress respuesta= null;

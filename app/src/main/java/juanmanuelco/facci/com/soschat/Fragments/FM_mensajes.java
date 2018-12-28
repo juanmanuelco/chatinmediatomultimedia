@@ -4,22 +4,41 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import juanmanuelco.facci.com.soschat.CustomAdapters.AdaptadorMensajes;
 import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
 import juanmanuelco.facci.com.soschat.R;
 
 
 public class FM_mensajes extends Fragment {
-    private DB_SOSCHAT db;
+    RecyclerView rv_participants;
+    AdaptadorMensajes adaptadorMensajes;
+    ArrayList<String[]> mensajes;
+    DB_SOSCHAT db;
+    TextView TV_NO_ENC;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.fragment_fm_mensajes, container, false);
+        db= new DB_SOSCHAT(getActivity());
+        mensajes= new ArrayList<>();
+        mensajes= db.mensajesRecibidos();
+        TV_NO_ENC= v.findViewById(R.id.TV_NO_ENC);
+        if(mensajes.size()<1) TV_NO_ENC.setText(R.string.NOADD);
+        else TV_NO_ENC.setText("");
+        rv_participants=v.findViewById(R.id.participants_rv);
+        rv_participants.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adaptadorMensajes= new AdaptadorMensajes(mensajes, getActivity());
+        rv_participants.setAdapter(adaptadorMensajes);
         return v;
     }
 
