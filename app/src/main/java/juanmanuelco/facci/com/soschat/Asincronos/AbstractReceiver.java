@@ -1,4 +1,4 @@
-package juanmanuelco.facci.com.soschat.AsyncTasks;
+package juanmanuelco.facci.com.soschat.Asincronos;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -12,8 +12,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 import juanmanuelco.facci.com.soschat.ChatActivity;
-import juanmanuelco.facci.com.soschat.Entities.Mensaje;
-import juanmanuelco.facci.com.soschat.InicioActivity;
+import juanmanuelco.facci.com.soschat.Entidades.Mensaje;
 import juanmanuelco.facci.com.soschat.R;
 
 public class AbstractReceiver extends AsyncTask<Void, Mensaje, Void>{

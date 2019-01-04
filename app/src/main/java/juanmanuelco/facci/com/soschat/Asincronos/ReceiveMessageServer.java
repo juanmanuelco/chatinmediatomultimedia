@@ -1,10 +1,9 @@
-package juanmanuelco.facci.com.soschat.AsyncTasks;
+package juanmanuelco.facci.com.soschat.Asincronos;
 
 import android.content.Context;
 
 import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
-import juanmanuelco.facci.com.soschat.Entities.Mensaje;
-import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
+import juanmanuelco.facci.com.soschat.Entidades.Mensaje;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package juanmanuelco.facci.com.soschat.CustomAdapters;
+package juanmanuelco.facci.com.soschat.Adaptadores;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,19 +9,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import juanmanuelco.facci.com.soschat.Cache.CacheView;
-import juanmanuelco.facci.com.soschat.Entities.Item;
+import juanmanuelco.facci.com.soschat.Entidades.Item;
 import juanmanuelco.facci.com.soschat.R;
 
 import java.util.List;
 
-public class FileListAdapter extends BaseAdapter {
+public class AdaptadorFilaArchivos extends BaseAdapter {
 	
 	private Context mContext;
 	private List<Item> listItem;
 	private Item item;
 	private LayoutInflater inflater;
 	
-	public FileListAdapter(Context context, List<Item> list){
+	public AdaptadorFilaArchivos(Context context, List<Item> list){
 		mContext = context;
 		listItem = list;
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

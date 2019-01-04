@@ -1,7 +1,6 @@
 package juanmanuelco.facci.com.soschat.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,9 +12,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import juanmanuelco.facci.com.soschat.CustomAdapters.AdaptadorDispositivos;
+import juanmanuelco.facci.com.soschat.ChatActivity;
+import juanmanuelco.facci.com.soschat.Adaptadores.AdaptadorDispositivos;
 import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
-import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
 import juanmanuelco.facci.com.soschat.R;
 
 
@@ -38,6 +37,13 @@ public class FM_historico extends Fragment {
         rv_participants=v.findViewById(R.id.participants_rv);
         rv_participants.setLayoutManager(new LinearLayoutManager(getActivity()));
         adaptadorDispositivos= new AdaptadorDispositivos(encontrados, getActivity());
+        adaptadorDispositivos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), ChatActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
         rv_participants.setAdapter(adaptadorDispositivos);
         return v;
     }

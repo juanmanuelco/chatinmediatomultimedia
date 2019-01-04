@@ -1,4 +1,4 @@
-package juanmanuelco.facci.com.soschat.Receivers;
+package juanmanuelco.facci.com.soschat.Receptores;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -15,18 +15,17 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import juanmanuelco.facci.com.soschat.ChatActivity;
-import juanmanuelco.facci.com.soschat.CustomAdapters.AdaptadorDispositivos;
+import juanmanuelco.facci.com.soschat.Adaptadores.AdaptadorDispositivos;
 import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
-import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
+import juanmanuelco.facci.com.soschat.Entidades.ENCONTRADO;
 import juanmanuelco.facci.com.soschat.Fragments.FM_encontrados;
 import juanmanuelco.facci.com.soschat.FuncionActivity;
-import juanmanuelco.facci.com.soschat.InitThreads.ClientInit;
-import juanmanuelco.facci.com.soschat.InitThreads.ServerInit;
+import juanmanuelco.facci.com.soschat.Hilos.ClientInit;
+import juanmanuelco.facci.com.soschat.Hilos.ServerInit;
 import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
 import juanmanuelco.facci.com.soschat.R;
 

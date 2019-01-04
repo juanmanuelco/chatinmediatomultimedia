@@ -1,4 +1,4 @@
-package juanmanuelco.facci.com.soschat.CustomAdapters;
+package juanmanuelco.facci.com.soschat.Adaptadores;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import juanmanuelco.facci.com.soschat.Entities.Mensaje;
 import juanmanuelco.facci.com.soschat.NEGOCIO.Mensajes;
 import juanmanuelco.facci.com.soschat.R;
 

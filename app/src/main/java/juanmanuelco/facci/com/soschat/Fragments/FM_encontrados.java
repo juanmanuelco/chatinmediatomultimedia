@@ -24,7 +24,6 @@
             }*/
 package juanmanuelco.facci.com.soschat.Fragments;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -33,7 +32,6 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,24 +43,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import juanmanuelco.facci.com.soschat.CustomAdapters.AdaptadorDispositivos;
-import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
-import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
+import juanmanuelco.facci.com.soschat.Adaptadores.AdaptadorDispositivos;
+import juanmanuelco.facci.com.soschat.Entidades.ENCONTRADO;
 import juanmanuelco.facci.com.soschat.FuncionActivity;
-import juanmanuelco.facci.com.soschat.InitThreads.ServerInit;
+import juanmanuelco.facci.com.soschat.Hilos.ServerInit;
 import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
 import juanmanuelco.facci.com.soschat.NEGOCIO.Dispositivo;
 import juanmanuelco.facci.com.soschat.NEGOCIO.Validaciones;
 import juanmanuelco.facci.com.soschat.R;
-import juanmanuelco.facci.com.soschat.Receivers.WifiDirectBroadcastReceiver;
+import juanmanuelco.facci.com.soschat.Receptores.WifiDirectBroadcastReceiver;
 import juanmanuelco.facci.com.soschat.Reflexion.ReflectionUtils;
 
 

@@ -1,4 +1,4 @@
-package juanmanuelco.facci.com.soschat.Entities;
+package juanmanuelco.facci.com.soschat.Entidades;
 
 import android.content.Context;
 import android.database.Cursor;

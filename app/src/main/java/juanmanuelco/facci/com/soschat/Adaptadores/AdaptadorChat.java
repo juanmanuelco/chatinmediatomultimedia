@@ -1,4 +1,4 @@
-package juanmanuelco.facci.com.soschat.CustomAdapters;
+package juanmanuelco.facci.com.soschat.Adaptadores;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,11 +23,8 @@ import android.widget.TextView;
 
 import juanmanuelco.facci.com.soschat.Cache.CacheView;
 import juanmanuelco.facci.com.soschat.ChatActivity;
-import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
-import juanmanuelco.facci.com.soschat.Entities.Mensaje;
+import juanmanuelco.facci.com.soschat.Entidades.Mensaje;
 import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
-import juanmanuelco.facci.com.soschat.NEGOCIO.Dispositivo;
-import juanmanuelco.facci.com.soschat.NEGOCIO.Mensajes;
 import juanmanuelco.facci.com.soschat.PlayVideoActivity;
 import juanmanuelco.facci.com.soschat.R;
 import juanmanuelco.facci.com.soschat.ViewImageActivity;
@@ -39,7 +36,7 @@ import java.util.List;
 
 import static juanmanuelco.facci.com.soschat.NEGOCIO.Mensajes.getMacAddr;
 
-public class ChatAdapter extends BaseAdapter {
+public class AdaptadorChat extends BaseAdapter {
 	private Activity activity;
 	private List<Mensaje> listMensaje;
 	private LayoutInflater inflater;
@@ -49,7 +46,7 @@ public class ChatAdapter extends BaseAdapter {
 
 
 
-	public ChatAdapter(Context context, List<Mensaje> listMensaje){
+	public AdaptadorChat(Context context, List<Mensaje> listMensaje){
 		this.listMensaje = listMensaje;
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mContext = context;

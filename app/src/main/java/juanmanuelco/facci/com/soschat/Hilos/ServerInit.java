@@ -1,4 +1,4 @@
-package juanmanuelco.facci.com.soschat.InitThreads;
+package juanmanuelco.facci.com.soschat.Hilos;
 
 import java.io.IOException;
 import java.net.InetAddress;

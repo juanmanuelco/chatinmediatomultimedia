@@ -1,11 +1,8 @@
 package juanmanuelco.facci.com.soschat;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import juanmanuelco.facci.com.soschat.CustomAdapters.ChatAdapter;
+import juanmanuelco.facci.com.soschat.Adaptadores.AdaptadorChat;
 import juanmanuelco.facci.com.soschat.util.SystemUiHider;
 
 public class ViewImageActivity extends AppCompatActivity  {
@@ -60,7 +57,7 @@ public class ViewImageActivity extends AppCompatActivity  {
 
         //ImageView to display the image
         ImageView contentView = (ImageView) findViewById(R.id.fullscreen_content);
-        contentView.setImageBitmap(ChatAdapter.bitmap);
+        contentView.setImageBitmap(AdaptadorChat.bitmap);
 
         //Back button
         Button button = (Button) findViewById(R.id.back_button);

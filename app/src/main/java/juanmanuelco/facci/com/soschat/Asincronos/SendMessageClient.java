@@ -1,10 +1,10 @@
-package juanmanuelco.facci.com.soschat.AsyncTasks;
+package juanmanuelco.facci.com.soschat.Asincronos;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
 import juanmanuelco.facci.com.soschat.ChatActivity;
-import juanmanuelco.facci.com.soschat.Entities.Mensaje;
+import juanmanuelco.facci.com.soschat.Entidades.Mensaje;
 import juanmanuelco.facci.com.soschat.InicioActivity;
 
 import java.io.IOException;

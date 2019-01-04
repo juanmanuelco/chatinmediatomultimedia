@@ -1,7 +1,6 @@
 package juanmanuelco.facci.com.soschat;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -40,16 +39,16 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import juanmanuelco.facci.com.soschat.AsyncTasks.SendMessageClient;
-import juanmanuelco.facci.com.soschat.AsyncTasks.SendMessageServer;
-import juanmanuelco.facci.com.soschat.CustomAdapters.ChatAdapter;
+import juanmanuelco.facci.com.soschat.Asincronos.SendMessageClient;
+import juanmanuelco.facci.com.soschat.Asincronos.SendMessageServer;
+import juanmanuelco.facci.com.soschat.Adaptadores.AdaptadorChat;
 import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
-import juanmanuelco.facci.com.soschat.Entities.Image;
-import juanmanuelco.facci.com.soschat.Entities.MediaFile;
-import juanmanuelco.facci.com.soschat.Entities.Mensaje;
+import juanmanuelco.facci.com.soschat.Entidades.Image;
+import juanmanuelco.facci.com.soschat.Entidades.MediaFile;
+import juanmanuelco.facci.com.soschat.Entidades.Mensaje;
 import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
 import juanmanuelco.facci.com.soschat.NEGOCIO.Mensajes;
-import juanmanuelco.facci.com.soschat.Receivers.WifiDirectBroadcastReceiver;
+import juanmanuelco.facci.com.soschat.Receptores.WifiDirectBroadcastReceiver;
 import juanmanuelco.facci.com.soschat.Servicios.MessageService;
 import juanmanuelco.facci.com.soschat.util.ActivityUtilities;
 import juanmanuelco.facci.com.soschat.util.FileUtilities;
@@ -78,7 +77,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText edit;
     private static ListView listView;
     private static List<Mensaje> listMensaje;
-    private static ChatAdapter chatAdapter;
+    private static AdaptadorChat adaptadorChat;
     private Uri fileUri;
     private String fileURL;
     private ArrayList<Uri> tmpFilesUri;
@@ -132,8 +131,8 @@ public class ChatActivity extends AppCompatActivity {
         listMensaje = new ArrayList<Mensaje>();
 
 
-        chatAdapter = new ChatAdapter(this, listMensaje);
-        listView.setAdapter(chatAdapter);
+        adaptadorChat = new AdaptadorChat(this, listMensaje);
+        listView.setAdapter(adaptadorChat);
 
         //Initialize the list of temporary files URI
         tmpFilesUri = new ArrayList<Uri>();
@@ -337,7 +336,7 @@ public class ChatActivity extends AppCompatActivity {
             posicion++;
         }
         if(conteo>1)listMensaje.remove(posicion);
-        chatAdapter.notifyDataSetChanged();
+        adaptadorChat.notifyDataSetChanged();
         listView.setSelection(listMensaje.size() - 1);
     }
 
@@ -392,7 +391,7 @@ public class ChatActivity extends AppCompatActivity {
                         dialog.cancel();
                         db.eliminarMensajes();
                         listMensaje.clear();
-                        chatAdapter.notifyDataSetChanged();
+                        adaptadorChat.notifyDataSetChanged();
                         mostrarMensaje("Listo", "Registro vaciado", ChatActivity.this);
                     }
                 });
@@ -530,7 +529,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void deleteMessage(long id) {
         listMensaje.remove((int) id);
-        chatAdapter.notifyDataSetChanged();
+        adaptadorChat.notifyDataSetChanged();
     }
 
     private void clearTmpFiles(File dir) {

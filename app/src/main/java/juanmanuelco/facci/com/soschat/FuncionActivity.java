@@ -1,41 +1,27 @@
 package juanmanuelco.facci.com.soschat;
 
-import android.app.SearchManager;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.SearchView;
-import android.widget.Toast;
 
 
-import java.util.ArrayList;
-
-import juanmanuelco.facci.com.soschat.CustomAdapters.AdaptadorDispositivos;
-import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
-import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
 import juanmanuelco.facci.com.soschat.Fragments.FM_encontrados;
 import juanmanuelco.facci.com.soschat.Fragments.FM_historico;
 import juanmanuelco.facci.com.soschat.Fragments.FM_mensajes;
-import juanmanuelco.facci.com.soschat.InitThreads.ServerInit;
-import juanmanuelco.facci.com.soschat.Receivers.WifiDirectBroadcastReceiver;
+import juanmanuelco.facci.com.soschat.Hilos.ServerInit;
 
 public class FuncionActivity extends AppCompatActivity {
 

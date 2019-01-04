@@ -5,12 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
-import android.util.Log;
 
-import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
-import juanmanuelco.facci.com.soschat.Entities.Mensaje;
-import juanmanuelco.facci.com.soschat.Entities.Miembros;
-import juanmanuelco.facci.com.soschat.Entities.grupos;
+import juanmanuelco.facci.com.soschat.Entidades.Mensaje;
 import juanmanuelco.facci.com.soschat.R;
 
 import java.net.InetAddress;
