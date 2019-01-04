@@ -45,11 +45,6 @@ public class FuncionActivity extends AppCompatActivity {
     public static ServerInit server;
     public static String chatName="";
 
-    private SearchView searchView = null;
-    private boolean searchViewShow = false;
-    private SearchView.OnQueryTextListener queryTextListener;
-    private int posicion;
-
 
 
     @Override

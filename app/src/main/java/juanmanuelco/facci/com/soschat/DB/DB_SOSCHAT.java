@@ -2,9 +2,11 @@ package juanmanuelco.facci.com.soschat.DB;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
 
 import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
@@ -250,14 +252,35 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         else respuesta=R.string.NADD;
         return respuesta;
     }
+
     public ArrayList<String[]> listaEncontrados(){
         ArrayList<String[]> respuesta= new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery(String.format("select * from %s ",TABLA_ENCONTRADO),null);
-        while (res.moveToNext()){
-            if(Boolean.parseBoolean(res.getString(2)))
-                respuesta.add(new String[]{res.getString(1), res.getString(0)});
+        try {
+            Cursor res = db.rawQuery(String.format("select * from %s ",TABLA_ENCONTRADO),null);
+            while (res.moveToNext()) {
+                if (Boolean.parseBoolean(res.getString(2)))
+                    respuesta.add(new String[]{res.getString(1), res.getString(0)});
+            }
+        }catch (SQLException e){
+            Log.i("error",e.toString());
         }
         return respuesta;
     }
+
+    public ArrayList<String> buscador(){
+        ArrayList<String> respuesta= new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            Cursor res = db.rawQuery(String.format("select * from %s ",TABLA_ENCONTRADO),null);
+            while (res.moveToNext()) {
+                if (Boolean.parseBoolean(res.getString(2)))
+                    respuesta.add(res.getString(1)+","+res.getString(0));
+            }
+        }catch (SQLException e){
+            Log.i("error",e.toString());
+        }
+        return respuesta;
+    }
+
 }
