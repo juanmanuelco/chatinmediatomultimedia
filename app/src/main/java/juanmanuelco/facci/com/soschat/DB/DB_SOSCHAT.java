@@ -6,11 +6,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
-<<<<<<< HEAD
-=======
 import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
->>>>>>> a2fdc3247195bb1dbb243dcdb3ef79d93f00a368
+
 
 import juanmanuelco.facci.com.soschat.Entidades.Mensaje;
 import juanmanuelco.facci.com.soschat.R;

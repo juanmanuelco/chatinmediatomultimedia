@@ -25,7 +25,8 @@
     <string name="tab_text_1">Cercanos</string>
     <string name="tab_text_2">Mensaje</string>
     <string name="tab_text_3">Historico</string>
-    <string name="action_settings">Settings</string>
+    <string name="m_conf">Configuración</string>
+    <string name="action_settings">Configuración</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
 
@@ -99,6 +100,7 @@
         Si usted es el servidor, todos los demás usuarios también se desconectarán.</string>
     <string name="confirmar">Si</string>
     <string name="negar">No</string>
+    <string name="CANC">Cancelar</string>
     <string name="cancelar">Cancelar</string>
     <string name="opciones">Opciones</string>
     <string name="Borrar_mensaje">Borrar mensaje</string>
@@ -135,5 +137,9 @@
 
     <string name="ADD">Usuario agregado a la Base de datos</string>
     <string name="NADD">Usuario eliminado de la Base de datos</string>
+
+    <string name="TTL">Tiempo de vida de mensajes (Horas) </string>
+    <string name="SAVE">Guardar</string>
+    <string name="GUARD">Configuración ha sido guardada</string>
 
 </resources>
