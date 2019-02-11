@@ -281,4 +281,21 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         return respuesta;
     }
 
+    public ArrayList<String> buscador_mensaje(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<String> respuesta= new ArrayList<>();
+        try {
+            Cursor res = db.rawQuery(
+                    String.format(
+                            "SELECT * FROM %s WHERE (%s IN (SELECT MAX (%s) FROM %s GROUP BY %s ) ) AND (%s = '%s') ORDER BY %s DESC",
+                            TABLA_MENSAJES, COL_12, COL_12, TABLA_MENSAJES, COL_10, COL_11, getMacAddr(), COL_12), null);
+            while (res.moveToNext()) {
+                respuesta.add(res.getString(3)+","+res.getString(2)+","+res.getString(11));
+            }
+        }catch (SQLException e){
+            Log.i("error",e.toString());
+        }
+        return respuesta;
+    }
+
 }

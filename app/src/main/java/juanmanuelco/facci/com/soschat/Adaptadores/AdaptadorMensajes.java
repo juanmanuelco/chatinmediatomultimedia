@@ -17,27 +17,28 @@ public class AdaptadorMensajes extends RecyclerView.Adapter<AdaptadorMensajes.Vi
     Context context;
     View view;
     ArrayList<String[]> listado;
+
     private View.OnClickListener listener;
 
     public AdaptadorMensajes(ArrayList<String[]> listado, Context c) {
         this.listado = listado;
-        this.context=c;
+        this.context = c;
     }
 
 
     @NonNull
     @Override
     public AdaptadorMensajes.ViewHolderDatos onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_msg, null, false);
+        view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_msg, null, false);
         RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
         view.setOnClickListener(this);
-        return new AdaptadorMensajes.ViewHolderDatos(view);
+        return new ViewHolderDatos(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolderDatos viewHolderDatos, int i) {
-        String nombre= Character.toUpperCase(listado.get(i)[0].charAt(0)) + listado.get(i)[0].substring(1,listado.get(i)[0].length());
+    public void onBindViewHolder(@NonNull AdaptadorMensajes.ViewHolderDatos viewHolderDatos, final int i) {
+        String nombre = Character.toUpperCase(listado.get(i)[0].charAt(0)) + listado.get(i)[0].substring(1, listado.get(i)[0].length());
         viewHolderDatos.txtNombre.setText(nombre);
         viewHolderDatos.msg_tv.setText(listado.get(i)[1]);
         viewHolderDatos.tiempo_tv.setText(Mensajes.contadorTiempo(Long.parseLong(listado.get(i)[2])));
@@ -48,23 +49,23 @@ public class AdaptadorMensajes extends RecyclerView.Adapter<AdaptadorMensajes.Vi
         return listado.size();
     }
 
-    public void setOnClickListener(View.OnClickListener listen){
-        this.listener=listen;
+    public void setOnClickListener(View.OnClickListener listen) {
+        this.listener = listen;
     }
 
     @Override
     public void onClick(View v) {
-        if(listener!=null) listener.onClick(v);
+        if (listener != null) listener.onClick(v);
     }
 
     public class ViewHolderDatos extends RecyclerView.ViewHolder {
-        TextView txtNombre, msg_tv,tiempo_tv ;
+        TextView txtNombre, msg_tv, tiempo_tv;
+
         public ViewHolderDatos(@NonNull View itemView) {
             super(itemView);
-            txtNombre= itemView.findViewById(R.id.name_tv);
+            txtNombre = itemView.findViewById(R.id.name_tv);
             msg_tv = itemView.findViewById(R.id.msg_tv);
             tiempo_tv = itemView.findViewById(R.id.tiempo_tv);
         }
     }
 }
-
