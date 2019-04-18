@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
 
+import juanmanuelco.facci.com.soschat.R;
+
 public class FileUtilities {
 
 	//Save image from bitmap to the given file path
@@ -29,7 +31,7 @@ public class FileUtilities {
 			bm.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
 	    	fOut.flush();
 	    	fOut.close();
-	    	Toast.makeText(activity, "Descrgar imágen en  "+path+fileName, Toast.LENGTH_SHORT).show();
+	    	Toast.makeText(activity, R.string.download_image_in +path+fileName, Toast.LENGTH_SHORT).show();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -45,7 +47,7 @@ public class FileUtilities {
 		try 
         {
             FileUtils.copyFile(source, destination);
-            Toast.makeText(activity, "Archivo descargado en"+destinationPath, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.download_file +destinationPath, Toast.LENGTH_SHORT).show();
         } 
         catch (IOException e) 
         {

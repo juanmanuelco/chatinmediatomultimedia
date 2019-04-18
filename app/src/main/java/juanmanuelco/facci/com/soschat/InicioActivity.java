@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
@@ -75,5 +76,11 @@ public class InicioActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (pDialog != null) pDialog.dismiss();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_configuracion, menu);
+        return true;
     }
 }

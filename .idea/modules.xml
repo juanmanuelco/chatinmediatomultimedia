@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://D:/proyectos/Tesis/SOSCHATV8/chatinmediatomultimedia/app/app.iml" filepath="D:/proyectos/Tesis/SOSCHATV8/chatinmediatomultimedia/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/chatinmediatomultimedia.iml" filepath="$PROJECT_DIR$/chatinmediatomultimedia.iml" />
-      <module fileurl="file://D:/proyectos/Tesis/SOSCHATV8/chatinmediatomultimedia/chatinmediatomultimedia.iml" filepath="D:/proyectos/Tesis/SOSCHATV8/chatinmediatomultimedia/chatinmediatomultimedia.iml" />
     </modules>
   </component>
 </project>

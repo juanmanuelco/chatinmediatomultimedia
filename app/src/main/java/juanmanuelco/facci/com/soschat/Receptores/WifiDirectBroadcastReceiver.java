@@ -135,7 +135,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 										}
 										@Override
 										public void onFailure(int reason) {
-											Toast.makeText(context, "Error al conectarse con "+ device.deviceName, Toast.LENGTH_SHORT).show();
+											Toast.makeText(context, R.string.error_connect + device.deviceName, Toast.LENGTH_SHORT).show();
 										}
 									});
                                 }

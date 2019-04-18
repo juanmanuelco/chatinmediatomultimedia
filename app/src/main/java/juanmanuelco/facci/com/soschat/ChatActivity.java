@@ -554,7 +554,7 @@ public class ChatActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("message", mes.getTexto());
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(this, "Mensaje copiado en el portapapeles", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.Copy_mensaje, Toast.LENGTH_SHORT).show();
     }
 
     private void shareMedia(long id, int type) {

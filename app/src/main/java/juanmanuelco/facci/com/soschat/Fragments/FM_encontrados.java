@@ -206,7 +206,7 @@ public class FM_encontrados extends Fragment {
             mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
                 @Override
                 public void onSuccess() {
-                    Toast.makeText(getActivity(), "Buscando...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.search_toast, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -215,7 +215,7 @@ public class FM_encontrados extends Fragment {
                 }
             });
         } catch (InterruptedException e) {
-            Toast.makeText(getActivity(), "No se ha podido iniciar la búsqueda", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.no_search, Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
