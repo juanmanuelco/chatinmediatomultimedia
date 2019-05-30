@@ -114,7 +114,7 @@ public class AdaptadorChat extends BaseAdapter {
 			cache.chatName.setTextColor(Color.BLACK);
 			cache.text.setTextColor(Color.BLACK);
 			cache.chatName.setText("Yo");
-			if(mes.getIdentificacion()) mes.setMacDestino(DireccionMAC.direccion);
+			if(mes.getIdentificacion()) mes.setMacDestino(DireccionMAC.MacOnclick);
 		}
         else{
 			params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -125,7 +125,15 @@ public class AdaptadorChat extends BaseAdapter {
 			DireccionMAC.direccion=mes.getMacOrigen();
         }
 
-        //We disable all the views and enable certain views depending on the message's type
+        /* //ver el tiempo de envio de cada mensaje
+		String extra ="";
+		if(mes.getTiempoRecibo()!=0 && mes.getTiempoEnvio()!=0){
+			extra = " Tiempo: "+Math.abs(mes.getTiempoRecibo() - mes.getTiempoEnvio());
+		}
+		mensaje= mensaje+extra;
+		*/
+
+		//We disable all the views and enable certain views depending on the message's type
         disableAllMediaViews(cache);
 
         /***********************************************
