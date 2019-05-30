@@ -43,6 +43,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -83,9 +84,7 @@ public class FM_encontrados extends Fragment {
 
     SharedPreferences sharedPref;
 
-
     WifiP2pManager mWifiP2pManager;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -208,10 +207,9 @@ public class FM_encontrados extends Fragment {
                 public void onSuccess() {
                     Toast.makeText(getActivity(), R.string.search_toast, Toast.LENGTH_SHORT).show();
                 }
-
                 @Override
                 public void onFailure(int reason) {
-
+                    Toast.makeText(getActivity(), "Error #"+ reason, Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (InterruptedException e) {

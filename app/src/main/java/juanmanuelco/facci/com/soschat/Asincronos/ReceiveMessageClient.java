@@ -6,6 +6,7 @@ import juanmanuelco.facci.com.soschat.ChatActivity;
 import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
 import juanmanuelco.facci.com.soschat.Entidades.Mensaje;
 import juanmanuelco.facci.com.soschat.InicioActivity;
+import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -38,15 +39,18 @@ public class ReceiveMessageClient extends AbstractReceiver {
 				BufferedInputStream buffer = new BufferedInputStream(inputStream);
 				ObjectInputStream objectIS = new ObjectInputStream(buffer);
 				Mensaje mensaje = (Mensaje) objectIS.readObject();
+				mensaje.setIdentificador_chat(DireccionMAC.MacOnclick);
 
 				if(mensaje.getTiempoRecibo()==0) mensaje.setTiempoRecibo(System.currentTimeMillis());
 				if(mensaje.getMacDestino().equals("")) mensaje.setMacDestino(getMacAddr());
+
+				if (DireccionMAC.MacOnclick.isEmpty()){mensaje.setIdentificador_chat(mensaje.getMacOrigen());}
+
 				if(db.validarRegistro(mensaje)) db.guardarMensaje(mensaje);
 				else{
 					db.actualizarMacDestino(mensaje.getTiempoEnvio(),getMacAddr());
 					db.actualizarTiempoRecibo(mensaje.getTiempoEnvio(), System.currentTimeMillis());
 				}
-
 
 				destinationSocket.close();
 				publishProgress(mensaje);

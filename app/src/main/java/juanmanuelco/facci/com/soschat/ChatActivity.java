@@ -85,7 +85,8 @@ public class ChatActivity extends AppCompatActivity {
     WifiManager wifiManager;
     static DB_SOSCHAT db;
 
-
+    private static AdaptadorChat adaptadorChatOffLine;
+    private static List<Mensaje> listMensajeoffLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +130,9 @@ public class ChatActivity extends AppCompatActivity {
         //Initialize the adapter for the chat
         listView = (ListView) findViewById(R.id.messageList);
         listMensaje = new ArrayList<Mensaje>();
+        listMensajeoffLine = new ArrayList<Mensaje>();
 
+        listMensaje = db.mensajesEnDB(DireccionMAC.MacOnclick);
 
         adaptadorChat = new AdaptadorChat(this, listMensaje);
         listView.setAdapter(adaptadorChat);
@@ -150,12 +153,22 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         registerForContextMenu(listView);
+        // Muestra la lista en los fragments "historicos" y "Mensajes"
+        if  (mReceiver.isGroupeOwner()==0){
+            // aqui le enviamos la mac o algun dato para diferenciar los chats
+            // Se especifican la mac de destino dos veces para que se muestren solo los mensajes de ese destinatario
+            // con esto queda confirmado el filtro para los mensajes
+            listMensajeoffLine = db.mensajesEnDB(DireccionMAC.MacOnclick);
+            adaptadorChatOffLine = new AdaptadorChat(this, listMensajeoffLine);
+            listView.setAdapter(adaptadorChatOffLine);
+            adaptadorChatOffLine.notifyDataSetChanged();
+        }
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        diseminacion(db.mensajesEnDB());
+        diseminacion(db.mensajesEnDB(DireccionMAC.MacOnclick));
         ActivityUtilities.customiseActionBar(this);
     }
 
@@ -287,6 +300,7 @@ public class ChatActivity extends AppCompatActivity {
         mes.setTiempoEnvio(Math.abs(millis));
         mes.setIdentificacion(true);
         mes.setMacOrigen(getMacAddr());
+        mes.setIdentificador_chat(DireccionMAC.MacOnclick);
         mes.setMacDestino(DireccionMAC.direccion);
         switch (type) {
             case Mensaje.IMAGE_MESSAGE:
@@ -320,6 +334,7 @@ public class ChatActivity extends AppCompatActivity {
                 mes.setPathArchivo(drawingFile.getFilePath());
                 break;
         }
+
         if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_OWNER)
             new SendMessageServer(ChatActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mes);
         else if (mReceiver.isGroupeOwner() == WifiDirectBroadcastReceiver.IS_CLIENT)
@@ -355,6 +370,10 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int contador=0;
+        String letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+        String cadena = "";
+
         int idItem = item.getItemId();
         switch (idItem) {
             case R.id.send_image:
@@ -392,6 +411,10 @@ public class ChatActivity extends AppCompatActivity {
                         db.eliminarMensajes();
                         listMensaje.clear();
                         adaptadorChat.notifyDataSetChanged();
+                        if (mReceiver.isGroupeOwner()==0){
+                            listMensajeoffLine.clear();
+                            adaptadorChatOffLine.notifyDataSetChanged();
+                        }
                         mostrarMensaje("Listo", "Registro vaciado", ChatActivity.this);
                     }
                 });
@@ -408,6 +431,34 @@ public class ChatActivity extends AppCompatActivity {
                 alertDialog.show();
                 onDestroy();
                 return true;
+                //generar caracteres para pruebas
+            /*case R.id.generar128:
+                edit.setText("");
+                for (int x = 0; x < 128; x++)
+                {
+                    int caracter = (int) Math.floor(Math.random()*27); //Generamos la cadena
+                    cadena = cadena + letras.charAt(caracter);
+                }
+                edit.setText(cadena);
+                return true;
+            case R.id.generar256:
+                edit.setText("");
+                for (int x = 0; x < 256; x++)
+                {
+                    int caracter = (int) Math.floor(Math.random()*27); //Generamos la cadena
+                    cadena = cadena + letras.charAt(caracter);
+                }
+                edit.setText(cadena);
+                return true;
+            case R.id.generar512:
+                edit.setText("");
+                for (int x = 0; x < 512; x++)
+                {
+                    int caracter = (int) Math.floor(Math.random()*27); //Generamos la cadena
+                    cadena = cadena + letras.charAt(caracter);
+                }
+                edit.setText(cadena);
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -568,5 +619,4 @@ public class ChatActivity extends AppCompatActivity {
                 startActivity(sendIntent);
         }
     }
-
 }

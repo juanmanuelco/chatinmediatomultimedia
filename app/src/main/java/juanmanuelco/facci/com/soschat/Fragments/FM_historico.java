@@ -27,6 +27,7 @@ import java.util.Arrays;
 import juanmanuelco.facci.com.soschat.ChatActivity;
 import juanmanuelco.facci.com.soschat.Adaptadores.AdaptadorDispositivos;
 import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
+import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
 import juanmanuelco.facci.com.soschat.R;
 
 
@@ -61,6 +62,7 @@ public class FM_historico extends Fragment {
         adaptadorDispositivos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DireccionMAC.MacOnclick= encontrados.get(rv_participants.getChildAdapterPosition(v))[1];
                 Intent intent = new Intent(getActivity().getApplicationContext(), ChatActivity.class);
                 getActivity().startActivity(intent);
             }

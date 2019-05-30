@@ -5,12 +5,18 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
+
 public class ClientInit extends Thread{
 	private static final int SERVER_PORT = 4444;
 	private InetAddress mServerAddr;
 	
 	public ClientInit(InetAddress serverAddr){
 		mServerAddr = serverAddr;
+	}
+
+	public void Destino(String mac_destino){
+		DireccionMAC.MacOnclick=mac_destino;
 	}
 	
 	@Override

@@ -38,6 +38,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
     public static final String COL_11 = "MAC_DESTINO"; //10
     public static final String COL_12 = "TIEMPO_ENVIO"; //11
     public static final String COL_13 = "TIEMPO_RECIBO"; //12
+    public static final String COL_14= "IDENTIFICADOR_CHAT"; //13
 
     //Tabla usuario --------------------------------------------------------------------------------
     public static final String TABLA_ENCONTRADO= "USUARIOS";
@@ -75,8 +76,8 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         db.execSQL(String.format(
                 "CREATE TABLE %s (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "%s INTEGER, %s TEXT, %s TEXT, %s BLOB , %s BLOB, %s TEXT, %s NUMERIC, %s TEXT" +
-                        ",%s TEXT , %s TEXT, %s NUMERIC, %s NUMERIC )", TABLA_MENSAJES,
-                COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8, COL_9, COL_10, COL_11, COL_12, COL_13
+                        ",%s TEXT , %s TEXT, %s NUMERIC, %s NUMERIC, %s TEXT )", TABLA_MENSAJES,
+                COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8, COL_9, COL_10, COL_11, COL_12, COL_13, COL_14
         ));
 
         //Tabla usuario ----------------------------------------------------------------------------
@@ -95,6 +96,11 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
                 TABLA_MIEMBROS,COL_1_MIEMBROS,COL_2_MIEMBROS,COL_3_MIEMBROS,COL_4_MIEMBROS,
                 COL_3_MIEMBROS,REFERENCIA_ID_GRUPOS
                 ));*/
+
+        // Datos fictisios ingresados --------------------------------------------------------------
+        db.execSQL(String.format("INSERT INTO %s VALUES ( '%s', '%s', 'true')", TABLA_ENCONTRADO, "B2:82:FB:4A:DF:19", "Dispositvo1"));
+
+
     }
 
     @Override
@@ -117,7 +123,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
     public void guardarMensaje(Mensaje m){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(String.format("INSERT INTO %s VALUES ( NULL, '%s', '%s', '%s', '%s', '%s', " +
-                        "'%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                        "'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                 TABLA_MENSAJES,
                 m.getTipo(),
                 m.getTexto(),
@@ -130,9 +136,39 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
                 m.getMacOrigen(),
                 m.getMacDestino(),
                 m.getTiempoEnvio(),
-                m.getTiempoRecibo()
+                m.getTiempoRecibo(),
+                m.getIdentificador_chat()
         ));
+        Log.i("MacIdentificador",m.getIdentificador_chat());
     }
+
+    public List<Mensaje> mensajesEnDB(String OtraMac){
+        //Cursor obtenidos = selectVerTodos();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor obtenidos = db.rawQuery(String.format("select * from %s where (%s = '%s' or %s= '%s') and (%s = '%s' or %s= '%s') ORDER BY ID ASC",
+                TABLA_MENSAJES,COL_10,getMacAddr(),COL_11,getMacAddr(),COL_10,OtraMac,COL_11,OtraMac),null);
+        List<Mensaje> respuesta= new ArrayList<Mensaje>();
+        while (obtenidos.moveToNext()){
+            Mensaje mensaje= new Mensaje(
+                    obtenidos.getInt(1),
+                    obtenidos.getString(2),
+                    obtenerInetAddress(obtenidos.getBlob(5)),
+                    obtenidos.getString(3)
+            );
+            mensaje.setByteArray(obtenidos.getBlob(4));
+            mensaje.setNombreArchivo(obtenidos.getString(6));
+            mensaje.setTamanoArchivo(obtenidos.getLong(7));
+            mensaje.setPathArchivo(obtenidos.getString(8));
+            mensaje.setMacOrigen(obtenidos.getString(9));
+            mensaje.setMacDestino(obtenidos.getString(10));
+            mensaje.setTiempoEnvio(obtenidos.getLong(11));
+            mensaje.setTiempoRecibo(obtenidos.getLong(12));
+            mensaje.setIdentificador_chat(obtenidos.getString(13));
+            respuesta.add(mensaje);
+        }
+        return respuesta;
+    }
+
 
     public List<Mensaje> mensajesEnDB(){
         Cursor obtenidos = selectVerTodos();

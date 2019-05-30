@@ -1,6 +1,7 @@
 package juanmanuelco.facci.com.soschat.Adaptadores;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import android.widget.Filterable;
+import android.widget.Toast;
 
 import juanmanuelco.facci.com.soschat.DB.DB_SOSCHAT;
 import juanmanuelco.facci.com.soschat.R;
@@ -28,6 +31,8 @@ public class AdaptadorDispositivos extends RecyclerView.Adapter<AdaptadorDisposi
     DB_SOSCHAT db;
     View view;
 
+    Boolean estado=false;
+    int posicion=-1;
 
     private View.OnClickListener listener;
 
@@ -54,7 +59,15 @@ public class AdaptadorDispositivos extends RecyclerView.Adapter<AdaptadorDisposi
         String nombre= Character.toUpperCase(listado.get(i)[0].charAt(0)) + listado.get(i)[0].substring(1,listado.get(i)[0].length());
         viewHolderDatos.txtNombre.setText(nombre);
         viewHolderDatos.txtMAC.setText(listado.get(i)[1]);
-
+/* para para el diseño de la conexion
+        if(posicion==i){
+            viewHolderDatos.no_conectado.setVisibility(View.INVISIBLE);
+            viewHolderDatos.conectado.setVisibility(View.VISIBLE);
+        }else{
+            viewHolderDatos.conectado.setVisibility(View.INVISIBLE);
+            viewHolderDatos.no_conectado.setVisibility(View.VISIBLE);
+        }
+*/
         if(db.validarAgregado(listado.get(i)[1])) viewHolderDatos.sw_agregado.setChecked(true);
         else viewHolderDatos.sw_agregado.setChecked(false);
         viewHolderDatos.sw_agregado.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -68,6 +81,13 @@ public class AdaptadorDispositivos extends RecyclerView.Adapter<AdaptadorDisposi
         });
     }
 
+    public void estadoActulizar(boolean estado, int posi){
+        this.estado = estado;
+        this.posicion = posi;
+        notifyDataSetChanged();
+        //oast.makeText(context,"variables: " +estado+" "+posi,Toast.LENGTH_LONG).show();
+    }
+
     @Override
     public int getItemCount() {
         return listado.size();
@@ -76,7 +96,6 @@ public class AdaptadorDispositivos extends RecyclerView.Adapter<AdaptadorDisposi
     public void setOnClickListener(View.OnClickListener listen){
         this.listener=listen;
     }
-
 
     @Override
     public void onClick(View v) {
@@ -90,19 +109,20 @@ public class AdaptadorDispositivos extends RecyclerView.Adapter<AdaptadorDisposi
         return filter;
     }
 
-
     public class ViewHolderDatos extends RecyclerView.ViewHolder {
         TextView txtNombre, txtMAC;
         Switch sw_agregado;
+        ImageView conectado, no_conectado;
 
         public ViewHolderDatos(@NonNull View itemView) {
             super(itemView);
             txtNombre = itemView.findViewById(R.id.name_tv);
             txtMAC = itemView.findViewById(R.id.ip_tv);
             sw_agregado =(Switch) itemView.findViewById(R.id.sw_agregado);
+            conectado = (ImageView) itemView.findViewById(R.id.conectado);
+            no_conectado = (ImageView) itemView.findViewById(R.id.no_conectado);
         }
     }
-
     private class listaFilter extends Filter{
 
         @Override

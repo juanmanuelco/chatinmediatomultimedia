@@ -35,7 +35,7 @@ public class Mensaje implements Serializable{
 	private long tiempoRecibo=0;
 	private boolean identificacion=true;
 
-
+	private String identificador_chat;
 
 	/**Obtener elementos del sistema*/
 	public int getTipo(){return mType;}
@@ -66,6 +66,14 @@ public class Mensaje implements Serializable{
 	public void setByteArray(byte[] byteArray){this.byteArray=byteArray;}
 	public void setAddress(InetAddress direccion){this.senderAddress=direccion;}
     public void setIdentificacion(Boolean identificacion){this.identificacion=identificacion;}
+
+	public String getIdentificador_chat() {
+		return identificador_chat;
+	}
+
+	public void setIdentificador_chat(String identificador_chat) {
+		this.identificador_chat = identificador_chat;
+	}
 
 
 	public Mensaje(int type, String text, InetAddress sender, String name){
