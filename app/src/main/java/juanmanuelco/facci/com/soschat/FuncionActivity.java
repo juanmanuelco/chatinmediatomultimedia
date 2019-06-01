@@ -12,16 +12,17 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v7.widget.SearchView;
+
 
 
 import juanmanuelco.facci.com.soschat.Fragments.FM_encontrados;
 import juanmanuelco.facci.com.soschat.Fragments.FM_historico;
 import juanmanuelco.facci.com.soschat.Fragments.FM_mensajes;
-import juanmanuelco.facci.com.soschat.Hilos.ServerInit;
+import juanmanuelco.facci.com.soschat.InitThreads.ServerInit;
 
 public class FuncionActivity extends AppCompatActivity {
 
@@ -30,8 +31,6 @@ public class FuncionActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     public static ServerInit server;
     public static String chatName="";
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +60,15 @@ public class FuncionActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_funcion, menu);
+        return true;
     }
 
     @Override
@@ -69,7 +77,7 @@ public class FuncionActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.search ) {
+        if (id == R.id.action_settings) {
             return true;
         }
 
@@ -112,15 +120,12 @@ public class FuncionActivity extends AppCompatActivity {
             switch (position){
                 case 0:
                     fm=new FM_encontrados();
-                    invalidateOptionsMenu();
                     break;
                 case 1:
                     fm= new FM_mensajes();
-                    invalidateOptionsMenu();
                     break;
                 case 2:
                     fm=new FM_historico();
-                    invalidateOptionsMenu();
                     break;
             }
             return fm;

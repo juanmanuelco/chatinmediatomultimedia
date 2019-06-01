@@ -8,9 +8,9 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
 
-import juanmanuelco.facci.com.soschat.Asincronos.ReceiveMessageClient;
-import juanmanuelco.facci.com.soschat.Asincronos.ReceiveMessageServer;
-import juanmanuelco.facci.com.soschat.Receptores.WifiDirectBroadcastReceiver;
+import juanmanuelco.facci.com.soschat.AsyncTasks.ReceiveMessageClient;
+import juanmanuelco.facci.com.soschat.AsyncTasks.ReceiveMessageServer;
+import juanmanuelco.facci.com.soschat.Receivers.WifiDirectBroadcastReceiver;
 
 public class MessageService extends Service {
 	private static final String TAG = "MessageService";

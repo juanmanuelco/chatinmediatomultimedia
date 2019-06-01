@@ -27,6 +27,8 @@ public class Mensajes {
         });
         android.support.v7.app.AlertDialog alertDialog=alertDialogBuilder.create();
 
+
+
         /**Muestra el dialogo*/
         alertDialog.show();
     }
@@ -71,27 +73,24 @@ public class Mensajes {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface nif : all) {
                 if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
                 byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null)  return "";
+                if (macBytes == null) {
+                    return "";
+                }
+
                 StringBuilder res1 = new StringBuilder();
                 for (byte b : macBytes) {
                     res1.append(Integer.toHexString(b & 0xFF) + ":");
                 }
-                if (res1.length() > 0) res1.deleteCharAt(res1.length() - 1);
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
                 return res1.toString();
             }
         } catch (Exception ex) {
         }
         return "02:00:00:00:00:00";
-    }
-    public static String  contadorTiempo(long tiempo){
-        String respuesta="";
-        long tiempoActual= System.currentTimeMillis();
-        long resta = Math.abs(tiempoActual-tiempo);
-        if(resta < 1000) respuesta = "Justo ahora";
-        else if(resta < 60000) respuesta = "Hace menos de un minuto";
-        else if (resta < 3600000 ) respuesta = "Hace "+ Math.round(resta/60000) +" minutos";
-        else if (resta < 86400000) respuesta = "Hace "+ Math.round(resta/3600000) + " horas";
-        return respuesta;
     }
 }

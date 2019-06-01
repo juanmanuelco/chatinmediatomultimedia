@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -14,14 +15,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import juanmanuelco.facci.com.soschat.Adaptadores.AdaptadorFilaArchivos;
-import juanmanuelco.facci.com.soschat.Entidades.Item;
+import juanmanuelco.facci.com.soschat.CustomAdapters.FileListAdapter;
+import juanmanuelco.facci.com.soschat.Entities.Item;
 
 public class FilePickerActivity extends ListActivity {
 
     private File currentDir;
     private String rootDirPath;
-    private AdaptadorFilaArchivos adapter;
+    private FileListAdapter adapter;
     private ListView listView;
 
     @Override
@@ -79,7 +80,7 @@ public class FilePickerActivity extends ListActivity {
             directories.add(0, new Item(Item.UP, "../", file.getParent()));
         }
 
-        adapter = new AdaptadorFilaArchivos(this, directories);
+        adapter = new FileListAdapter(this, directories);
         listView.setAdapter(adapter);
     }
 

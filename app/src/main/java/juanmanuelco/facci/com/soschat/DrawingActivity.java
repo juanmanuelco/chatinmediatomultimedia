@@ -126,7 +126,7 @@ public class DrawingActivity extends AppCompatActivity  {
                 currentPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_selected));
                 drawView.setErase(false);
                 drawView.setBrushSize(drawView.getLastBrushSize());
-                Toast.makeText(DrawingActivity.this, R.string.format1 +String.format("#%X", mDefaulColor )+ R.string.format2+"#"+Integer.toHexString(mDefaulColor) , Toast.LENGTH_LONG).show();
+                Toast.makeText(DrawingActivity.this, "Formato 1 "+String.format("#%X", mDefaulColor )+" Formato 2 "+"#"+Integer.toHexString(mDefaulColor) , Toast.LENGTH_LONG).show();
             }
         });
         color.show();

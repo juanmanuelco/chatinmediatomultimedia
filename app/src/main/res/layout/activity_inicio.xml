@@ -14,7 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="32dp"
-            android:maxLines="1"
             android:layout_marginBottom="12dp"
             android:gravity="center"
             android:text="@string/encabezado_principal"
@@ -25,7 +24,6 @@
             android:layout_height="wrap_content"
             android:hint="@string/hing_principal"
             android:gravity="center"
-            android:maxLength="15"
             android:id="@+id/ET_Main_Nickname"/>
         <TextView
             android:layout_width="match_parent"

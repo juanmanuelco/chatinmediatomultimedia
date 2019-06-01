@@ -42,9 +42,18 @@ public class Validaciones {
         List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
 
         for (ActivityManager.RunningTaskInfo task : tasks) {
-            if (activityClass.getCanonicalName().equalsIgnoreCase(task.baseActivity.getClassName())) return true;
+            if (activityClass.getCanonicalName().equalsIgnoreCase(task.baseActivity.getClassName()))
+                return true;
         }
         return false;
+    }
+
+    public static String  obtenerPeso(int peso){
+        String mensaje= "";
+        if(peso>1024 && peso < 1048576) mensaje= Math.round(peso/1024)+" KB";
+        else mensaje= Math.round(peso/1048576)+" MB";
+        if(peso<1024) mensaje= peso +" Bytes";
+        return mensaje;
     }
 
 }
