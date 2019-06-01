@@ -35,6 +35,7 @@ public class Validaciones {
     public static String loadChatName(Context context, String key, String defaultText) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(key, defaultText);
+
     }
 
     public static Boolean isActivityRunning(Class activityClass, Context mContext) {
