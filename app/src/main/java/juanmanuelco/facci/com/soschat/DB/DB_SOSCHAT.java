@@ -100,9 +100,7 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
                 ));*/
 
         // Datos fictisios ingresados --------------------------------------------------------------
-        db.execSQL(String.format("INSERT INTO %s VALUES ( '%s', '%s', 'true')", TABLA_ENCONTRADO, "B2:82:FB:4A:DF:19", "Dispositvo1"));
-
-
+        db.execSQL(String.format("INSERT INTO %s VALUES ( '%s', '%s', 'true')", TABLA_ENCONTRADO, "B2:82:FB:4A:DF:19", "Dispositvo2"));
     }
 
     @Override
@@ -271,7 +269,6 @@ public class DB_SOSCHAT extends SQLiteOpenHelper {
         } catch(Exception exp){
             String gg= exp.getMessage().toString();
         }
-
         return respuesta;
     }
 

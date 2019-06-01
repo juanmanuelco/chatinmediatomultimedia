@@ -2,16 +2,19 @@ package juanmanuelco.facci.com.soschat.Fragments;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +27,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import juanmanuelco.facci.com.soschat.CustomAdapters.AdaptadorDispositivos;
+import juanmanuelco.facci.com.soschat.Entities.ENCONTRADO;
 import juanmanuelco.facci.com.soschat.FuncionActivity;
 import juanmanuelco.facci.com.soschat.InitThreads.ServerInit;
 import juanmanuelco.facci.com.soschat.NEGOCIO.DireccionMAC;
@@ -56,6 +63,16 @@ public class FM_encontrados extends Fragment {
     ProgressDialog pDialog;
     WifiP2pManager mWifiP2pManager;
 
+    private SearchView searchView = null;
+    private boolean searchViewShow = false;
+    private SearchView.OnQueryTextListener queryTextListener;
+    public ArrayList<String> listado2 = new ArrayList<>();
+    public ArrayList<String[]> nueva = new ArrayList<>();
+    private ArrayList<ENCONTRADO> ListaFound;
+    private ENCONTRADO encontrados;
+    private String[] caracter;
+    private AdaptadorDispositivos adapter;
+
 
     //Getters and Setters
     public WifiP2pManager getmManager() { return mManager; }
@@ -72,6 +89,7 @@ public class FM_encontrados extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.fragment_fm_encontrados, container, false);
+        setHasOptionsMenu(true);
         pDialog=new ProgressDialog(getActivity());
         wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(!wifiManager.isWifiEnabled())
@@ -107,18 +125,60 @@ public class FM_encontrados extends Fragment {
 
         descubrir();
 
+        FloatingActionButton fab = FuncionActivity.fab;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    descubrir();
+                }catch (Exception e){
+                    Toast.makeText(getContext(), "No se puedo buscar", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         return v;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_principal, menu);
+        inflater.inflate(R.menu.menu_fragments, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) searchItem.getActionView();
-        //searchView.setOnQueryTextListener(this);
-        searchView.setQueryHint("Search");
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
 
+            queryTextListener = new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    Log.i("onQueryTextChange", newText);
+                    return true;
+                }
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    Log.i("onQueryTextSubmit", query);
+
+                    return true;
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Aqui tendran los eventos los iconos en el toolbar
+        switch (item.getItemId()) {
+            case R.id.configuracion:
+                Toast.makeText(getContext(),"Configuración",Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void descubrir(){
@@ -185,5 +245,7 @@ public class FM_encontrados extends Fragment {
                 Manifest.permission.CHANGE_NETWORK_STATE
         },request_code);
     }
+
+    // opciones en el toolbar, busqueda, recarga y configuracion
 
 }
