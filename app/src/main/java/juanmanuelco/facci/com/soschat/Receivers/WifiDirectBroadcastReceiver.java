@@ -86,6 +86,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 		if(instance == null) instance = new WifiDirectBroadcastReceiver();
 		return instance;
 	}
+
 	public int isGroupeOwner() { return isGroupeOwner; }
 	public InetAddress getOwnerAddr() { return ownerAddr; }
 	public void setmManager(WifiP2pManager mManager) { this.mManager = mManager; }
@@ -155,6 +156,7 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 									mac.setMac(listado.get(RV.getChildAdapterPosition(v))[1]);
 									posicion= RV.getChildAdapterPosition(v);
 
+
 									mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
 										@Override
 										public void onSuccess() {
@@ -186,28 +188,35 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver{
 				try {
 					mManager.requestConnectionInfo(mChannel, new ConnectionInfoListener() {
 						@Override
-						public void onConnectionInfoAvailable(WifiP2pInfo info) {
+						public void onConnectionInfoAvailable(final WifiP2pInfo info) {
 
-							/*pDialog.hide();
+							pDialog.hide();
 							adapter.estadoActulizar(true,posicion);
 							adapter.notifyDataSetChanged();
-							Toast.makeText(context, "conectado", Toast.LENGTH_LONG).show();*/
-							InetAddress groupOwnerAddress = info.groupOwnerAddress;
-							ownerAddr= groupOwnerAddress;
-							if (info.groupFormed && info.isGroupOwner) {
-								isGroupeOwner = IS_OWNER;
-								fm.server=new ServerInit();
-								fm.server.start();
-								FuncionActivity.server=fm.server;
-								Toast.makeText(context,"servidor",Toast.LENGTH_LONG).show();
-							}
-							else if (info.groupFormed) {
-								isGroupeOwner = IS_CLIENT;
-								ClientInit client = new ClientInit(getOwnerAddr());
-								client.start();
-							}
-							Intent intent = new Intent(mActivity.getApplicationContext(), ChatActivity.class);
-							mActivity.startActivity(intent);
+							Toast.makeText(context, "conectado", Toast.LENGTH_LONG).show();
+
+							/*adapter.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									InetAddress groupOwnerAddress = info.groupOwnerAddress;
+									ownerAddr= groupOwnerAddress;
+									if (info.groupFormed && info.isGroupOwner) {
+										isGroupeOwner = IS_OWNER;
+										fm.server=new ServerInit();
+										fm.server.start();
+										FuncionActivity.server=fm.server;
+										Toast.makeText(context,"servidor",Toast.LENGTH_LONG).show();
+									}
+									else if (info.groupFormed) {
+										isGroupeOwner = IS_CLIENT;
+										ClientInit client = new ClientInit(getOwnerAddr());
+										client.start();
+									}
+									Intent intent = new Intent(mActivity.getApplicationContext(), ChatActivity.class);
+									mActivity.startActivity(intent);
+								}
+							});*/
+							
 							conteo=false;
 						}
 					});
